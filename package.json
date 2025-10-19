@@ -6,9 +6,16 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "process-scenes": "bun run scripts/process-scenes.ts"
   },
   "dependencies": {
-    "astro": "^5.14.6"
+    "@astrojs/react": "^4.4.0",
+    "@react-three/drei": "^10.7.6",
+    "@react-three/fiber": "^9.4.0",
+    "astro": "^5.14.6",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.180.0"
   }
 }
