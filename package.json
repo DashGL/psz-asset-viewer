@@ -13,7 +13,10 @@
     "processWetlands": "bun run scripts/processWetlands.ts",
     "processSnowfield": "bun run scripts/processSnowfield.ts",
     "processMakara": "bun run scripts/processMakara.ts",
-    "processParu": "bun run scripts/processParu.ts"
+    "processParu": "bun run scripts/processParu.ts",
+    "processArca": "bun run scripts/processArca.ts",
+    "processShrine": "bun run scripts/processShrine.ts",
+    "processTower": "bun run scripts/processTower.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.0",

@@ -34,6 +34,23 @@ const paruACount = countAssets('./public/paru_a');
 const paruBCount = countAssets('./public/paru_b');
 const paruECount = countAssets('./public/paru_e');
 const paruZCount = countAssets('./public/paru_z');
+const arcaACount = countAssets('./public/arca_a');
+const arcaBCount = countAssets('./public/arca_b');
+const arcaECount = countAssets('./public/arca_e');
+const arcaZCount = countAssets('./public/arca_z');
+const shrineACount = countAssets('./public/shrine_a');
+const shrineBCount = countAssets('./public/shrine_b');
+const shrineECount = countAssets('./public/shrine_e');
+const shrineZCount = countAssets('./public/shrine_z');
+const tower0Count = countAssets('./public/tower_0');
+const tower1Count = countAssets('./public/tower_1');
+const tower2Count = countAssets('./public/tower_2');
+const tower3Count = countAssets('./public/tower_3');
+const tower4Count = countAssets('./public/tower_4');
+const tower5Count = countAssets('./public/tower_5');
+const tower6Count = countAssets('./public/tower_6');
+const tower7Count = countAssets('./public/tower_7');
+const towerECount = countAssets('./public/tower_e');
 ---
 
 <!DOCTYPE html>
@@ -474,7 +491,237 @@ const paruZCount = countAssets('./public/paru_z');
         </a>
       </div>
 
-      {(cityACount === 0 && cityECount === 0 && valleyACount === 0 && wetlandsACount === 0 && snowfieldACount === 0 && makaraACount === 0 && paruACount === 0) && (
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">Arca Plant (Scene 06)</h2>
+      <div class="cities">
+        <a href="/arca_a" class="city-card">
+          <h2>Arca - Area A</h2>
+          <div class="count">
+            {arcaACount > 0
+              ? `${arcaACount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Arca Plant 'a' area assets.
+          </p>
+        </a>
+
+        <a href="/arca_b" class="city-card">
+          <h2>Arca - Area B</h2>
+          <div class="count">
+            {arcaBCount > 0
+              ? `${arcaBCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Arca Plant 'b' area assets.
+          </p>
+        </a>
+
+        <a href="/arca_e" class="city-card">
+          <h2>Arca - Area E</h2>
+          <div class="count">
+            {arcaECount > 0
+              ? `${arcaECount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Arca Plant 'e' area assets.
+          </p>
+        </a>
+
+        <a href="/arca_z" class="city-card">
+          <h2>Arca - Area Z</h2>
+          <div class="count">
+            {arcaZCount > 0
+              ? `${arcaZCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Arca Plant 'z' area assets.
+          </p>
+        </a>
+      </div>
+
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">Dark Shrine (Scene 07)</h2>
+      <div class="cities">
+        <a href="/shrine_a" class="city-card">
+          <h2>Shrine - Area A</h2>
+          <div class="count">
+            {shrineACount > 0
+              ? `${shrineACount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Dark Shrine 'a' area assets.
+          </p>
+        </a>
+
+        <a href="/shrine_b" class="city-card">
+          <h2>Shrine - Area B</h2>
+          <div class="count">
+            {shrineBCount > 0
+              ? `${shrineBCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Dark Shrine 'b' area assets.
+          </p>
+        </a>
+
+        <a href="/shrine_e" class="city-card">
+          <h2>Shrine - Area E</h2>
+          <div class="count">
+            {shrineECount > 0
+              ? `${shrineECount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Dark Shrine 'e' area assets.
+          </p>
+        </a>
+
+        <a href="/shrine_z" class="city-card">
+          <h2>Shrine - Area Z</h2>
+          <div class="count">
+            {shrineZCount > 0
+              ? `${shrineZCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Dark Shrine 'z' area assets.
+          </p>
+        </a>
+      </div>
+
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">Eternal Tower (Scene 08)</h2>
+      <div class="cities">
+        <a href="/tower_0" class="city-card">
+          <h2>Tower - Floor 0</h2>
+          <div class="count">
+            {tower0Count > 0
+              ? `${tower0Count} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Eternal Tower floor 0 assets.
+          </p>
+        </a>
+
+        <a href="/tower_1" class="city-card">
+          <h2>Tower - Floor 1</h2>
+          <div class="count">
+            {tower1Count > 0
+              ? `${tower1Count} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Eternal Tower floor 1 assets.
+          </p>
+        </a>
+
+        <a href="/tower_2" class="city-card">
+          <h2>Tower - Floor 2</h2>
+          <div class="count">
+            {tower2Count > 0
+              ? `${tower2Count} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Eternal Tower floor 2 assets.
+          </p>
+        </a>
+
+        <a href="/tower_3" class="city-card">
+          <h2>Tower - Floor 3</h2>
+          <div class="count">
+            {tower3Count > 0
+              ? `${tower3Count} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Eternal Tower floor 3 assets.
+          </p>
+        </a>
+
+        <a href="/tower_4" class="city-card">
+          <h2>Tower - Floor 4</h2>
+          <div class="count">
+            {tower4Count > 0
+              ? `${tower4Count} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Eternal Tower floor 4 assets.
+          </p>
+        </a>
+
+        <a href="/tower_5" class="city-card">
+          <h2>Tower - Floor 5</h2>
+          <div class="count">
+            {tower5Count > 0
+              ? `${tower5Count} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Eternal Tower floor 5 assets.
+          </p>
+        </a>
+
+        <a href="/tower_6" class="city-card">
+          <h2>Tower - Floor 6</h2>
+          <div class="count">
+            {tower6Count > 0
+              ? `${tower6Count} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Eternal Tower floor 6 assets.
+          </p>
+        </a>
+
+        <a href="/tower_7" class="city-card">
+          <h2>Tower - Floor 7</h2>
+          <div class="count">
+            {tower7Count > 0
+              ? `${tower7Count} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Eternal Tower floor 7 assets.
+          </p>
+        </a>
+
+        <a href="/tower_e" class="city-card">
+          <h2>Tower - Area E</h2>
+          <div class="count">
+            {towerECount > 0
+              ? `${towerECount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Eternal Tower 'e' area assets.
+          </p>
+        </a>
+      </div>
+
+      {(cityACount === 0 && cityECount === 0 && valleyACount === 0 && wetlandsACount === 0 && snowfieldACount === 0 && makaraACount === 0 && paruACount === 0 && arcaACount === 0 && shrineACount === 0 && tower0Count === 0) && (
         <div class="status">
           <h3>Getting Started</h3>
           <p>No processed assets found. To get started:</p>
@@ -489,6 +736,9 @@ const paruZCount = countAssets('./public/paru_z');
                 <li><code>npm run processSnowfield</code> - Process Rioh Snowfield (Scene 03)</li>
                 <li><code>npm run processMakara</code> - Process Makara Ruins (Scene 04)</li>
                 <li><code>npm run processParu</code> - Process Oblivion City Paru (Scene 05)</li>
+                <li><code>npm run processArca</code> - Process Arca Plant (Scene 06)</li>
+                <li><code>npm run processShrine</code> - Process Dark Shrine (Scene 07)</li>
+                <li><code>npm run processTower</code> - Process Eternal Tower (Scene 08)</li>
               </ul>
             </li>
             <li>Refresh this page to see the processed assets</li>

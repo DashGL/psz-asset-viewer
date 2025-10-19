@@ -1,0 +1,77 @@
+---
+import CityGallery from '../components/CityGallery';
+import { readdirSync, existsSync, statSync } from 'fs';
+import { join } from 'path';
+
+const cityDir = './public/tower_0';
+const assets = [];
+
+if (existsSync(cityDir)) {
+  const assetFolders = readdirSync(cityDir).filter(name => {
+    const fullPath = join(cityDir, name);
+    return statSync(fullPath).isDirectory();
+  });
+
+  for (const folder of assetFolders) {
+    const folderPath = join(cityDir, folder);
+    const glbFiles = [];
+    const textures = [];
+
+    const subDirs = readdirSync(folderPath).filter(name => {
+      const fullPath = join(folderPath, name);
+      return statSync(fullPath).isDirectory();
+    });
+
+    for (const subDir of subDirs) {
+      const subDirPath = join(folderPath, subDir);
+      const subFiles = readdirSync(subDirPath);
+
+      const glbs = subFiles
+        .filter(f => f.endsWith('.glb'))
+        .map(f => `/tower_0/${folder}/${subDir}/${f}`);
+      glbFiles.push(...glbs);
+
+      const pngs = subFiles
+        .filter(f => f.endsWith('.png'))
+        .map(f => `/tower_0/${folder}/${subDir}/${f}`);
+      textures.push(...pngs);
+    }
+
+    if (glbFiles.length > 0) {
+      assets.push({
+        name: folder,
+        glbFiles,
+        textures,
+      });
+    }
+  }
+}
+
+assets.sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eternal Tower 0 - PSZ Asset Viewer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #ffffff;
+        padding: 2rem;
+        min-height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <CityGallery client:load cityName="Eternal Tower - Floor 0" assets={assets} />
+  </body>
+</html>

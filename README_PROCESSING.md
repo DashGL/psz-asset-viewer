@@ -60,6 +60,41 @@ Processes **Scene 05** with areas:
 - `05/e` → `public/paru_e/`
 - `05/z` → `public/paru_z/`
 
+### Process Arca Plant (Scene 06)
+```bash
+npm run processArca
+```
+Processes **Scene 06** with areas:
+- `06/a` → `public/arca_a/`
+- `06/b` → `public/arca_b/`
+- `06/e` → `public/arca_e/`
+- `06/z` → `public/arca_z/`
+
+### Process Dark Shrine (Scene 07)
+```bash
+npm run processShrine
+```
+Processes **Scene 07** with areas:
+- `07/a` → `public/shrine_a/`
+- `07/b` → `public/shrine_b/`
+- `07/e` → `public/shrine_e/`
+- `07/z` → `public/shrine_z/`
+
+### Process Eternal Tower (Scene 08)
+```bash
+npm run processTower
+```
+Processes **Scene 08** with areas:
+- `08/0` → `public/tower_0/`
+- `08/1` → `public/tower_1/`
+- `08/2` → `public/tower_2/`
+- `08/3` → `public/tower_3/`
+- `08/4` → `public/tower_4/`
+- `08/5` → `public/tower_5/`
+- `08/6` → `public/tower_6/`
+- `08/7` → `public/tower_7/`
+- `08/e` → `public/tower_e/`
+
 ### Process Any Scene (Advanced)
 ```bash
 # List all available scenes
@@ -110,6 +145,29 @@ Your viewer now has dedicated pages for each area:
 - http://localhost:4322/paru_e - Paru Area E
 - http://localhost:4322/paru_z - Paru Area Z
 
+### Arca Plant (Scene 06)
+- http://localhost:4322/arca_a - Arca Area A
+- http://localhost:4322/arca_b - Arca Area B
+- http://localhost:4322/arca_e - Arca Area E
+- http://localhost:4322/arca_z - Arca Area Z
+
+### Dark Shrine (Scene 07)
+- http://localhost:4322/shrine_a - Shrine Area A
+- http://localhost:4322/shrine_b - Shrine Area B
+- http://localhost:4322/shrine_e - Shrine Area E
+- http://localhost:4322/shrine_z - Shrine Area Z
+
+### Eternal Tower (Scene 08)
+- http://localhost:4322/tower_0 - Tower Floor 0
+- http://localhost:4322/tower_1 - Tower Floor 1
+- http://localhost:4322/tower_2 - Tower Floor 2
+- http://localhost:4322/tower_3 - Tower Floor 3
+- http://localhost:4322/tower_4 - Tower Floor 4
+- http://localhost:4322/tower_5 - Tower Floor 5
+- http://localhost:4322/tower_6 - Tower Floor 6
+- http://localhost:4322/tower_7 - Tower Floor 7
+- http://localhost:4322/tower_e - Tower Area E
+
 ### Other Pages
 - http://localhost:4322/ - Home page with all areas
 - http://localhost:4322/scenes - Dynamic list of all processed scenes
@@ -129,6 +187,9 @@ Your viewer now has dedicated pages for each area:
    npm run processSnowfield  # Process the snowfield
    npm run processMakara     # Process Makara Ruins
    npm run processParu       # Process Oblivion City Paru
+   npm run processArca       # Process Arca Plant
+   npm run processShrine     # Process Dark Shrine
+   npm run processTower      # Process Eternal Tower
    ```
 
 3. **View in browser**:
@@ -161,7 +222,24 @@ public/
 ├── paru_a/          # Scene 05, Area A
 ├── paru_b/          # Scene 05, Area B
 ├── paru_e/          # Scene 05, Area E
-└── paru_z/          # Scene 05, Area Z
+├── paru_z/          # Scene 05, Area Z
+├── arca_a/          # Scene 06, Area A
+├── arca_b/          # Scene 06, Area B
+├── arca_e/          # Scene 06, Area E
+├── arca_z/          # Scene 06, Area Z
+├── shrine_a/        # Scene 07, Area A
+├── shrine_b/        # Scene 07, Area B
+├── shrine_e/        # Scene 07, Area E
+├── shrine_z/        # Scene 07, Area Z
+├── tower_0/         # Scene 08, Floor 0
+├── tower_1/         # Scene 08, Floor 1
+├── tower_2/         # Scene 08, Floor 2
+├── tower_3/         # Scene 08, Floor 3
+├── tower_4/         # Scene 08, Floor 4
+├── tower_5/         # Scene 08, Floor 5
+├── tower_6/         # Scene 08, Floor 6
+├── tower_7/         # Scene 08, Floor 7
+└── tower_e/         # Scene 08, Area E
 
 raw/scene/
 ├── 00/
@@ -187,11 +265,31 @@ raw/scene/
 │   ├── b/          # Makara B source files
 │   ├── e/          # Makara E source files
 │   └── z/          # Makara Z source files
-└── 05/
-    ├── a/          # Paru A source files
-    ├── b/          # Paru B source files
-    ├── e/          # Paru E source files
-    └── z/          # Paru Z source files
+├── 05/
+│   ├── a/          # Paru A source files
+│   ├── b/          # Paru B source files
+│   ├── e/          # Paru E source files
+│   └── z/          # Paru Z source files
+├── 06/
+│   ├── a/          # Arca A source files
+│   ├── b/          # Arca B source files
+│   ├── e/          # Arca E source files
+│   └── z/          # Arca Z source files
+├── 07/
+│   ├── a/          # Shrine A source files
+│   ├── b/          # Shrine B source files
+│   ├── e/          # Shrine E source files
+│   └── z/          # Shrine Z source files
+└── 08/
+    ├── 0/          # Tower Floor 0 source files
+    ├── 1/          # Tower Floor 1 source files
+    ├── 2/          # Tower Floor 2 source files
+    ├── 3/          # Tower Floor 3 source files
+    ├── 4/          # Tower Floor 4 source files
+    ├── 5/          # Tower Floor 5 source files
+    ├── 6/          # Tower Floor 6 source files
+    ├── 7/          # Tower Floor 7 source files
+    └── e/          # Tower E source files
 ```
 
 ## Naming Convention
@@ -202,5 +300,8 @@ raw/scene/
 - **Rioh Snowfield** = Scene 03 (areas: a, b, e, z)
 - **Makara Ruins** = Scene 04 (areas: a, b, e, z)
 - **Oblivion City Paru** = Scene 05 (areas: a, b, e, z)
+- **Arca Plant** = Scene 06 (areas: a, b, e, z)
+- **Dark Shrine** = Scene 07 (areas: a, b, e, z)
+- **Eternal Tower** = Scene 08 (areas: 0, 1, 2, 3, 4, 5, 6, 7, e)
 
 Each area gets its own output directory and dedicated viewer page!
