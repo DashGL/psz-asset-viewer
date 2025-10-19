@@ -7,7 +7,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "process-scenes": "bun run scripts/process-scenes.ts"
+    "process-scenes": "bun run scripts/process-scenes.ts",
+    "processCity": "bun run scripts/processCity.ts",
+    "processValley": "bun run scripts/processValley.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.0",

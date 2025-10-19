@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, statSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
 import zpr from '../ArchiveUnpacker/src/zpr';
@@ -115,72 +115,61 @@ async function processAsset(
 }
 
 /**
- * Process all assets in a scene folder (a or e)
+ * Process assets in a specific scene/subfolder combination
  */
-async function processSceneFolder(sceneType: 'a' | 'e', sceneFilter?: string[]) {
+async function processSceneSubfolder(scene: string, subfolder: string, outputName: string) {
   console.log(`\n${'='.repeat(60)}`);
-  console.log(`🏙️  Processing city_${sceneType.toUpperCase()}`);
+  console.log(`🏙️  Processing ${scene}/${subfolder} → ${outputName}`);
   console.log('='.repeat(60));
 
-  const outputDir = join(OUTPUT_DIR, `city_${sceneType}`);
+  const scenePath = join(SCENE_DIR, scene, subfolder);
+
+  if (!existsSync(scenePath)) {
+    console.log(`⚠️  Path does not exist: ${scenePath}`);
+    return { successful: 0, failed: 0 };
+  }
+
+  const outputDir = join(OUTPUT_DIR, outputName);
   mkdirSync(outputDir, { recursive: true });
 
   const results: ProcessResult[] = [];
+  const files = readdirSync(scenePath);
 
-  // Find all scene folders containing 'a' or 'e' subdirectories
-  let sceneFolders = readdirSync(SCENE_DIR)
-    .filter(f => {
-      const fullPath = join(SCENE_DIR, f);
-      const subPath = join(fullPath, sceneType);
-      return existsSync(subPath);
-    });
+  // Group files by base name (e.g., s00a_nr1)
+  const assetGroups = new Map<string, { narc?: string; nsbtx?: string }>();
 
-  // Filter by specific scenes if provided
-  if (sceneFilter && sceneFilter.length > 0) {
-    sceneFolders = sceneFolders.filter(f => sceneFilter.includes(f));
-    console.log(`Filtering to scenes: ${sceneFilter.join(', ')}`);
-  }
+  files.forEach(file => {
+    const baseName = file.replace(/\.(narc|nsbtx)$/, '');
+    if (!assetGroups.has(baseName)) {
+      assetGroups.set(baseName, {});
+    }
 
-  for (const sceneFolder of sceneFolders) {
-    const scenePath = join(SCENE_DIR, sceneFolder, sceneType);
-    const files = readdirSync(scenePath);
+    const group = assetGroups.get(baseName)!;
+    if (file.endsWith('.narc')) {
+      group.narc = join(scenePath, file);
+    } else if (file.endsWith('.nsbtx')) {
+      group.nsbtx = join(scenePath, file);
+    }
+  });
 
-    // Group files by base name (e.g., s00a_nr1)
-    const assetGroups = new Map<string, { narc?: string; nsbtx?: string }>();
-
-    files.forEach(file => {
-      const baseName = file.replace(/\.(narc|nsbtx)$/, '');
-      if (!assetGroups.has(baseName)) {
-        assetGroups.set(baseName, {});
-      }
-
-      const group = assetGroups.get(baseName)!;
-      if (file.endsWith('.narc')) {
-        group.narc = join(scenePath, file);
-      } else if (file.endsWith('.nsbtx')) {
-        group.nsbtx = join(scenePath, file);
-      }
-    });
-
-    // Process each asset group
-    for (const [baseName, paths] of assetGroups) {
-      if (paths.narc && paths.nsbtx) {
-        const result = await processAsset(
-          paths.narc,
-          paths.nsbtx,
-          outputDir,
-          baseName
-        );
-        results.push(result);
-      } else {
-        console.log(`⚠️  Skipping ${baseName} - missing pair`);
-      }
+  // Process each asset group
+  for (const [baseName, paths] of assetGroups) {
+    if (paths.narc && paths.nsbtx) {
+      const result = await processAsset(
+        paths.narc,
+        paths.nsbtx,
+        outputDir,
+        baseName
+      );
+      results.push(result);
+    } else {
+      console.log(`⚠️  Skipping ${baseName} - missing pair`);
     }
   }
 
   // Summary
   console.log(`\n${'='.repeat(60)}`);
-  console.log(`📊 Summary for city_${sceneType.toUpperCase()}`);
+  console.log(`📊 Summary for ${scene}/${subfolder}`);
   console.log('='.repeat(60));
   const successful = results.filter(r => r.success).length;
   const failed = results.filter(r => !r.success).length;
@@ -193,6 +182,46 @@ async function processSceneFolder(sceneType: 'a' | 'e', sceneFilter?: string[]) 
       console.log(`  - ${r.asset}: ${r.error}`);
     });
   }
+
+  return { successful, failed };
+}
+
+/**
+ * List all available scene/subfolder combinations
+ */
+function listAvailableScenes() {
+  console.log('📂 Available scenes:\n');
+
+  const scenes = readdirSync(SCENE_DIR)
+    .filter(f => {
+      const fullPath = join(SCENE_DIR, f);
+      return statSync(fullPath).isDirectory();
+    })
+    .sort();
+
+  for (const scene of scenes) {
+    const scenePath = join(SCENE_DIR, scene);
+    const subfolders = readdirSync(scenePath)
+      .filter(f => {
+        const fullPath = join(scenePath, f);
+        return statSync(fullPath).isDirectory();
+      })
+      .sort();
+
+    if (subfolders.length > 0) {
+      console.log(`  ${scene}/`);
+      subfolders.forEach(sub => {
+        const files = readdirSync(join(scenePath, sub));
+        const narcCount = files.filter(f => f.endsWith('.narc')).length;
+        console.log(`    ${sub}/ (${narcCount} assets)`);
+      });
+    }
+  }
+
+  console.log('\nUsage:');
+  console.log('  bun run scripts/process-scenes.ts 00/a         # Process scene 00, subfolder a');
+  console.log('  bun run scripts/process-scenes.ts 01/b 01/e   # Process multiple subfolders');
+  console.log('  bun run scripts/process-scenes.ts --all       # Process everything');
 }
 
 // Main execution
@@ -202,22 +231,52 @@ async function main() {
 
   // Get command line arguments (skip first 2: bun and script path)
   const args = process.argv.slice(2);
-  const sceneFilter = args.length > 0 ? args : undefined;
 
-  if (sceneFilter) {
-    console.log(`📌 Processing specific scenes: ${sceneFilter.join(', ')}\n`);
-  } else {
-    console.log('📌 Processing all scenes\n');
+  // If no args, list available scenes
+  if (args.length === 0) {
+    listAvailableScenes();
+    return;
   }
 
-  // Process both city types
-  await processSceneFolder('a', sceneFilter);
-  await processSceneFolder('e', sceneFilter);
+  // Check for --all flag
+  if (args.includes('--all')) {
+    console.log('📌 Processing ALL scenes\n');
+
+    // Get all scene/subfolder combinations
+    const scenes = readdirSync(SCENE_DIR)
+      .filter(f => statSync(join(SCENE_DIR, f)).isDirectory())
+      .sort();
+
+    for (const scene of scenes) {
+      const scenePath = join(SCENE_DIR, scene);
+      const subfolders = readdirSync(scenePath)
+        .filter(f => statSync(join(scenePath, f)).isDirectory())
+        .sort();
+
+      for (const subfolder of subfolders) {
+        const outputName = `scene_${scene}_${subfolder}`;
+        await processSceneSubfolder(scene, subfolder, outputName);
+      }
+    }
+  } else {
+    // Process specific scene/subfolder combinations
+    console.log(`📌 Processing: ${args.join(', ')}\n`);
+
+    for (const arg of args) {
+      const parts = arg.split('/');
+      if (parts.length !== 2) {
+        console.log(`⚠️  Invalid format: ${arg} (expected format: scene/subfolder, e.g., 00/a)`);
+        continue;
+      }
+
+      const [scene, subfolder] = parts;
+      const outputName = `scene_${scene}_${subfolder}`;
+      await processSceneSubfolder(scene, subfolder, outputName);
+    }
+  }
 
   console.log('\n✨ All processing complete!');
-  console.log(`📁 Output directories:`);
-  console.log(`   - ${join(OUTPUT_DIR, 'city_a')}`);
-  console.log(`   - ${join(OUTPUT_DIR, 'city_e')}`);
+  console.log(`📁 Output directory: ${OUTPUT_DIR}`);
 }
 
 main().catch(console.error);

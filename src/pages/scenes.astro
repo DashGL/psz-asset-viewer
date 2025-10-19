@@ -1,0 +1,190 @@
+---
+import CityGallery from '../components/CityGallery';
+import { readdirSync, existsSync, statSync } from 'fs';
+import { join } from 'path';
+
+// Scan all scene directories in public/
+const publicDir = './public';
+const allScenes = [];
+
+if (existsSync(publicDir)) {
+  const folders = readdirSync(publicDir).filter(name => {
+    const fullPath = join(publicDir, name);
+    return statSync(fullPath).isDirectory() && name.startsWith('scene_');
+  });
+
+  for (const folder of folders) {
+    const folderPath = join(publicDir, folder);
+    const glbFiles = [];
+    const textures = [];
+
+    // Extract scene info from folder name (e.g., scene_01_a)
+    const match = folder.match(/scene_(\w+)_(\w+)/);
+    const sceneName = match ? `Scene ${match[1]} - Area ${match[2].toUpperCase()}` : folder;
+
+    // Check for subdirectories (apicula creates these)
+    const subDirs = readdirSync(folderPath).filter(name => {
+      const fullPath = join(folderPath, name);
+      return statSync(fullPath).isDirectory();
+    });
+
+    for (const subDir of subDirs) {
+      const subDirPath = join(folderPath, subDir);
+      const subFiles = readdirSync(subDirPath);
+
+      // Find GLB files
+      const glbs = subFiles
+        .filter(f => f.endsWith('.glb'))
+        .map(f => `/${folder}/${subDir}/${f}`);
+      glbFiles.push(...glbs);
+
+      // Find PNG textures
+      const pngs = subFiles
+        .filter(f => f.endsWith('.png'))
+        .map(f => `/${folder}/${subDir}/${f}`);
+      textures.push(...pngs);
+    }
+
+    if (glbFiles.length > 0) {
+      allScenes.push({
+        id: folder,
+        name: sceneName,
+        folder: folder,
+        glbFiles,
+        textures,
+      });
+    }
+  }
+}
+
+// Sort by folder name
+allScenes.sort((a, b) => a.id.localeCompare(b.id));
+
+// Group by scene number
+const groupedScenes = new Map();
+allScenes.forEach(scene => {
+  const match = scene.id.match(/scene_(\w+)_/);
+  const sceneNum = match ? match[1] : 'other';
+
+  if (!groupedScenes.has(sceneNum)) {
+    groupedScenes.set(sceneNum, []);
+  }
+  groupedScenes.get(sceneNum).push(scene);
+});
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Scenes - PSZ Asset Viewer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #ffffff;
+        padding: 2rem;
+        min-height: 100vh;
+        font-family: system-ui, sans-serif;
+      }
+
+      .header {
+        margin-bottom: 2rem;
+      }
+
+      h1 {
+        margin-bottom: 0.5rem;
+      }
+
+      .scene-group {
+        margin-bottom: 3rem;
+      }
+
+      .scene-group h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #667eea;
+      }
+
+      .scene-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .scene-link {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        padding: 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: white;
+        transition: all 0.2s;
+      }
+
+      .scene-link:hover {
+        border-color: #667eea;
+        background: #2a2a2a;
+      }
+
+      .scene-link .name {
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+      }
+
+      .scene-link .count {
+        font-size: 0.85rem;
+        color: #888;
+      }
+
+      .no-scenes {
+        padding: 2rem;
+        text-align: center;
+        color: #888;
+        background: #1a1a1a;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>All Processed Scenes</h1>
+      <p style="color: #888;">
+        <a href="/" style="color: #667eea;">← Back to Home</a>
+      </p>
+    </div>
+
+    {allScenes.length === 0 ? (
+      <div class="no-scenes">
+        <p>No scenes have been processed yet.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+          Run <code>bun run scripts/process-scenes.ts</code> to see available scenes.
+        </p>
+      </div>
+    ) : (
+      <div>
+        {Array.from(groupedScenes.entries()).map(([sceneNum, scenes]) => (
+          <div class="scene-group">
+            <h2>Scene {sceneNum}</h2>
+            <div class="scene-links">
+              {scenes.map(scene => (
+                <a href={`/scene?id=${scene.id}`} class="scene-link">
+                  <div class="name">{scene.name}</div>
+                  <div class="count">
+                    {scene.glbFiles.length} model{scene.glbFiles.length !== 1 ? 's' : ''}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </body>
+</html>

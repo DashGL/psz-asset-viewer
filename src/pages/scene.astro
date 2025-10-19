@@ -1,0 +1,113 @@
+---
+import CityGallery from '../components/CityGallery';
+import { readdirSync, existsSync, statSync } from 'fs';
+import { join } from 'path';
+
+// Get scene ID from URL query parameter
+const url = new URL(Astro.request.url);
+const sceneId = url.searchParams.get('id') || '';
+
+// Scan the specific scene directory
+const sceneDir = join('./public', sceneId);
+const assets = [];
+let sceneName = sceneId;
+
+// Extract readable name from scene ID
+const match = sceneId.match(/scene_(\w+)_(\w+)/);
+if (match) {
+  sceneName = `Scene ${match[1]} - Area ${match[2].toUpperCase()}`;
+}
+
+if (existsSync(sceneDir)) {
+  const subDirs = readdirSync(sceneDir).filter(name => {
+    const fullPath = join(sceneDir, name);
+    return statSync(fullPath).isDirectory();
+  });
+
+  // Group assets by their folder
+  const assetMap = new Map();
+
+  for (const subDir of subDirs) {
+    const subDirPath = join(sceneDir, subDir);
+    const subFiles = readdirSync(subDirPath);
+
+    const glbs = subFiles
+      .filter(f => f.endsWith('.glb'))
+      .map(f => `/${sceneId}/${subDir}/${f}`);
+
+    const pngs = subFiles
+      .filter(f => f.endsWith('.png'))
+      .map(f => `/${sceneId}/${subDir}/${f}`);
+
+    if (glbs.length > 0) {
+      // Extract asset name from subdirectory
+      if (!assetMap.has(subDir)) {
+        assetMap.set(subDir, {
+          name: subDir,
+          glbFiles: [],
+          textures: [],
+        });
+      }
+
+      const asset = assetMap.get(subDir);
+      asset.glbFiles.push(...glbs);
+      asset.textures.push(...pngs);
+    }
+  }
+
+  assets.push(...Array.from(assetMap.values()));
+  assets.sort((a, b) => a.name.localeCompare(b.name));
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{sceneName} - PSZ Asset Viewer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #ffffff;
+        padding: 2rem;
+        min-height: 100vh;
+      }
+
+      .back-link {
+        margin-bottom: 1rem;
+      }
+
+      .back-link a {
+        color: #667eea;
+        text-decoration: none;
+      }
+
+      .back-link a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="back-link">
+      <a href="/scenes">← Back to All Scenes</a>
+    </div>
+
+    {assets.length > 0 ? (
+      <CityGallery client:load cityName={sceneName} assets={assets} />
+    ) : (
+      <div style="padding: 2rem; text-align: center; color: #888;">
+        <p>No assets found for {sceneId}</p>
+        <p style="margin-top: 1rem;">
+          <a href="/scenes" style="color: #667eea;">View all scenes</a>
+        </p>
+      </div>
+    )}
+  </body>
+</html>

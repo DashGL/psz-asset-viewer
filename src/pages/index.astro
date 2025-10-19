@@ -2,7 +2,7 @@
 import { existsSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 
-// Count assets in each city
+// Count assets in each area
 function countAssets(cityDir: string): number {
   if (!existsSync(cityDir)) return 0;
 
@@ -14,6 +14,10 @@ function countAssets(cityDir: string): number {
 
 const cityACount = countAssets('./public/city_a');
 const cityECount = countAssets('./public/city_e');
+const valleyACount = countAssets('./public/valley_a');
+const valleyBCount = countAssets('./public/valley_b');
+const valleyECount = countAssets('./public/valley_e');
+const valleyZCount = countAssets('./public/valley_z');
 ---
 
 <!DOCTYPE html>
@@ -150,9 +154,10 @@ const cityECount = countAssets('./public/city_e');
       <h1>Phantasy Star Zero</h1>
       <p class="subtitle">Scene Asset Viewer</p>
 
+      <h2 style="margin-bottom: 1rem; font-size: 1.5rem;">City (Scene 00)</h2>
       <div class="cities">
         <a href="/city_a" class="city-card">
-          <h2>City A</h2>
+          <h2>City - Area A</h2>
           <div class="count">
             {cityACount > 0
               ? `${cityACount} assets available`
@@ -160,13 +165,12 @@ const cityECount = countAssets('./public/city_e');
             }
           </div>
           <p class="description">
-            View scene assets from the 'a' category directories. These contain various
-            building models and environment pieces.
+            City 'a' area assets. Buildings and environment pieces.
           </p>
         </a>
 
         <a href="/city_e" class="city-card">
-          <h2>City E</h2>
+          <h2>City - Area E</h2>
           <div class="count">
             {cityECount > 0
               ? `${cityECount} assets available`
@@ -174,20 +178,79 @@ const cityECount = countAssets('./public/city_e');
             }
           </div>
           <p class="description">
-            View scene assets from the 'e' category directories. These contain environmental
-            structures and scene objects.
+            City 'e' area assets. Environmental structures and objects.
           </p>
         </a>
       </div>
 
-      {(cityACount === 0 && cityECount === 0) && (
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">Gurhacia Valley (Scene 01)</h2>
+      <div class="cities">
+        <a href="/valley_a" class="city-card">
+          <h2>Valley - Area A</h2>
+          <div class="count">
+            {valleyACount > 0
+              ? `${valleyACount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Gurhacia Valley 'a' area assets.
+          </p>
+        </a>
+
+        <a href="/valley_b" class="city-card">
+          <h2>Valley - Area B</h2>
+          <div class="count">
+            {valleyBCount > 0
+              ? `${valleyBCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Gurhacia Valley 'b' area assets.
+          </p>
+        </a>
+
+        <a href="/valley_e" class="city-card">
+          <h2>Valley - Area E</h2>
+          <div class="count">
+            {valleyECount > 0
+              ? `${valleyECount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Gurhacia Valley 'e' area assets.
+          </p>
+        </a>
+
+        <a href="/valley_z" class="city-card">
+          <h2>Valley - Area Z</h2>
+          <div class="count">
+            {valleyZCount > 0
+              ? `${valleyZCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Gurhacia Valley 'z' area assets.
+          </p>
+        </a>
+      </div>
+
+      {(cityACount === 0 && cityECount === 0 && valleyACount === 0) && (
         <div class="status">
           <h3>Getting Started</h3>
           <p>No processed assets found. To get started:</p>
           <ol style="margin-left: 1.5rem; margin-top: 1rem; line-height: 1.8;">
             <li>Make sure your NARC/NSBTX files are in <code>raw/scene/</code></li>
             <li>Install apicula: <a href="https://github.com/scurest/apicula" target="_blank">scurest/apicula</a></li>
-            <li>Run the processing script: <code>npm run process-scenes</code></li>
+            <li>Run a processing script:
+              <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                <li><code>npm run processCity</code> - Process City (Scene 00)</li>
+                <li><code>npm run processValley</code> - Process Gurhacia Valley (Scene 01)</li>
+              </ul>
+            </li>
             <li>Refresh this page to see the processed assets</li>
           </ol>
         </div>
