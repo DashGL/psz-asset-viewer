@@ -18,6 +18,22 @@ const valleyACount = countAssets('./public/valley_a');
 const valleyBCount = countAssets('./public/valley_b');
 const valleyECount = countAssets('./public/valley_e');
 const valleyZCount = countAssets('./public/valley_z');
+const wetlandsACount = countAssets('./public/wetlands_a');
+const wetlandsBCount = countAssets('./public/wetlands_b');
+const wetlandsECount = countAssets('./public/wetlands_e');
+const wetlandsZCount = countAssets('./public/wetlands_z');
+const snowfieldACount = countAssets('./public/snowfield_a');
+const snowfieldBCount = countAssets('./public/snowfield_b');
+const snowfieldECount = countAssets('./public/snowfield_e');
+const snowfieldZCount = countAssets('./public/snowfield_z');
+const makaraACount = countAssets('./public/makara_a');
+const makaraBCount = countAssets('./public/makara_b');
+const makaraECount = countAssets('./public/makara_e');
+const makaraZCount = countAssets('./public/makara_z');
+const paruACount = countAssets('./public/paru_a');
+const paruBCount = countAssets('./public/paru_b');
+const paruECount = countAssets('./public/paru_e');
+const paruZCount = countAssets('./public/paru_z');
 ---
 
 <!DOCTYPE html>
@@ -238,7 +254,227 @@ const valleyZCount = countAssets('./public/valley_z');
         </a>
       </div>
 
-      {(cityACount === 0 && cityECount === 0 && valleyACount === 0) && (
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">Ozette Wetlands (Scene 02)</h2>
+      <div class="cities">
+        <a href="/wetlands_a" class="city-card">
+          <h2>Wetlands - Area A</h2>
+          <div class="count">
+            {wetlandsACount > 0
+              ? `${wetlandsACount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Ozette Wetlands 'a' area assets.
+          </p>
+        </a>
+
+        <a href="/wetlands_b" class="city-card">
+          <h2>Wetlands - Area B</h2>
+          <div class="count">
+            {wetlandsBCount > 0
+              ? `${wetlandsBCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Ozette Wetlands 'b' area assets.
+          </p>
+        </a>
+
+        <a href="/wetlands_e" class="city-card">
+          <h2>Wetlands - Area E</h2>
+          <div class="count">
+            {wetlandsECount > 0
+              ? `${wetlandsECount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Ozette Wetlands 'e' area assets.
+          </p>
+        </a>
+
+        <a href="/wetlands_z" class="city-card">
+          <h2>Wetlands - Area Z</h2>
+          <div class="count">
+            {wetlandsZCount > 0
+              ? `${wetlandsZCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Ozette Wetlands 'z' area assets.
+          </p>
+        </a>
+      </div>
+
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">Rioh Snowfield (Scene 03)</h2>
+      <div class="cities">
+        <a href="/snowfield_a" class="city-card">
+          <h2>Snowfield - Area A</h2>
+          <div class="count">
+            {snowfieldACount > 0
+              ? `${snowfieldACount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Rioh Snowfield 'a' area assets.
+          </p>
+        </a>
+
+        <a href="/snowfield_b" class="city-card">
+          <h2>Snowfield - Area B</h2>
+          <div class="count">
+            {snowfieldBCount > 0
+              ? `${snowfieldBCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Rioh Snowfield 'b' area assets.
+          </p>
+        </a>
+
+        <a href="/snowfield_e" class="city-card">
+          <h2>Snowfield - Area E</h2>
+          <div class="count">
+            {snowfieldECount > 0
+              ? `${snowfieldECount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Rioh Snowfield 'e' area assets.
+          </p>
+        </a>
+
+        <a href="/snowfield_z" class="city-card">
+          <h2>Snowfield - Area Z</h2>
+          <div class="count">
+            {snowfieldZCount > 0
+              ? `${snowfieldZCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Rioh Snowfield 'z' area assets.
+          </p>
+        </a>
+      </div>
+
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">Makara Ruins (Scene 04)</h2>
+      <div class="cities">
+        <a href="/makara_a" class="city-card">
+          <h2>Makara - Area A</h2>
+          <div class="count">
+            {makaraACount > 0
+              ? `${makaraACount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Makara Ruins 'a' area assets.
+          </p>
+        </a>
+
+        <a href="/makara_b" class="city-card">
+          <h2>Makara - Area B</h2>
+          <div class="count">
+            {makaraBCount > 0
+              ? `${makaraBCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Makara Ruins 'b' area assets.
+          </p>
+        </a>
+
+        <a href="/makara_e" class="city-card">
+          <h2>Makara - Area E</h2>
+          <div class="count">
+            {makaraECount > 0
+              ? `${makaraECount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Makara Ruins 'e' area assets.
+          </p>
+        </a>
+
+        <a href="/makara_z" class="city-card">
+          <h2>Makara - Area Z</h2>
+          <div class="count">
+            {makaraZCount > 0
+              ? `${makaraZCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Makara Ruins 'z' area assets.
+          </p>
+        </a>
+      </div>
+
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">Oblivion City Paru (Scene 05)</h2>
+      <div class="cities">
+        <a href="/paru_a" class="city-card">
+          <h2>Paru - Area A</h2>
+          <div class="count">
+            {paruACount > 0
+              ? `${paruACount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Oblivion City Paru 'a' area assets.
+          </p>
+        </a>
+
+        <a href="/paru_b" class="city-card">
+          <h2>Paru - Area B</h2>
+          <div class="count">
+            {paruBCount > 0
+              ? `${paruBCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Oblivion City Paru 'b' area assets.
+          </p>
+        </a>
+
+        <a href="/paru_e" class="city-card">
+          <h2>Paru - Area E</h2>
+          <div class="count">
+            {paruECount > 0
+              ? `${paruECount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Oblivion City Paru 'e' area assets.
+          </p>
+        </a>
+
+        <a href="/paru_z" class="city-card">
+          <h2>Paru - Area Z</h2>
+          <div class="count">
+            {paruZCount > 0
+              ? `${paruZCount} assets available`
+              : 'No assets processed yet'
+            }
+          </div>
+          <p class="description">
+            Oblivion City Paru 'z' area assets.
+          </p>
+        </a>
+      </div>
+
+      {(cityACount === 0 && cityECount === 0 && valleyACount === 0 && wetlandsACount === 0 && snowfieldACount === 0 && makaraACount === 0 && paruACount === 0) && (
         <div class="status">
           <h3>Getting Started</h3>
           <p>No processed assets found. To get started:</p>
@@ -249,6 +485,10 @@ const valleyZCount = countAssets('./public/valley_z');
               <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
                 <li><code>npm run processCity</code> - Process City (Scene 00)</li>
                 <li><code>npm run processValley</code> - Process Gurhacia Valley (Scene 01)</li>
+                <li><code>npm run processWetlands</code> - Process Ozette Wetlands (Scene 02)</li>
+                <li><code>npm run processSnowfield</code> - Process Rioh Snowfield (Scene 03)</li>
+                <li><code>npm run processMakara</code> - Process Makara Ruins (Scene 04)</li>
+                <li><code>npm run processParu</code> - Process Oblivion City Paru (Scene 05)</li>
               </ul>
             </li>
             <li>Refresh this page to see the processed assets</li>

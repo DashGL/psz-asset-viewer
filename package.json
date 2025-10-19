@@ -9,7 +9,11 @@
     "astro": "astro",
     "process-scenes": "bun run scripts/process-scenes.ts",
     "processCity": "bun run scripts/processCity.ts",
-    "processValley": "bun run scripts/processValley.ts"
+    "processValley": "bun run scripts/processValley.ts",
+    "processWetlands": "bun run scripts/processWetlands.ts",
+    "processSnowfield": "bun run scripts/processSnowfield.ts",
+    "processMakara": "bun run scripts/processMakara.ts",
+    "processParu": "bun run scripts/processParu.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.0",
