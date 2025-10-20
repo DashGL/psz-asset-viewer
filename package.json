@@ -21,7 +21,8 @@
     "processEnemiesTest": "bun run scripts/processEnemiesTest.ts",
     "processPlayer": "bun run scripts/processPlayer.ts",
     "processWeapons": "bun run scripts/processWeapons.ts",
-    "processObjects": "bun run scripts/processObjects.ts"
+    "processObjects": "bun run scripts/processObjects.ts",
+    "syncCollections": "bun run scripts/syncCollections.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.0",
