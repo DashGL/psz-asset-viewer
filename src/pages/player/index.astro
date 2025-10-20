@@ -72,11 +72,28 @@ function getCharacterClass(name: string): string {
   return classMap[prefix] || 'Unknown';
 }
 
+// Get NPC character names
+function getNPCName(name: string): string | null {
+  const npcNames: { [key: string]: string } = {
+    'pc_a00': 'Sarisa',
+    'pc_a01': 'Kai',
+    'pc_a02': 'Ogi',
+    'pc_a03': 'Reve',
+    'pc_a04': 'Ogi (Alt)',
+  };
+  return npcNames[name] || null;
+}
+
 const groupedPlayers: { [key: string]: typeof players } = {};
 for (const player of players) {
   const className = getCharacterClass(player.name);
   if (!groupedPlayers[className]) {
     groupedPlayers[className] = [];
+  }
+  // Add NPC name to player object if applicable
+  const npcName = getNPCName(player.name);
+  if (npcName) {
+    player.npcName = npcName;
   }
   groupedPlayers[className].push(player);
 }
@@ -263,7 +280,7 @@ if (existsSync(animationsPath)) {
                   <a href={`/player/${player.name}`} class="player-card">
                     <div class="player-name">{player.displayName}</div>
                     <div class="player-stats">
-                      {player.textureCount > 0 && `${player.textureCount} textures`}
+                      {player.npcName ? player.npcName : (player.textureCount > 0 && `${player.textureCount} textures`)}
                     </div>
                   </a>
                 ))}
