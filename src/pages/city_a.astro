@@ -2,6 +2,7 @@
 import CityGallery from '../components/CityGallery';
 import { readdirSync, existsSync, statSync } from 'fs';
 import { join } from 'path';
+const base = import.meta.env.BASE_URL;
 
 // Scan the public/city_a directory for assets
 const cityDir = './public/city_a';
@@ -31,13 +32,13 @@ if (existsSync(cityDir)) {
       // Find GLB files
       const glbs = subFiles
         .filter(f => f.endsWith('.glb'))
-        .map(f => `/city_a/${folder}/${subDir}/${f}`);
+        .map(f => `${base}city_a/${folder}/${subDir}/${f}`);
       glbFiles.push(...glbs);
 
       // Find PNG textures
       const pngs = subFiles
         .filter(f => f.endsWith('.png'))
-        .map(f => `/city_a/${folder}/${subDir}/${f}`);
+        .map(f => `${base}city_a/${folder}/${subDir}/${f}`);
       textures.push(...pngs);
     }
 
