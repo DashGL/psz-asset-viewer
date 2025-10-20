@@ -1,0 +1,14 @@
+{
+  "id": "special_c3",
+  "modelCount": 6,
+  "totalModels": 6,
+  "textureCount": 6,
+  "models": [
+    "o00_compass.imd",
+    "o00_compass2.imd",
+    "o0s_warpcb.imd",
+    "o0s_warpch.imd",
+    "o0s_warpcn.imd",
+    "o0s_warpcv.imd"
+  ]
+}

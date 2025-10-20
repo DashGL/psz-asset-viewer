@@ -1,0 +1,187 @@
+{
+  "name": "pc_013",
+  "modelFile": "pc_013_000.nsbmd",
+  "textureCount": 45,
+  "textures": [
+    {
+      "name": "pc_013_000",
+      "file": "pc_013_000.nsbtx"
+    },
+    {
+      "name": "pc_013_001",
+      "file": "pc_013_001.nsbtx"
+    },
+    {
+      "name": "pc_013_002",
+      "file": "pc_013_002.nsbtx"
+    },
+    {
+      "name": "pc_013_003",
+      "file": "pc_013_003.nsbtx"
+    },
+    {
+      "name": "pc_013_004",
+      "file": "pc_013_004.nsbtx"
+    },
+    {
+      "name": "pc_013_010",
+      "file": "pc_013_010.nsbtx"
+    },
+    {
+      "name": "pc_013_011",
+      "file": "pc_013_011.nsbtx"
+    },
+    {
+      "name": "pc_013_012",
+      "file": "pc_013_012.nsbtx"
+    },
+    {
+      "name": "pc_013_013",
+      "file": "pc_013_013.nsbtx"
+    },
+    {
+      "name": "pc_013_014",
+      "file": "pc_013_014.nsbtx"
+    },
+    {
+      "name": "pc_013_020",
+      "file": "pc_013_020.nsbtx"
+    },
+    {
+      "name": "pc_013_021",
+      "file": "pc_013_021.nsbtx"
+    },
+    {
+      "name": "pc_013_022",
+      "file": "pc_013_022.nsbtx"
+    },
+    {
+      "name": "pc_013_023",
+      "file": "pc_013_023.nsbtx"
+    },
+    {
+      "name": "pc_013_024",
+      "file": "pc_013_024.nsbtx"
+    },
+    {
+      "name": "pc_013_100",
+      "file": "pc_013_100.nsbtx"
+    },
+    {
+      "name": "pc_013_101",
+      "file": "pc_013_101.nsbtx"
+    },
+    {
+      "name": "pc_013_102",
+      "file": "pc_013_102.nsbtx"
+    },
+    {
+      "name": "pc_013_103",
+      "file": "pc_013_103.nsbtx"
+    },
+    {
+      "name": "pc_013_104",
+      "file": "pc_013_104.nsbtx"
+    },
+    {
+      "name": "pc_013_110",
+      "file": "pc_013_110.nsbtx"
+    },
+    {
+      "name": "pc_013_111",
+      "file": "pc_013_111.nsbtx"
+    },
+    {
+      "name": "pc_013_112",
+      "file": "pc_013_112.nsbtx"
+    },
+    {
+      "name": "pc_013_113",
+      "file": "pc_013_113.nsbtx"
+    },
+    {
+      "name": "pc_013_114",
+      "file": "pc_013_114.nsbtx"
+    },
+    {
+      "name": "pc_013_120",
+      "file": "pc_013_120.nsbtx"
+    },
+    {
+      "name": "pc_013_121",
+      "file": "pc_013_121.nsbtx"
+    },
+    {
+      "name": "pc_013_122",
+      "file": "pc_013_122.nsbtx"
+    },
+    {
+      "name": "pc_013_123",
+      "file": "pc_013_123.nsbtx"
+    },
+    {
+      "name": "pc_013_124",
+      "file": "pc_013_124.nsbtx"
+    },
+    {
+      "name": "pc_013_200",
+      "file": "pc_013_200.nsbtx"
+    },
+    {
+      "name": "pc_013_201",
+      "file": "pc_013_201.nsbtx"
+    },
+    {
+      "name": "pc_013_202",
+      "file": "pc_013_202.nsbtx"
+    },
+    {
+      "name": "pc_013_203",
+      "file": "pc_013_203.nsbtx"
+    },
+    {
+      "name": "pc_013_204",
+      "file": "pc_013_204.nsbtx"
+    },
+    {
+      "name": "pc_013_210",
+      "file": "pc_013_210.nsbtx"
+    },
+    {
+      "name": "pc_013_211",
+      "file": "pc_013_211.nsbtx"
+    },
+    {
+      "name": "pc_013_212",
+      "file": "pc_013_212.nsbtx"
+    },
+    {
+      "name": "pc_013_213",
+      "file": "pc_013_213.nsbtx"
+    },
+    {
+      "name": "pc_013_214",
+      "file": "pc_013_214.nsbtx"
+    },
+    {
+      "name": "pc_013_220",
+      "file": "pc_013_220.nsbtx"
+    },
+    {
+      "name": "pc_013_221",
+      "file": "pc_013_221.nsbtx"
+    },
+    {
+      "name": "pc_013_222",
+      "file": "pc_013_222.nsbtx"
+    },
+    {
+      "name": "pc_013_223",
+      "file": "pc_013_223.nsbtx"
+    },
+    {
+      "name": "pc_013_224",
+      "file": "pc_013_224.nsbtx"
+    }
+  ]
+}

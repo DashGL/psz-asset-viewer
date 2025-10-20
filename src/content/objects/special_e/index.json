@@ -1,0 +1,14 @@
+{
+  "id": "special_e",
+  "modelCount": 6,
+  "totalModels": 6,
+  "textureCount": 6,
+  "models": [
+    "o0c_bird.imd",
+    "o0c_return.imd",
+    "o0c_warparena1.imd",
+    "o0s_warpb.imd",
+    "o0s_warpm.imd",
+    "o0s_warps.imd"
+  ]
+}

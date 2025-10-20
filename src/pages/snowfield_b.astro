@@ -2,6 +2,7 @@
 import CityGallery from '../components/CityGallery';
 import { readdirSync, existsSync, statSync } from 'fs';
 import { join } from 'path';
+const base = import.meta.env.BASE_URL;
 
 const cityDir = './public/snowfield_b';
 const assets = [];
@@ -28,12 +29,12 @@ if (existsSync(cityDir)) {
 
       const glbs = subFiles
         .filter(f => f.endsWith('.glb'))
-        .map(f => `/snowfield_b/${folder}/${subDir}/${f}`);
+        .map(f => `${base}snowfield_b/${folder}/${subDir}/${f}`);
       glbFiles.push(...glbs);
 
       const pngs = subFiles
         .filter(f => f.endsWith('.png'))
-        .map(f => `/snowfield_b/${folder}/${subDir}/${f}`);
+        .map(f => `${base}snowfield_b/${folder}/${subDir}/${f}`);
       textures.push(...pngs);
     }
 

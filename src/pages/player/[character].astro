@@ -1,49 +1,27 @@
 ---
 import PlayerViewer from '../../components/PlayerViewer';
-import { readdirSync, existsSync, statSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL;
 
 // Generate static paths for all player characters
 export async function getStaticPaths() {
-  const playerDir = './public/player';
-  const paths = [];
+  const allPlayers = await getCollection('players');
 
-  if (existsSync(playerDir)) {
-    const playerFolders = readdirSync(playerDir).filter(name => {
-      const fullPath = join(playerDir, name);
-      return statSync(fullPath).isDirectory() && name.startsWith('pc_');
-    });
-
-    for (const folder of playerFolders) {
-      // Try to read info.json to get player metadata
-      const infoPath = join(playerDir, folder, 'info.json');
-      let playerData = {
-        name: folder,
-        displayName: folder.toUpperCase(),
-        textureCount: 0
-      };
-
-      if (existsSync(infoPath)) {
-        try {
-          const info = JSON.parse(readFileSync(infoPath, 'utf-8'));
-          playerData = {
-            name: folder,
-            displayName: folder.toUpperCase(),
-            ...info
-          };
-        } catch (e) {
-          // Use default if info.json is malformed
+  return allPlayers.map(entry => {
+    // Strip /index from the ID
+    const cleanId = entry.id.replace('/index', '');
+    return {
+      params: { character: cleanId },
+      props: {
+        playerData: {
+          name: cleanId,
+          displayName: cleanId.toUpperCase(),
+          textureCount: entry.data.textureCount
         }
       }
-
-      paths.push({
-        params: { character: folder },
-        props: { playerData }
-      });
-    }
-  }
-
-  return paths;
+    };
+  });
 }
 
 const { character } = Astro.params;
@@ -136,14 +114,14 @@ const { playerData } = Astro.props;
   </head>
   <body>
     <div class="container">
-      <a href="/player" class="back-link">← Back to Characters</a>
+      <a href={`${base}player`} class="back-link">← Back to Characters</a>
 
       <div class="header">
         <h1>{playerData.displayName}</h1>
         <p>Character Model • {playerData.textureCount} texture variants</p>
       </div>
 
-      <PlayerViewer characterName={character} client:load />
+      <PlayerViewer characterName={character} basePath={`${base}player`} client:load />
 
       <div class="info-box">
         <h3>About Player Characters</h3>

@@ -1,23 +1,19 @@
 ---
 import WeaponViewer from '../../components/WeaponViewer';
-import { readdirSync, existsSync, statSync } from 'fs';
-import { join } from 'path';
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL;
 
 export async function getStaticPaths() {
-  const weaponsDir = './public/weapons';
+  const allWeapons = await getCollection('weapons');
 
-  if (!existsSync(weaponsDir)) {
-    return [];
-  }
-
-  const weaponFolders = readdirSync(weaponsDir).filter(name => {
-    const fullPath = join(weaponsDir, name);
-    return statSync(fullPath).isDirectory();
+  return allWeapons.map(entry => {
+    // Strip /index from the ID
+    const cleanId = entry.id.replace('/index', '');
+    return {
+      params: { weaponId: cleanId }
+    };
   });
-
-  return weaponFolders.map(weaponId => ({
-    params: { weaponId }
-  }));
 }
 
 const { weaponId } = Astro.params;
@@ -82,13 +78,13 @@ const { weaponId } = Astro.params;
   </head>
   <body>
     <div class="container">
-      <a href="/weapons" class="back-link">← Back to Weapons</a>
+      <a href={`${base}weapons`} class="back-link">← Back to Weapons</a>
 
       <div class="header">
         <h1>{weaponId.toUpperCase()}</h1>
       </div>
 
-      <WeaponViewer client:load weaponId={weaponId} />
+      <WeaponViewer client:load weaponId={weaponId} basePath={`${base}weapons`} />
     </div>
   </body>
 </html>

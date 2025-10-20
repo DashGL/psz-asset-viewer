@@ -1,23 +1,19 @@
 ---
 import ObjectViewer from '../../components/ObjectViewer';
-import { readdirSync, existsSync, statSync } from 'fs';
-import { join } from 'path';
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL;
 
 export async function getStaticPaths() {
-  const objectsDir = './public/objects';
+  const allObjects = await getCollection('objects');
 
-  if (!existsSync(objectsDir)) {
-    return [];
-  }
-
-  const objectFolders = readdirSync(objectsDir).filter(name => {
-    const fullPath = join(objectsDir, name);
-    return statSync(fullPath).isDirectory();
+  return allObjects.map(entry => {
+    // Strip /index from the ID
+    const cleanId = entry.id.replace('/index', '');
+    return {
+      params: { objectId: cleanId }
+    };
   });
-
-  return objectFolders.map(objectId => ({
-    params: { objectId }
-  }));
 }
 
 const { objectId } = Astro.params;
@@ -82,13 +78,13 @@ const { objectId } = Astro.params;
   </head>
   <body>
     <div class="container">
-      <a href="/objects" class="back-link">← Back to Objects</a>
+      <a href={`${base}objects`} class="back-link">← Back to Objects</a>
 
       <div class="header">
         <h1>{objectId.toUpperCase()}</h1>
       </div>
 
-      <ObjectViewer client:load objectId={objectId} />
+      <ObjectViewer client:load objectId={objectId} basePath={`${base}objects`} />
     </div>
   </body>
 </html>

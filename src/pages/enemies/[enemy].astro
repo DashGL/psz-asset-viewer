@@ -1,50 +1,28 @@
 ---
 import EnemyViewer from '../../components/EnemyViewer';
-import { readdirSync, existsSync, statSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL;
 
 // Generate static paths for all enemies
 export async function getStaticPaths() {
-  const enemiesDir = './public/enemies';
-  const paths = [];
+  const allEnemies = await getCollection('enemies');
 
-  if (existsSync(enemiesDir)) {
-    const enemyFolders = readdirSync(enemiesDir).filter(name => {
-      const fullPath = join(enemiesDir, name);
-      return statSync(fullPath).isDirectory();
-    });
-
-    for (const folder of enemyFolders) {
-      // Try to read info.json to get enemy metadata
-      const infoPath = join(enemiesDir, folder, 'info.json');
-      let enemyData = {
-        name: folder,
-        displayName: folder.charAt(0).toUpperCase() + folder.slice(1),
-        animationCount: 0,
-        effectCount: 0
-      };
-
-      if (existsSync(infoPath)) {
-        try {
-          const info = JSON.parse(readFileSync(infoPath, 'utf-8'));
-          enemyData = {
-            name: folder,
-            displayName: folder.charAt(0).toUpperCase() + folder.slice(1),
-            ...info
-          };
-        } catch (e) {
-          // Use default if info.json is malformed
+  return allEnemies.map(entry => {
+    // Strip /index from the ID
+    const cleanId = entry.id.replace('/index', '');
+    return {
+      params: { enemy: cleanId },
+      props: {
+        enemyData: {
+          name: cleanId,
+          displayName: entry.data.name.charAt(0).toUpperCase() + entry.data.name.slice(1),
+          animationCount: entry.data.animationCount,
+          effectCount: entry.data.effectCount
         }
       }
-
-      paths.push({
-        params: { enemy: folder },
-        props: { enemyData }
-      });
-    }
-  }
-
-  return paths;
+    };
+  });
 }
 
 const { enemy } = Astro.params;
@@ -136,7 +114,7 @@ const { enemyData } = Astro.props;
   </head>
   <body>
     <div class="container">
-      <a href="/enemies" class="back-link">← Back to Enemy List</a>
+      <a href={`${base}enemies`} class="back-link">← Back to Enemy List</a>
 
       <div class="header">
         <h1>{enemyData.displayName}</h1>
@@ -154,7 +132,7 @@ const { enemyData } = Astro.props;
         </div>
       </div>
 
-      <EnemyViewer client:load enemyName={enemy} />
+      <EnemyViewer client:load enemyName={enemy} basePath={`${base}enemies`} />
     </div>
   </body>
 </html>
