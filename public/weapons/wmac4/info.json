@@ -1,29 +1,11 @@
 {
   "id": "wmac4",
   "name": "wmac4_1_1",
-  "textureCount": 15,
+  "textureCount": 3,
   "animationCount": 6,
   "variants": [
     "wmac4_1_1",
-    "wmac4_1_2",
-    "wmac4_1_3",
-    "wmac4_1_4",
-    "wmac4_1_5",
-    "wmac4_1_j",
-    "wmac4_1_w",
     "wmac4_2_1",
-    "wmac4_2_2",
-    "wmac4_2_3",
-    "wmac4_2_4",
-    "wmac4_2_5",
-    "wmac4_2_j",
-    "wmac4_2_w",
-    "wmac4_3_1",
-    "wmac4_3_2",
-    "wmac4_3_3",
-    "wmac4_3_4",
-    "wmac4_3_5",
-    "wmac4_3_j",
-    "wmac4_3_w"
+    "wmac4_3_1"
   ]
 }

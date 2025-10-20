@@ -1,12 +1,10 @@
 {
   "id": "wdsr02",
   "name": "wdsr02_1_b",
-  "textureCount": 4,
+  "textureCount": 2,
   "animationCount": 0,
   "variants": [
     "wdsr02_1_b",
-    "wdsr02_2_b",
-    "wdsr02_3_b",
-    "wdsr02_4_b"
+    "wdsr02_3_b"
   ]
 }

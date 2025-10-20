@@ -1,36 +1,11 @@
 {
   "id": "wmad4",
   "name": "wmad4_1_1",
-  "textureCount": 20,
+  "textureCount": 4,
   "animationCount": 8,
   "variants": [
     "wmad4_1_1",
-    "wmad4_1_2",
-    "wmad4_1_3",
-    "wmad4_1_4",
-    "wmad4_1_5",
-    "wmad4_1_j",
-    "wmad4_1_w",
     "wmad4_2_1",
-    "wmad4_2_2",
-    "wmad4_2_3",
-    "wmad4_2_4",
-    "wmad4_2_5",
-    "wmad4_2_j",
-    "wmad4_2_w",
-    "wmad4_3_1",
-    "wmad4_3_2",
-    "wmad4_3_3",
-    "wmad4_3_4",
-    "wmad4_3_5",
-    "wmad4_3_j",
-    "wmad4_3_w",
-    "wmad4_4_1",
-    "wmad4_4_2",
-    "wmad4_4_3",
-    "wmad4_4_4",
-    "wmad4_4_5",
-    "wmad4_4_j",
-    "wmad4_4_w"
+    "wmad4_4_1"
   ]
 }

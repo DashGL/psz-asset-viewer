@@ -1,22 +1,10 @@
 {
   "id": "wmac3",
   "name": "wmac3_1_1",
-  "textureCount": 10,
+  "textureCount": 2,
   "animationCount": 4,
   "variants": [
     "wmac3_1_1",
-    "wmac3_1_2",
-    "wmac3_1_3",
-    "wmac3_1_4",
-    "wmac3_1_5",
-    "wmac3_1_j",
-    "wmac3_1_w",
-    "wmac3_2_1",
-    "wmac3_2_2",
-    "wmac3_2_3",
-    "wmac3_2_4",
-    "wmac3_2_5",
-    "wmac3_2_j",
-    "wmac3_2_w"
+    "wmac3_2_1"
   ]
 }

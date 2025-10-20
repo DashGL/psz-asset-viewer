@@ -93,19 +93,9 @@ async function main() {
       processedCount++;
       console.log(`📦 [${processedCount}/${weaponsByType.size}] Processing ${weaponId}...`);
 
-      // Find the main model variant (usually the first one)
-      const mainVariant = Array.from(variants.entries())[0];
-      if (!mainVariant) {
+      if (variants.size === 0) {
         console.log(`  ⚠️  No variants found`);
         results.push({ success: false, weapon: weaponId, error: 'No variants' });
-        continue;
-      }
-
-      const [variantName, variantData] = mainVariant;
-
-      if (!variantData.model) {
-        console.log(`  ⚠️  No model file found`);
-        results.push({ success: false, weapon: weaponId, error: 'No model file' });
         continue;
       }
 
@@ -113,27 +103,7 @@ async function main() {
       const tempWeaponDir = join(TEMP_DIR, weaponId);
       mkdirSync(tempWeaponDir, { recursive: true });
 
-      // Save model file
-      const modelPath = join(tempWeaponDir, `${variantName}.nsbmd`);
-      writeFileSync(modelPath, Buffer.from(variantData.model));
-
-      // Collect all textures from all variants
-      const allTextures = new Map<string, ArrayBuffer>();
-      variants.forEach((variant, name) => {
-        variant.textures.forEach((data, texName) => {
-          allTextures.set(texName, data);
-        });
-      });
-
-      // Save first texture for conversion
-      const firstTexture = Array.from(allTextures.entries())[0];
-      if (firstTexture) {
-        const [texName, texData] = firstTexture;
-        const texturePath = join(tempWeaponDir, texName);
-        writeFileSync(texturePath, Buffer.from(texData));
-      }
-
-      // Collect animations
+      // Collect animations (shared across all variants)
       const allAnimations = new Map<string, ArrayBuffer>();
       variants.forEach((variant, name) => {
         variant.animations.forEach((data, animName) => {
@@ -149,62 +119,93 @@ async function main() {
         });
       }
 
-      // Convert to GLB
+      // Convert each variant to GLB
       const outputWeaponDir = join(OUTPUT_DIR, weaponId);
       mkdirSync(outputWeaponDir, { recursive: true });
 
-      const outputPath = join(outputWeaponDir, weaponId);
+      const convertedVariants: string[] = [];
+      let totalTextures = 0;
+      let conversionFailed = false;
 
-      try {
-        let convertCmd = `apicula convert "${modelPath}"`;
-
-        // Add texture if available
-        if (firstTexture) {
-          const [texName] = firstTexture;
-          const texturePath = join(tempWeaponDir, texName);
-          convertCmd += ` "${texturePath}"`;
+      for (const [variantName, variantData] of variants.entries()) {
+        // Skip variants without a model
+        if (!variantData.model) {
+          continue;
         }
 
-        // Add animations if available
-        if (allAnimations.size > 0) {
-          convertCmd += ` "${tempWeaponDir}"/*.nsbca --all-animations`;
+        // Save model file
+        const modelPath = join(tempWeaponDir, `${variantName}.nsbmd`);
+        writeFileSync(modelPath, Buffer.from(variantData.model));
+
+        // Save texture for this variant
+        let texturePath = '';
+        if (variantData.textures.size > 0) {
+          const [texName, texData] = Array.from(variantData.textures.entries())[0];
+          texturePath = join(tempWeaponDir, texName);
+          writeFileSync(texturePath, Buffer.from(texData));
+          totalTextures++;
         }
 
-        convertCmd += ` -o "${outputPath}" -f glb --overwrite`;
+        // Convert to GLB - use variant name in output path
+        const variantOutputDir = join(outputWeaponDir, weaponId);
+        const variantOutputPath = join(variantOutputDir, variantName);
 
-        execSync(convertCmd, { stdio: 'pipe' });
+        try {
+          let convertCmd = `apicula convert "${modelPath}"`;
 
-        console.log(`  ✅ Converted (${allTextures.size} textures, ${allAnimations.size} animations)`);
+          // Add texture if available
+          if (texturePath) {
+            convertCmd += ` "${texturePath}"`;
+          }
 
-        // Save weapon metadata
-        const weaponInfo = {
-          id: weaponId,
-          name: variantName,
-          textureCount: allTextures.size,
-          animationCount: allAnimations.size,
-          variants: Array.from(variants.keys())
-        };
+          // Add animations if available
+          if (allAnimations.size > 0) {
+            convertCmd += ` "${tempWeaponDir}"/*.nsbca --all-animations`;
+          }
 
-        writeFileSync(
-          join(outputWeaponDir, 'info.json'),
-          JSON.stringify(weaponInfo, null, 2)
-        );
+          convertCmd += ` -o "${variantOutputPath}" -f glb --overwrite`;
 
-        results.push({
-          success: true,
-          weapon: weaponId,
-          hasAnimation: allAnimations.size > 0,
-          textureVariants: allTextures.size
-        });
+          execSync(convertCmd, { stdio: 'pipe' });
+          convertedVariants.push(variantName);
 
-      } catch (error) {
-        console.error(`  ❌ Failed to convert`);
+        } catch (error) {
+          console.error(`  ⚠️  Failed to convert variant ${variantName}`);
+          conversionFailed = true;
+        }
+      }
+
+      if (convertedVariants.length === 0) {
+        console.error(`  ❌ Failed to convert any variants`);
         results.push({
           success: false,
           weapon: weaponId,
-          error: 'Conversion failed'
+          error: 'No variants converted'
         });
+        continue;
       }
+
+      console.log(`  ✅ Converted ${convertedVariants.length} variants (${totalTextures} textures, ${allAnimations.size} animations)`);
+
+      // Save weapon metadata
+      const weaponInfo = {
+        id: weaponId,
+        name: convertedVariants[0], // Default to first variant
+        textureCount: totalTextures,
+        animationCount: allAnimations.size,
+        variants: convertedVariants
+      };
+
+      writeFileSync(
+        join(outputWeaponDir, 'info.json'),
+        JSON.stringify(weaponInfo, null, 2)
+      );
+
+      results.push({
+        success: true,
+        weapon: weaponId,
+        hasAnimation: allAnimations.size > 0,
+        textureVariants: convertedVariants.length
+      });
 
     } catch (error) {
       console.error(`  ❌ Error:`, error instanceof Error ? error.message : String(error));

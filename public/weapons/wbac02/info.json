@@ -1,12 +1,10 @@
 {
   "id": "wbac02",
   "name": "wbac02_1_b",
-  "textureCount": 4,
+  "textureCount": 2,
   "animationCount": 0,
   "variants": [
     "wbac02_1_b",
-    "wbac02_2_b",
-    "wbac02_3_b",
-    "wbac02_4_b"
+    "wbac02_3_b"
   ]
 }

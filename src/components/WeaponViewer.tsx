@@ -61,6 +61,7 @@ interface WeaponViewerProps {
 export default function WeaponViewer({ weaponId, basePath = '/weapons' }: WeaponViewerProps) {
   const [weaponData, setWeaponData] = useState<WeaponData>({ info: null });
   const [selectedAnimation, setSelectedAnimation] = useState<string | undefined>();
+  const [selectedVariant, setSelectedVariant] = useState<string | undefined>();
   const [glbAnimations, setGlbAnimations] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -85,6 +86,10 @@ export default function WeaponViewer({ weaponId, basePath = '/weapons' }: Weapon
         }
 
         setWeaponData({ info });
+        // Set default variant to the first one
+        if (info && info.variants && info.variants.length > 0 && !selectedVariant) {
+          setSelectedVariant(info.variants[0]);
+        }
         setIsLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load weapon data');
@@ -95,15 +100,15 @@ export default function WeaponViewer({ weaponId, basePath = '/weapons' }: Weapon
     loadWeaponData();
   }, [weaponId, mainWeaponPath]);
 
-  // Construct the model URL using the actual model name from info.json
-  const modelUrl = weaponData.info
-    ? `${mainWeaponPath}/${weaponId}/${weaponData.info.name}.glb`
-    : `${mainWeaponPath}/${weaponId}/${weaponId}.glb`;
+  // Construct the model URL using the selected variant or default
+  // apicula creates subdirectories: /weaponId/weaponId/variantName/variantName.glb
+  const currentVariant = selectedVariant || weaponData.info?.name || weaponId;
+  const modelUrl = `${mainWeaponPath}/${weaponId}/${currentVariant}/${currentVariant}.glb`;
 
   return (
     <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {/* Controls */}
-      {glbAnimations.length > 0 && (
+      {(glbAnimations.length > 0 || (weaponData.info?.variants && weaponData.info.variants.length > 1)) && (
         <div style={{
           padding: '1rem',
           background: '#2a2a2a',
@@ -112,35 +117,69 @@ export default function WeaponViewer({ weaponId, basePath = '/weapons' }: Weapon
           gap: '2rem',
           flexWrap: 'wrap'
         }}>
+          {/* Variant Selection */}
+          {weaponData.info?.variants && weaponData.info.variants.length > 1 && (
+            <div style={{ flex: '1', minWidth: '200px' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#fff', fontWeight: 'bold' }}>
+                Variant
+              </label>
+              <select
+                value={selectedVariant || ''}
+                onChange={(e) => setSelectedVariant(e.target.value || undefined)}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  background: '#1a1a1a',
+                  color: '#fff',
+                  border: '1px solid #444',
+                  borderRadius: '4px'
+                }}
+              >
+                {weaponData.info.variants.map((variantName) => (
+                  <option key={variantName} value={variantName}>
+                    {variantName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Animation Selection */}
-          <div style={{ flex: '1', minWidth: '200px' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', color: '#fff', fontWeight: 'bold' }}>
-              Animation
-            </label>
-            <select
-              value={selectedAnimation || ''}
-              onChange={(e) => setSelectedAnimation(e.target.value || undefined)}
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                background: '#1a1a1a',
-                color: '#fff',
-                border: '1px solid #444',
-                borderRadius: '4px'
-              }}
-            >
-              <option value="">None</option>
-              {glbAnimations.map((animName) => (
-                <option key={animName} value={animName}>
-                  {animName}
-                </option>
-              ))}
-            </select>
-          </div>
+          {glbAnimations.length > 0 && (
+            <div style={{ flex: '1', minWidth: '200px' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#fff', fontWeight: 'bold' }}>
+                Animation
+              </label>
+              <select
+                value={selectedAnimation || ''}
+                onChange={(e) => setSelectedAnimation(e.target.value || undefined)}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  background: '#1a1a1a',
+                  color: '#fff',
+                  border: '1px solid #444',
+                  borderRadius: '4px'
+                }}
+              >
+                <option value="">None</option>
+                {glbAnimations.map((animName) => (
+                  <option key={animName} value={animName}>
+                    {animName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Stats */}
           <div style={{ color: '#aaa', fontSize: '0.9rem', alignSelf: 'center' }}>
-            {glbAnimations.length} animations available
+            {weaponData.info?.variants && weaponData.info.variants.length > 1 && (
+              <div>{weaponData.info.variants.length} variants</div>
+            )}
+            {glbAnimations.length > 0 && (
+              <div>{glbAnimations.length} animations</div>
+            )}
           </div>
         </div>
       )}
@@ -170,6 +209,7 @@ export default function WeaponViewer({ weaponId, basePath = '/weapons' }: Weapon
             {/* Model */}
             <Suspense fallback={null}>
               <WeaponModel
+                key={modelUrl}
                 url={modelUrl}
                 animationName={selectedAnimation}
                 onAnimationsLoaded={setGlbAnimations}

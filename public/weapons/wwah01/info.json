@@ -1,12 +1,10 @@
 {
   "id": "wwah01",
   "name": "wwah01_1_o",
-  "textureCount": 4,
+  "textureCount": 2,
   "animationCount": 0,
   "variants": [
     "wwah01_1_o",
-    "wwah01_2_o",
-    "wwah01_3_o",
-    "wwah01_4_o"
+    "wwah01_3_o"
   ]
 }
