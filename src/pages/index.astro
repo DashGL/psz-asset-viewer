@@ -85,9 +85,21 @@ function countWeapons(): number {
   }).length;
 }
 
+// Count objects
+function countObjects(): number {
+  const objectsDir = './public/objects';
+  if (!existsSync(objectsDir)) return 0;
+
+  return readdirSync(objectsDir).filter(name => {
+    const fullPath = join(objectsDir, name);
+    return statSync(fullPath).isDirectory();
+  }).length;
+}
+
 const playerCount = countPlayers();
 const enemyCount = countEnemies();
 const weaponCount = countWeapons();
+const objectCount = countObjects();
 ---
 
 <!DOCTYPE html>
@@ -262,6 +274,19 @@ const weaponCount = countWeapons();
           </div>
           <p class="description">
             View all weapon models with textures and optional animations. Interactive 3D viewer.
+          </p>
+        </a>
+
+        <a href="/objects" class="city-card" style="background: linear-gradient(135deg, #10b98122 0%, #059669222 100%);">
+          <h2>Objects</h2>
+          <div class="count">
+            {objectCount > 0
+              ? `${objectCount} object sets available`
+              : 'No objects processed yet'
+            }
+          </div>
+          <p class="description">
+            View environmental objects and props from all stages. Interactive 3D viewer with textures.
           </p>
         </a>
       </div>

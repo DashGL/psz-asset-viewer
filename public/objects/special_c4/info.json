@@ -1,0 +1,11 @@
+{
+  "id": "special_c4",
+  "modelCount": 3,
+  "totalModels": 3,
+  "textureCount": 3,
+  "models": [
+    "np_008_01_0.imd",
+    "np_017_00_0.imd",
+    "np_018_00_0.imd"
+  ]
+}

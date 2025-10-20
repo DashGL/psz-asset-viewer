@@ -1,0 +1,19 @@
+{
+  "id": "06_o06z",
+  "modelCount": 11,
+  "totalModels": 11,
+  "textureCount": 10,
+  "models": [
+    "o06_cont.imd",
+    "o06_wallptcl.imd",
+    "o0c_dropit.imd",
+    "o0c_droppr.imd",
+    "o0c_dropra.imd",
+    "o0c_dropwe.imd",
+    "o0c_meseta.imd",
+    "o0c_mspack.imd",
+    "o0c_point.imd",
+    "o0c_recont.imd",
+    "o0c_trebox.imd"
+  ]
+}
