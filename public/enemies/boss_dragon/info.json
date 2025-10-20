@@ -2,5 +2,6 @@
   "name": "boss_dragon",
   "modelBaseName": "z_001",
   "animationCount": 26,
-  "effectCount": 11
+  "effectCount": 11,
+  "partsCount": 1
 }

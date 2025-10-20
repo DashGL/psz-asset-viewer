@@ -1,0 +1,74 @@
+[
+  {
+    "name": "ef_e_l_air",
+    "file": "ef_e_l_air.nsbmd"
+  },
+  {
+    "name": "ef_e_l_bl_f",
+    "file": "ef_e_l_bl_f.nsbmd"
+  },
+  {
+    "name": "ef_e_l_bl_s",
+    "file": "ef_e_l_bl_s.nsbmd"
+  },
+  {
+    "name": "ef_e_l_bom",
+    "file": "ef_e_l_bom.nsbmd"
+  },
+  {
+    "name": "ef_e_l_dead",
+    "file": "ef_e_l_dead.nsbmd"
+  },
+  {
+    "name": "ef_e_l_dummy",
+    "file": "ef_e_l_dummy.nsbmd"
+  },
+  {
+    "name": "ef_e_l_finish",
+    "file": "ef_e_l_finish.nsbmd"
+  },
+  {
+    "name": "ef_e_l_flash",
+    "file": "ef_e_l_flash.nsbmd"
+  },
+  {
+    "name": "ef_e_l_hit_f",
+    "file": "ef_e_l_hit_f.nsbmd"
+  },
+  {
+    "name": "ef_e_l_hit_s",
+    "file": "ef_e_l_hit_s.nsbmd"
+  },
+  {
+    "name": "ef_e_l_hov",
+    "file": "ef_e_l_hov.nsbmd"
+  },
+  {
+    "name": "ef_e_l_mz_f",
+    "file": "ef_e_l_mz_f.nsbmd"
+  },
+  {
+    "name": "ef_e_l_mz_s",
+    "file": "ef_e_l_mz_s.nsbmd"
+  },
+  {
+    "name": "ef_e_l_slash",
+    "file": "ef_e_l_slash.nsbmd"
+  },
+  {
+    "name": "ef_e_l_tsuki",
+    "file": "ef_e_l_tsuki.nsbmd"
+  },
+  {
+    "name": "ef_e_l_union",
+    "file": "ef_e_l_union.nsbmd"
+  },
+  {
+    "name": "ef_e_l_warp",
+    "file": "ef_e_l_warp.nsbmd"
+  },
+  {
+    "name": "ef_e_l_warp1",
+    "file": "ef_e_l_warp1.nsbmd"
+  }
+]

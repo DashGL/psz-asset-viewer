@@ -31,6 +31,7 @@ const enemiesCollection = defineCollection({
     modelBaseName: z.string().optional(),
     animationCount: z.number(),
     effectCount: z.number(),
+    partsCount: z.number().optional(),
   }),
 });
 

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "ef_e_c_mdd",
+    "file": "ef_e_c_mdd.nsbmd"
+  },
+  {
+    "name": "ef_e_l_bl_s",
+    "file": "ef_e_l_bl_s.nsbmd"
+  },
+  {
+    "name": "ef_e_l_drill1",
+    "file": "ef_e_l_drill1.nsbmd"
+  },
+  {
+    "name": "ef_e_l_drill2",
+    "file": "ef_e_l_drill2.nsbmd"
+  },
+  {
+    "name": "ef_e_l_dummy",
+    "file": "ef_e_l_dummy.nsbmd"
+  },
+  {
+    "name": "ef_e_l_hit_s",
+    "file": "ef_e_l_hit_s.nsbmd"
+  },
+  {
+    "name": "ef_e_l_hov",
+    "file": "ef_e_l_hov.nsbmd"
+  },
+  {
+    "name": "ef_e_l_mz_s",
+    "file": "ef_e_l_mz_s.nsbmd"
+  },
+  {
+    "name": "ef_e_l_wave1",
+    "file": "ef_e_l_wave1.nsbmd"
+  },
+  {
+    "name": "ef_e_l_wave2",
+    "file": "ef_e_l_wave2.nsbmd"
+  }
+]

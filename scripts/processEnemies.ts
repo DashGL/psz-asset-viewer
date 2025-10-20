@@ -86,8 +86,9 @@ async function processEnemy(narcPath: string): Promise<ProcessResult> {
 
     console.log(`  🎯 Main model: ${mainModelFile.name}`);
 
-    // Find all animation files for the main model
+    // Find matching texture file (.nsbtx) for the main model
     const modelBaseName = mainModelFile.name.replace('.nsbmd', '');
+    const textureFile = narcFiles.find(f => f.name === `${modelBaseName}.nsbtx`);
 
     // Extract prefix and number from model name (e.g., "s_070" -> prefix="s", number="070")
     const prefixMatch = modelBaseName.match(/^([a-z]+)_?(\d+)/i);
@@ -111,6 +112,17 @@ async function processEnemy(narcPath: string): Promise<ProcessResult> {
 
     console.log(`  🎬 Found ${animationFiles.length} animations`);
 
+    // Find additional model parts (e.g., weapons, transformation states)
+    // These are non-effect models beyond the main model
+    const additionalParts = modelFiles.filter(f => f.name !== mainModelFile.name);
+
+    if (additionalParts.length > 0) {
+      console.log(`  🔧 Found ${additionalParts.length} additional model parts`);
+      additionalParts.forEach(part => {
+        console.log(`    - ${part.name}`);
+      });
+    }
+
     // Find effect files
     const effectModels = narcFiles.filter(f =>
       f.name.startsWith('ef_') && f.name.endsWith('.nsbmd')
@@ -126,9 +138,15 @@ async function processEnemy(narcPath: string): Promise<ProcessResult> {
     const mainModelPath = join(tempEnemyDir, mainModelFile.name);
     const outputPath = join(outputEnemyDir, modelBaseName);
 
-    // Build list of animation files to include
+    // Build list of files to include: model, texture (if exists), animations
+    const filesToConvert = [mainModelPath];
+    if (textureFile) {
+      const texturePath = join(tempEnemyDir, textureFile.name);
+      filesToConvert.push(texturePath);
+      console.log(`  🖼️  Including texture file: ${textureFile.name}`);
+    }
     const animationPaths = animationFiles.map(f => join(tempEnemyDir, f.name));
-    const allFiles = [mainModelPath, ...animationPaths].map(p => `"${p}"`).join(' ');
+    const allFiles = [...filesToConvert, ...animationPaths].map(p => `"${p}"`).join(' ');
 
     try {
       execSync(
@@ -151,13 +169,58 @@ async function processEnemy(narcPath: string): Promise<ProcessResult> {
     mkdirSync(texturesDir, { recursive: true });
 
     try {
+      // Include texture file if it exists for proper texture extraction
+      const textureExtractFiles = textureFile
+        ? `"${mainModelPath}" "${join(tempEnemyDir, textureFile.name)}"`
+        : `"${mainModelPath}"`;
+
       execSync(
-        `apicula convert "${mainModelPath}" -o "${texturesDir}" --overwrite`,
+        `apicula convert ${textureExtractFiles} -o "${texturesDir}" --overwrite`,
         { stdio: 'inherit' }
       );
       console.log(`  ✅ Extracted textures`);
+
+      // Copy textures to the model directory for GLB references
+      const modelDir = join(outputEnemyDir, modelBaseName);
+      try {
+        execSync(
+          `cp "${texturesDir}"/${modelBaseName}*.png "${modelDir}/" 2>/dev/null || true`,
+          { stdio: 'pipe' }
+        );
+      } catch (error) {
+        // Silently ignore if no PNGs to copy
+      }
     } catch (error) {
       console.log(`  ⚠️  Texture extraction completed with warnings`);
+    }
+
+    // Convert additional model parts (weapons, transformation states, etc.)
+    if (additionalParts.length > 0) {
+      console.log('  🔄 Converting additional model parts...');
+      const partsDir = join(outputEnemyDir, 'parts');
+      mkdirSync(partsDir, { recursive: true });
+
+      for (const part of additionalParts) {
+        const partPath = join(tempEnemyDir, part.name);
+        const partBaseName = part.name.replace('.nsbmd', '');
+        const partOutputPath = join(partsDir, partBaseName);
+
+        // Check for matching texture file
+        const partTextureFile = narcFiles.find(f => f.name === `${partBaseName}.nsbtx`);
+        const partFiles = partTextureFile
+          ? `"${partPath}" "${join(tempEnemyDir, partTextureFile.name)}"`
+          : `"${partPath}"`;
+
+        try {
+          execSync(
+            `apicula convert ${partFiles} -o "${partOutputPath}" -f glb --overwrite`,
+            { stdio: 'pipe' }
+          );
+          console.log(`    ✅ Converted ${partBaseName}.glb`);
+        } catch (error) {
+          console.log(`    ⚠️  Failed to convert ${partBaseName}`);
+        }
+      }
     }
 
     // Convert effect models
@@ -204,6 +267,20 @@ async function processEnemy(narcPath: string): Promise<ProcessResult> {
       console.log(`  📝 Saved animation info`);
     }
 
+    // Save additional parts file names for the viewer
+    if (additionalParts.length > 0) {
+      const partsInfo = additionalParts.map(f => ({
+        name: f.name.replace('.nsbmd', ''),
+        file: f.name
+      }));
+
+      writeFileSync(
+        join(outputEnemyDir, 'parts.json'),
+        JSON.stringify(partsInfo, null, 2)
+      );
+      console.log(`  📝 Saved parts info`);
+    }
+
     // Save effect file names for the viewer
     if (effectModels.length > 0) {
       const effectInfo = effectModels.map(f => ({
@@ -223,7 +300,8 @@ async function processEnemy(narcPath: string): Promise<ProcessResult> {
       name: enemyName,
       modelBaseName: modelBaseName,
       animationCount: animationFiles.length,
-      effectCount: effectModels.length
+      effectCount: effectModels.length,
+      partsCount: additionalParts.length
     };
     writeFileSync(
       join(outputEnemyDir, 'info.json'),
