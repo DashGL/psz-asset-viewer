@@ -1,0 +1,42 @@
+[
+  {
+    "name": "atk",
+    "file": "m_042_atk.nsbca"
+  },
+  {
+    "name": "atkb",
+    "file": "m_042_atkb.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "m_042_ded.nsbca"
+  },
+  {
+    "name": "dmg",
+    "file": "m_042_dmg.nsbca"
+  },
+  {
+    "name": "stt",
+    "file": "m_042_stt.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "m_042_wat.nsbca"
+  },
+  {
+    "name": "wlk_b",
+    "file": "m_042_wlk_b.nsbca"
+  },
+  {
+    "name": "wlk_f",
+    "file": "m_042_wlk_f.nsbca"
+  },
+  {
+    "name": "wlk_l",
+    "file": "m_042_wlk_l.nsbca"
+  },
+  {
+    "name": "wlk_r",
+    "file": "m_042_wlk_r.nsbca"
+  }
+]

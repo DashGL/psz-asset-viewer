@@ -1,0 +1,26 @@
+[
+  {
+    "name": "atk",
+    "file": "s_060_atk.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "s_060_ded.nsbca"
+  },
+  {
+    "name": "dmg",
+    "file": "s_060_dmg.nsbca"
+  },
+  {
+    "name": "stt",
+    "file": "s_060_stt.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "s_060_wat.nsbca"
+  },
+  {
+    "name": "wlk",
+    "file": "s_060_wlk.nsbca"
+  }
+]

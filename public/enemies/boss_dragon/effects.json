@@ -1,0 +1,46 @@
+[
+  {
+    "name": "ef_e_m_br",
+    "file": "ef_e_m_br.nsbmd"
+  },
+  {
+    "name": "ef_e_m_br_s",
+    "file": "ef_e_m_br_s.nsbmd"
+  },
+  {
+    "name": "ef_e_m_brhit",
+    "file": "ef_e_m_brhit.nsbmd"
+  },
+  {
+    "name": "ef_e_m_cry",
+    "file": "ef_e_m_cry.nsbmd"
+  },
+  {
+    "name": "ef_e_m_fogc",
+    "file": "ef_e_m_fogc.nsbmd"
+  },
+  {
+    "name": "ef_e_m_kaze",
+    "file": "ef_e_m_kaze.nsbmd"
+  },
+  {
+    "name": "ef_e_m_lfire",
+    "file": "ef_e_m_lfire.nsbmd"
+  },
+  {
+    "name": "ef_e_m_mbr",
+    "file": "ef_e_m_mbr.nsbmd"
+  },
+  {
+    "name": "ef_e_m_spin",
+    "file": "ef_e_m_spin.nsbmd"
+  },
+  {
+    "name": "ef_e_m_taill",
+    "file": "ef_e_m_taill.nsbmd"
+  },
+  {
+    "name": "ef_en_m_dfog",
+    "file": "ef_en_m_dfog.nsbmd"
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "atk",
+    "file": "b_004_atk.nsbca"
+  },
+  {
+    "name": "atkb",
+    "file": "b_004_atkb.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "b_004_ded.nsbca"
+  },
+  {
+    "name": "dmg",
+    "file": "b_004_dmg.nsbca"
+  },
+  {
+    "name": "run",
+    "file": "b_004_run.nsbca"
+  },
+  {
+    "name": "stt",
+    "file": "b_004_stt.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "b_004_wat.nsbca"
+  },
+  {
+    "name": "wlk",
+    "file": "b_004_wlk.nsbca"
+  }
+]

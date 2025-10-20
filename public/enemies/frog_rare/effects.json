@@ -1,0 +1,18 @@
+[
+  {
+    "name": "ef_c_stt_w",
+    "file": "ef_c_stt_w.nsbmd"
+  },
+  {
+    "name": "ef_e_c_phit2",
+    "file": "ef_e_c_phit2.nsbmd"
+  },
+  {
+    "name": "ef_e_c_poison2",
+    "file": "ef_e_c_poison2.nsbmd"
+  },
+  {
+    "name": "ef_e_c_sdd",
+    "file": "ef_e_c_sdd.nsbmd"
+  }
+]

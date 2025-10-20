@@ -1,0 +1,38 @@
+[
+  {
+    "name": "kmatkcs",
+    "file": "z_004_kmatkcs.nsbca"
+  },
+  {
+    "name": "kmatkhm1",
+    "file": "z_004_kmatkhm1.nsbca"
+  },
+  {
+    "name": "kmatkhm2",
+    "file": "z_004_kmatkhm2.nsbca"
+  },
+  {
+    "name": "kmatst",
+    "file": "z_004_kmatst.nsbca"
+  },
+  {
+    "name": "kmdam1",
+    "file": "z_004_kmdam1.nsbca"
+  },
+  {
+    "name": "kmdam2",
+    "file": "z_004_kmdam2.nsbca"
+  },
+  {
+    "name": "kmend",
+    "file": "z_004_kmend.nsbca"
+  },
+  {
+    "name": "kmstt",
+    "file": "z_004_kmstt.nsbca"
+  },
+  {
+    "name": "kmvb",
+    "file": "z_004_kmvb.nsbca"
+  }
+]

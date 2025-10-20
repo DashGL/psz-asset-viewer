@@ -1,0 +1,62 @@
+[
+  {
+    "name": "atk_gu_a_ed",
+    "file": "b072_atk_gu_a_ed.nsbca"
+  },
+  {
+    "name": "atk_gu_a_lp",
+    "file": "b072_atk_gu_a_lp.nsbca"
+  },
+  {
+    "name": "atk_gu_a_st",
+    "file": "b072_atk_gu_a_st.nsbca"
+  },
+  {
+    "name": "atk_sa_s",
+    "file": "b072_atk_sa_s.nsbca"
+  },
+  {
+    "name": "atk_sb_s",
+    "file": "b072_atk_sb_s.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "b072_ded.nsbca"
+  },
+  {
+    "name": "dmg",
+    "file": "b072_dmg.nsbca"
+  },
+  {
+    "name": "stt",
+    "file": "b072_stt.nsbca"
+  },
+  {
+    "name": "tec_a",
+    "file": "b072_tec_a.nsbca"
+  },
+  {
+    "name": "tec_t_ed",
+    "file": "b072_tec_t_ed.nsbca"
+  },
+  {
+    "name": "tec_t_lp",
+    "file": "b072_tec_t_lp.nsbca"
+  },
+  {
+    "name": "tec_t_st",
+    "file": "b072_tec_t_st.nsbca"
+  },
+  {
+    "name": "warp_ed",
+    "file": "b072_warp_ed.nsbca"
+  },
+  {
+    "name": "warp_st",
+    "file": "b072_warp_st.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "b072_wat.nsbca"
+  }
+]

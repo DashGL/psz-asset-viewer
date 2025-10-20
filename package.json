@@ -16,7 +16,9 @@
     "processParu": "bun run scripts/processParu.ts",
     "processArca": "bun run scripts/processArca.ts",
     "processShrine": "bun run scripts/processShrine.ts",
-    "processTower": "bun run scripts/processTower.ts"
+    "processTower": "bun run scripts/processTower.ts",
+    "processEnemies": "bun run scripts/processEnemies.ts",
+    "processEnemiesTest": "bun run scripts/processEnemiesTest.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.0",

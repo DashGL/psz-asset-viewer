@@ -1,0 +1,194 @@
+---
+import { readdirSync, existsSync, statSync, readFileSync } from 'fs';
+import { join } from 'path';
+
+// Scan the public/enemies directory for enemy folders
+const enemiesDir = './public/enemies';
+const enemies = [];
+
+if (existsSync(enemiesDir)) {
+  const enemyFolders = readdirSync(enemiesDir).filter(name => {
+    const fullPath = join(enemiesDir, name);
+    return statSync(fullPath).isDirectory();
+  });
+
+  for (const folder of enemyFolders) {
+    // Try to read info.json to get enemy metadata
+    const infoPath = join(enemiesDir, folder, 'info.json');
+    if (existsSync(infoPath)) {
+      try {
+        const info = JSON.parse(readFileSync(infoPath, 'utf-8'));
+        enemies.push({
+          name: folder,
+          displayName: folder.charAt(0).toUpperCase() + folder.slice(1),
+          ...info
+        });
+      } catch (e) {
+        // If info.json is malformed, just use folder name
+        enemies.push({
+          name: folder,
+          displayName: folder.charAt(0).toUpperCase() + folder.slice(1),
+          animationCount: 0,
+          effectCount: 0
+        });
+      }
+    } else {
+      // No info.json, just use folder name
+      enemies.push({
+        name: folder,
+        displayName: folder.charAt(0).toUpperCase() + folder.slice(1),
+        animationCount: 0,
+        effectCount: 0
+      });
+    }
+  }
+}
+
+// Sort enemies by name
+enemies.sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enemies - PSZ Asset Viewer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header {
+        margin-bottom: 2rem;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header p {
+        color: #aaa;
+        font-size: 1.1rem;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        padding: 0.5rem 1rem;
+        background: #2a2a2a;
+        border: 1px solid #333;
+        border-radius: 4px;
+        color: #fff;
+        text-decoration: none;
+        transition: background 0.2s;
+      }
+
+      .back-link:hover {
+        background: #3a3a3a;
+      }
+
+      .enemy-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .enemy-card {
+        background: linear-gradient(135deg, #ff6b6b22 0%, #ee5a6f22 100%);
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-decoration: none;
+        color: #fff;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .enemy-card:hover {
+        transform: translateY(-4px);
+        border-color: #ff6b6b;
+        box-shadow: 0 8px 24px rgba(255, 107, 107, 0.2);
+      }
+
+      .enemy-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .enemy-stats {
+        font-size: 0.9rem;
+        color: #aaa;
+        margin-top: auto;
+      }
+
+      .no-enemies {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #aaa;
+      }
+
+      .no-enemies h2 {
+        margin-bottom: 1rem;
+      }
+
+      .no-enemies code {
+        background: #1a1a1a;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Home</a>
+
+      <div class="header">
+        <h1>Enemy Models</h1>
+        <p>{enemies.length} enemies available</p>
+      </div>
+
+      {enemies.length === 0 ? (
+        <div class="no-enemies">
+          <h2>No enemies found</h2>
+          <p>Run <code>npm run processEnemiesTest</code> or <code>npm run processEnemies</code> to convert enemy models.</p>
+        </div>
+      ) : (
+        <div class="enemy-grid">
+          {enemies.map(enemy => (
+            <a href={`/enemies/${enemy.name}`} class="enemy-card">
+              <div class="enemy-name">{enemy.displayName}</div>
+              <div class="enemy-stats">
+                {enemy.animationCount > 0 && `${enemy.animationCount} animations`}
+                {enemy.animationCount > 0 && enemy.effectCount > 0 && ' • '}
+                {enemy.effectCount > 0 && `${enemy.effectCount} effects`}
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </body>
+</html>

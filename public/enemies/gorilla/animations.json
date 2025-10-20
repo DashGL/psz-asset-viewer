@@ -1,0 +1,42 @@
+[
+  {
+    "name": "atk1",
+    "file": "b_014_atk1.nsbca"
+  },
+  {
+    "name": "atk2_ed",
+    "file": "b_014_atk2_ed.nsbca"
+  },
+  {
+    "name": "atk2_lp",
+    "file": "b_014_atk2_lp.nsbca"
+  },
+  {
+    "name": "atk2_st",
+    "file": "b_014_atk2_st.nsbca"
+  },
+  {
+    "name": "atk3",
+    "file": "b_014_atk3.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "b_014_ded.nsbca"
+  },
+  {
+    "name": "dmg",
+    "file": "b_014_dmg.nsbca"
+  },
+  {
+    "name": "stt",
+    "file": "b_014_stt.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "b_014_wat.nsbca"
+  },
+  {
+    "name": "wlk",
+    "file": "b_014_wlk.nsbca"
+  }
+]

@@ -1,0 +1,46 @@
+[
+  {
+    "name": "atk_sh",
+    "file": "m051_atk_sh.nsbca"
+  },
+  {
+    "name": "atk_sp_ed",
+    "file": "m051_atk_sp_ed.nsbca"
+  },
+  {
+    "name": "atk_sp_lp",
+    "file": "m051_atk_sp_lp.nsbca"
+  },
+  {
+    "name": "atk_sp_st",
+    "file": "m051_atk_sp_st.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "m051_ded.nsbca"
+  },
+  {
+    "name": "dmg",
+    "file": "m051_dmg.nsbca"
+  },
+  {
+    "name": "run_ed",
+    "file": "m051_run_ed.nsbca"
+  },
+  {
+    "name": "run_lp",
+    "file": "m051_run_lp.nsbca"
+  },
+  {
+    "name": "run_st",
+    "file": "m051_run_st.nsbca"
+  },
+  {
+    "name": "stt",
+    "file": "m051_stt.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "m051_wat.nsbca"
+  }
+]

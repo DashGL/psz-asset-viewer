@@ -2,6 +2,24 @@
 
 ## Scripts
 
+### Process Enemies
+```bash
+npm run processEnemies
+```
+Processes all enemy NARC files from `raw/enemy/` directory. Outputs to `public/enemies/[enemy_name]/`:
+- Main model GLB with embedded animations
+- Effect model GLBs
+- Textures
+- `info.json` - Enemy metadata
+- `animations.json` - Animation list
+- `effects.json` - Effect model list
+
+#### Test Script
+```bash
+npm run processEnemiesTest
+```
+Processes only sample enemies (frog, rappy, jigobooma) for testing.
+
 ### Process City (Scene 00)
 ```bash
 npm run processCity
@@ -111,6 +129,15 @@ bun run scripts/process-scenes.ts --all
 
 Your viewer now has dedicated pages for each area:
 
+### Enemies
+- http://localhost:4322/enemies - Enemy List (60 available)
+  - Browse all processed enemy models
+  - Click any enemy to view its 3D model
+- http://localhost:4322/enemies/[name] - Individual Enemy Viewer
+  - Interactive 3D viewer with animation playback
+  - Play animations and view effects
+  - Example: http://localhost:4322/enemies/frog
+
 ### City (Scene 00)
 - http://localhost:4322/city_a - City Area A
 - http://localhost:4322/city_e - City Area E
@@ -179,8 +206,13 @@ Your viewer now has dedicated pages for each area:
    npm run dev
    ```
 
-2. **Process a location**:
+2. **Process enemies or locations**:
    ```bash
+   # Process enemies
+   npm run processEnemiesTest  # Process 3 sample enemies (frog, rappy, jigobooma)
+   npm run processEnemies      # Process all 67 enemies
+
+   # Process scene locations
    npm run processCity       # Process the city
    npm run processValley     # Process the valley
    npm run processWetlands   # Process the wetlands
@@ -201,6 +233,21 @@ Your viewer now has dedicated pages for each area:
 
 ```
 public/
+├── enemies/         # Enemy models
+│   ├── frog/
+│   │   ├── s_020/
+│   │   │   ├── s_020.glb
+│   │   │   └── s_020.png
+│   │   ├── effects/
+│   │   │   ├── ef_c_stt_w/
+│   │   │   └── ...
+│   │   ├── textures/
+│   │   ├── info.json
+│   │   ├── animations.json
+│   │   └── effects.json
+│   ├── rappy/
+│   ├── jigobooma/
+│   └── ... (67 total enemies)
 ├── city_a/          # Scene 00, Area A
 ├── city_e/          # Scene 00, Area E
 ├── valley_a/        # Scene 01, Area A
@@ -240,6 +287,12 @@ public/
 ├── tower_6/         # Scene 08, Floor 6
 ├── tower_7/         # Scene 08, Floor 7
 └── tower_e/         # Scene 08, Area E
+
+raw/enemy/
+├── frog.narc        # Frog enemy (ZPR compressed NARC)
+├── rappy.narc       # Rappy enemy
+├── jigobooma.narc   # Jigobooma enemy
+└── ... (67 .narc files total)
 
 raw/scene/
 ├── 00/

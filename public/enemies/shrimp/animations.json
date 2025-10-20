@@ -1,0 +1,34 @@
+[
+  {
+    "name": "atk",
+    "file": "s_040_atk.nsbca"
+  },
+  {
+    "name": "dam",
+    "file": "s_040_dam.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "s_040_ded.nsbca"
+  },
+  {
+    "name": "stt",
+    "file": "s_040_stt.nsbca"
+  },
+  {
+    "name": "tk1",
+    "file": "s_040_tk1.nsbca"
+  },
+  {
+    "name": "tk2",
+    "file": "s_040_tk2.nsbca"
+  },
+  {
+    "name": "wlk1",
+    "file": "s_040_wlk1.nsbca"
+  },
+  {
+    "name": "wlk2",
+    "file": "s_040_wlk2.nsbca"
+  }
+]

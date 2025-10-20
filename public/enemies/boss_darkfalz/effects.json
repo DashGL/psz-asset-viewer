@@ -1,0 +1,70 @@
+[
+  {
+    "name": "ef_dktnt",
+    "file": "ef_dktnt.nsbmd"
+  },
+  {
+    "name": "ef_e_d_bhole",
+    "file": "ef_e_d_bhole.nsbmd"
+  },
+  {
+    "name": "ef_e_d_bit",
+    "file": "ef_e_d_bit.nsbmd"
+  },
+  {
+    "name": "ef_e_d_bsdw1",
+    "file": "ef_e_d_bsdw1.nsbmd"
+  },
+  {
+    "name": "ef_e_d_bsdw2",
+    "file": "ef_e_d_bsdw2.nsbmd"
+  },
+  {
+    "name": "ef_e_d_bsdw3",
+    "file": "ef_e_d_bsdw3.nsbmd"
+  },
+  {
+    "name": "ef_e_d_bsdw4",
+    "file": "ef_e_d_bsdw4.nsbmd"
+  },
+  {
+    "name": "ef_e_d_dark",
+    "file": "ef_e_d_dark.nsbmd"
+  },
+  {
+    "name": "ef_e_d_emit",
+    "file": "ef_e_d_emit.nsbmd"
+  },
+  {
+    "name": "ef_e_d_emit2",
+    "file": "ef_e_d_emit2.nsbmd"
+  },
+  {
+    "name": "ef_e_d_emmz",
+    "file": "ef_e_d_emmz.nsbmd"
+  },
+  {
+    "name": "ef_e_d_sdw",
+    "file": "ef_e_d_sdw.nsbmd"
+  },
+  {
+    "name": "ef_e_d_sphit",
+    "file": "ef_e_d_sphit.nsbmd"
+  },
+  {
+    "name": "ef_e_d_spr_st",
+    "file": "ef_e_d_spr_st.nsbmd"
+  },
+  {
+    "name": "ef_e_d_spread",
+    "file": "ef_e_d_spread.nsbmd"
+  },
+  {
+    "name": "ef_e_d_tame",
+    "file": "ef_e_d_tame.nsbmd"
+  },
+  {
+    "name": "ef_e_d_tsdw",
+    "file": "ef_e_d_tsdw.nsbmd"
+  }
+]

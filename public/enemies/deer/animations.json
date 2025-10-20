@@ -1,0 +1,34 @@
+[
+  {
+    "name": "atk",
+    "file": "m011_atk.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "m011_ded.nsbca"
+  },
+  {
+    "name": "dmg",
+    "file": "m011_dmg.nsbca"
+  },
+  {
+    "name": "stp",
+    "file": "m011_stp.nsbca"
+  },
+  {
+    "name": "stt",
+    "file": "m011_stt.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "m011_wat.nsbca"
+  },
+  {
+    "name": "wlk_l",
+    "file": "m011_wlk_l.nsbca"
+  },
+  {
+    "name": "wlk_r",
+    "file": "m011_wlk_r.nsbca"
+  }
+]

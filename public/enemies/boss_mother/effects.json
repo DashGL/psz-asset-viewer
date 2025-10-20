@@ -1,0 +1,30 @@
+[
+  {
+    "name": "ef_e_d_cmb",
+    "file": "ef_e_d_cmb.nsbmd"
+  },
+  {
+    "name": "ef_e_d_fog",
+    "file": "ef_e_d_fog.nsbmd"
+  },
+  {
+    "name": "ef_e_d_head",
+    "file": "ef_e_d_head.nsbmd"
+  },
+  {
+    "name": "ef_e_d_lsr",
+    "file": "ef_e_d_lsr.nsbmd"
+  },
+  {
+    "name": "ef_e_d_lsrex",
+    "file": "ef_e_d_lsrex.nsbmd"
+  },
+  {
+    "name": "ef_e_d_piece",
+    "file": "ef_e_d_piece.nsbmd"
+  },
+  {
+    "name": "ef_e_d_pnt",
+    "file": "ef_e_d_pnt.nsbmd"
+  }
+]

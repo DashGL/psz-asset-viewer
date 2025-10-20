@@ -1,0 +1,38 @@
+[
+  {
+    "name": "atk_bz",
+    "file": "b052_atk_bz.nsbca"
+  },
+  {
+    "name": "atk_mi",
+    "file": "b052_atk_mi.nsbca"
+  },
+  {
+    "name": "atk_sh",
+    "file": "b052_atk_sh.nsbca"
+  },
+  {
+    "name": "dam",
+    "file": "b052_dam.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "b052_ded.nsbca"
+  },
+  {
+    "name": "run_ed",
+    "file": "b052_run_ed.nsbca"
+  },
+  {
+    "name": "run_lp",
+    "file": "b052_run_lp.nsbca"
+  },
+  {
+    "name": "run_st",
+    "file": "b052_run_st.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "b052_wat.nsbca"
+  }
+]

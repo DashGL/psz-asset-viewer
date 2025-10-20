@@ -51,6 +51,19 @@ const tower5Count = countAssets('./public/tower_5');
 const tower6Count = countAssets('./public/tower_6');
 const tower7Count = countAssets('./public/tower_7');
 const towerECount = countAssets('./public/tower_e');
+
+// Count enemies
+function countEnemies(): number {
+  const enemiesDir = './public/enemies';
+  if (!existsSync(enemiesDir)) return 0;
+
+  return readdirSync(enemiesDir).filter(name => {
+    const fullPath = join(enemiesDir, name);
+    return statSync(fullPath).isDirectory();
+  }).length;
+}
+
+const enemyCount = countEnemies();
 ---
 
 <!DOCTYPE html>
@@ -187,7 +200,23 @@ const towerECount = countAssets('./public/tower_e');
       <h1>Phantasy Star Zero</h1>
       <p class="subtitle">Scene Asset Viewer</p>
 
-      <h2 style="margin-bottom: 1rem; font-size: 1.5rem;">City (Scene 00)</h2>
+      <h2 style="margin-bottom: 1rem; font-size: 1.5rem;">Enemies</h2>
+      <div class="cities">
+        <a href="/enemies" class="city-card" style="background: linear-gradient(135deg, #ff6b6b22 0%, #ee5a6f22 100%);">
+          <h2>Enemy Models</h2>
+          <div class="count">
+            {enemyCount > 0
+              ? `${enemyCount} enemies available`
+              : 'No enemies processed yet'
+            }
+          </div>
+          <p class="description">
+            View all enemy models with animations and effects. Interactive 3D viewer with animation playback.
+          </p>
+        </a>
+      </div>
+
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">City (Scene 00)</h2>
       <div class="cities">
         <a href="/city_a" class="city-card">
           <h2>City - Area A</h2>

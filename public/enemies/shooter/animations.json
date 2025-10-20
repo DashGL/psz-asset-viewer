@@ -1,0 +1,34 @@
+[
+  {
+    "name": "atk_an",
+    "file": "s050_atk_an.nsbca"
+  },
+  {
+    "name": "atk_ji",
+    "file": "s050_atk_ji.nsbca"
+  },
+  {
+    "name": "atk_sh",
+    "file": "s050_atk_sh.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "s050_ded.nsbca"
+  },
+  {
+    "name": "dmg",
+    "file": "s050_dmg.nsbca"
+  },
+  {
+    "name": "run",
+    "file": "s050_run.nsbca"
+  },
+  {
+    "name": "stt",
+    "file": "s050_stt.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "s050_wat.nsbca"
+  }
+]

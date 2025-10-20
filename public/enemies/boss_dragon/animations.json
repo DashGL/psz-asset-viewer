@@ -1,0 +1,106 @@
+[
+  {
+    "name": "atkh1",
+    "file": "z_001_atkh1.nsbca"
+  },
+  {
+    "name": "atkh2",
+    "file": "z_001_atkh2.nsbca"
+  },
+  {
+    "name": "atkrl",
+    "file": "z_001_atkrl.nsbca"
+  },
+  {
+    "name": "atkrr",
+    "file": "z_001_atkrr.nsbca"
+  },
+  {
+    "name": "atkwg",
+    "file": "z_001_atkwg.nsbca"
+  },
+  {
+    "name": "brs1",
+    "file": "z_001_brs1.nsbca"
+  },
+  {
+    "name": "brs2",
+    "file": "z_001_brs2.nsbca"
+  },
+  {
+    "name": "brslp",
+    "file": "z_001_brslp.nsbca"
+  },
+  {
+    "name": "brsst",
+    "file": "z_001_brsst.nsbca"
+  },
+  {
+    "name": "claw",
+    "file": "z_001_claw.nsbca"
+  },
+  {
+    "name": "claw2wat",
+    "file": "z_001_claw2wat.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "z_001_ded.nsbca"
+  },
+  {
+    "name": "dmg1",
+    "file": "z_001_dmg1.nsbca"
+  },
+  {
+    "name": "dmg2",
+    "file": "z_001_dmg2.nsbca"
+  },
+  {
+    "name": "flst",
+    "file": "z_001_flst.nsbca"
+  },
+  {
+    "name": "fly",
+    "file": "z_001_fly.nsbca"
+  },
+  {
+    "name": "gl2tr",
+    "file": "z_001_gl2tr.nsbca"
+  },
+  {
+    "name": "gld2claw",
+    "file": "z_001_gld2claw.nsbca"
+  },
+  {
+    "name": "rdg",
+    "file": "z_001_rdg.nsbca"
+  },
+  {
+    "name": "rdst",
+    "file": "z_001_rdst.nsbca"
+  },
+  {
+    "name": "tht",
+    "file": "z_001_tht.nsbca"
+  },
+  {
+    "name": "tr2gl",
+    "file": "z_001_tr2gl.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "z_001_wat.nsbca"
+  },
+  {
+    "name": "wat2atkwg",
+    "file": "z_001_wat2atkwg.nsbca"
+  },
+  {
+    "name": "wlk1",
+    "file": "z_001_wlk1.nsbca"
+  },
+  {
+    "name": "wlk2",
+    "file": "z_001_wlk2.nsbca"
+  }
+]

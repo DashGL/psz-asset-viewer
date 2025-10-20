@@ -1,0 +1,98 @@
+[
+  {
+    "name": "cmbend",
+    "file": "z_004_cmbend.nsbca"
+  },
+  {
+    "name": "cmblp",
+    "file": "z_004_cmblp.nsbca"
+  },
+  {
+    "name": "cmbst",
+    "file": "z_004_cmbst.nsbca"
+  },
+  {
+    "name": "dam1",
+    "file": "z_004_dam1.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "z_004_ded.nsbca"
+  },
+  {
+    "name": "fall",
+    "file": "z_004_fall.nsbca"
+  },
+  {
+    "name": "fallwat",
+    "file": "z_004_fallwat.nsbca"
+  },
+  {
+    "name": "hedb",
+    "file": "z_004_hedb.nsbca"
+  },
+  {
+    "name": "hedb2lp",
+    "file": "z_004_hedb2lp.nsbca"
+  },
+  {
+    "name": "hedb2wt2",
+    "file": "z_004_hedb2wt2.nsbca"
+  },
+  {
+    "name": "hedbhitlp",
+    "file": "z_004_hedbhitlp.nsbca"
+  },
+  {
+    "name": "hedblp",
+    "file": "z_004_hedblp.nsbca"
+  },
+  {
+    "name": "hedbst",
+    "file": "z_004_hedbst.nsbca"
+  },
+  {
+    "name": "hit",
+    "file": "z_004_hit.nsbca"
+  },
+  {
+    "name": "laser",
+    "file": "z_004_laser.nsbca"
+  },
+  {
+    "name": "laserlp",
+    "file": "z_004_laserlp.nsbca"
+  },
+  {
+    "name": "laserst",
+    "file": "z_004_laserst.nsbca"
+  },
+  {
+    "name": "move",
+    "file": "z_004_move.nsbca"
+  },
+  {
+    "name": "stdup",
+    "file": "z_004_stdup.nsbca"
+  },
+  {
+    "name": "swing",
+    "file": "z_004_swing.nsbca"
+  },
+  {
+    "name": "swinglp",
+    "file": "z_004_swinglp.nsbca"
+  },
+  {
+    "name": "swingst",
+    "file": "z_004_swingst.nsbca"
+  },
+  {
+    "name": "wat1",
+    "file": "z_004_wat1.nsbca"
+  },
+  {
+    "name": "wat2",
+    "file": "z_004_wat2.nsbca"
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "ef_com_exp02",
+    "file": "ef_com_exp02.nsbmd"
+  },
+  {
+    "name": "ef_com_explosion",
+    "file": "ef_com_explosion.nsbmd"
+  },
+  {
+    "name": "ef_e_c_mdd",
+    "file": "ef_e_c_mdd.nsbmd"
+  },
+  {
+    "name": "ef_e_l_arbd",
+    "file": "ef_e_l_arbd.nsbmd"
+  },
+  {
+    "name": "ef_e_l_mine",
+    "file": "ef_e_l_mine.nsbmd"
+  },
+  {
+    "name": "ef_e_l_sgun",
+    "file": "ef_e_l_sgun.nsbmd"
+  },
+  {
+    "name": "ef_e_l_stt",
+    "file": "ef_e_l_stt.nsbmd"
+  }
+]
