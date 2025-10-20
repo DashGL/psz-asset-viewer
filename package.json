@@ -19,7 +19,8 @@
     "processTower": "bun run scripts/processTower.ts",
     "processEnemies": "bun run scripts/processEnemies.ts",
     "processEnemiesTest": "bun run scripts/processEnemiesTest.ts",
-    "processPlayer": "bun run scripts/processPlayer.ts"
+    "processPlayer": "bun run scripts/processPlayer.ts",
+    "processWeapons": "bun run scripts/processWeapons.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.0",

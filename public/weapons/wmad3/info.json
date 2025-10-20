@@ -1,0 +1,22 @@
+{
+  "id": "wmad3",
+  "name": "wmad3_1_1",
+  "textureCount": 10,
+  "animationCount": 4,
+  "variants": [
+    "wmad3_1_1",
+    "wmad3_1_2",
+    "wmad3_1_3",
+    "wmad3_1_4",
+    "wmad3_1_5",
+    "wmad3_1_j",
+    "wmad3_1_w",
+    "wmad3_2_1",
+    "wmad3_2_2",
+    "wmad3_2_3",
+    "wmad3_2_4",
+    "wmad3_2_5",
+    "wmad3_2_j",
+    "wmad3_2_w"
+  ]
+}

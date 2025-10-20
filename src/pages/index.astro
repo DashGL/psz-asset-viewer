@@ -74,8 +74,20 @@ function countEnemies(): number {
   }).length;
 }
 
+// Count weapons
+function countWeapons(): number {
+  const weaponsDir = './public/weapons';
+  if (!existsSync(weaponsDir)) return 0;
+
+  return readdirSync(weaponsDir).filter(name => {
+    const fullPath = join(weaponsDir, name);
+    return statSync(fullPath).isDirectory();
+  }).length;
+}
+
 const playerCount = countPlayers();
 const enemyCount = countEnemies();
+const weaponCount = countWeapons();
 ---
 
 <!DOCTYPE html>
@@ -237,6 +249,19 @@ const enemyCount = countEnemies();
           </div>
           <p class="description">
             View all enemy models with animations and effects. Interactive 3D viewer with animation playback.
+          </p>
+        </a>
+
+        <a href="/weapons" class="city-card" style="background: linear-gradient(135deg, #f59e0b22 0%, #d9770622 100%);">
+          <h2>Weapons</h2>
+          <div class="count">
+            {weaponCount > 0
+              ? `${weaponCount} weapons available`
+              : 'No weapons processed yet'
+            }
+          </div>
+          <p class="description">
+            View all weapon models with textures and optional animations. Interactive 3D viewer.
           </p>
         </a>
       </div>

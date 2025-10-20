@@ -1,0 +1,11 @@
+{
+  "id": "wslr03",
+  "name": "wslr03_1_o",
+  "textureCount": 3,
+  "animationCount": 0,
+  "variants": [
+    "wslr03_1_o",
+    "wslr03_2_o",
+    "wslr03_3_o"
+  ]
+}

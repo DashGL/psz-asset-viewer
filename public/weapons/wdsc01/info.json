@@ -1,0 +1,12 @@
+{
+  "id": "wdsc01",
+  "name": "wdsc01_1_b",
+  "textureCount": 4,
+  "animationCount": 0,
+  "variants": [
+    "wdsc01_1_b",
+    "wdsc01_2_b",
+    "wdsc01_3_b",
+    "wdsc01_4_b"
+  ]
+}

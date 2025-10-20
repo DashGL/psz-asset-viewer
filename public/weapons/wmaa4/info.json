@@ -1,0 +1,22 @@
+{
+  "id": "wmaa4",
+  "name": "wmaa4_1_1",
+  "textureCount": 10,
+  "animationCount": 4,
+  "variants": [
+    "wmaa4_1_1",
+    "wmaa4_1_2",
+    "wmaa4_1_3",
+    "wmaa4_1_4",
+    "wmaa4_1_5",
+    "wmaa4_1_j",
+    "wmaa4_1_w",
+    "wmaa4_2_1",
+    "wmaa4_2_2",
+    "wmaa4_2_3",
+    "wmaa4_2_4",
+    "wmaa4_2_5",
+    "wmaa4_2_j",
+    "wmaa4_2_w"
+  ]
+}
