@@ -27,4 +27,4 @@ pnpm-debug.log*
 temp/
 
 # raw assets (too large for git)
-raw/
+#raw/
