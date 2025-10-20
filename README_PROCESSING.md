@@ -2,6 +2,19 @@
 
 ## Scripts
 
+### Process Player Characters
+```bash
+npm run processPlayer
+```
+Processes all player character models from `raw/player/` directory. Outputs to `public/player/[character_name]/`:
+- Character model GLB
+- `info.json` - Character metadata
+- `textures.json` - List of 45 texture variants
+- Texture PNG samples
+
+Also creates `public/player/animations/` with:
+- `animations.json` - 22 shared animations (wait, run, attack, damage, etc.)
+
 ### Process Enemies
 ```bash
 npm run processEnemies
@@ -129,6 +142,16 @@ bun run scripts/process-scenes.ts --all
 
 Your viewer now has dedicated pages for each area:
 
+### Player Characters
+- http://localhost:4322/player - Player Character List (61 available)
+  - Browse all processed player character models
+  - Click any character to view its 3D model
+- http://localhost:4322/player/[name] - Individual Player Viewer
+  - Interactive 3D viewer with animation playback
+  - 45 texture variants per character
+  - 22 shared animations (wait, run, attack, etc.)
+  - Example: http://localhost:4322/player/pc_000
+
 ### Enemies
 - http://localhost:4322/enemies - Enemy List (60 available)
   - Browse all processed enemy models
@@ -206,8 +229,11 @@ Your viewer now has dedicated pages for each area:
    npm run dev
    ```
 
-2. **Process enemies or locations**:
+2. **Process player characters, enemies, or locations**:
    ```bash
+   # Process player characters
+   npm run processPlayer       # Process all 61 player character models
+
    # Process enemies
    npm run processEnemiesTest  # Process 3 sample enemies (frog, rappy, jigobooma)
    npm run processEnemies      # Process all 67 enemies

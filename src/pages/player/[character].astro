@@ -1,0 +1,158 @@
+---
+import PlayerViewer from '../../components/PlayerViewer';
+import { readdirSync, existsSync, statSync, readFileSync } from 'fs';
+import { join } from 'path';
+
+// Generate static paths for all player characters
+export async function getStaticPaths() {
+  const playerDir = './public/player';
+  const paths = [];
+
+  if (existsSync(playerDir)) {
+    const playerFolders = readdirSync(playerDir).filter(name => {
+      const fullPath = join(playerDir, name);
+      return statSync(fullPath).isDirectory() && name.startsWith('pc_');
+    });
+
+    for (const folder of playerFolders) {
+      // Try to read info.json to get player metadata
+      const infoPath = join(playerDir, folder, 'info.json');
+      let playerData = {
+        name: folder,
+        displayName: folder.toUpperCase(),
+        textureCount: 0
+      };
+
+      if (existsSync(infoPath)) {
+        try {
+          const info = JSON.parse(readFileSync(infoPath, 'utf-8'));
+          playerData = {
+            name: folder,
+            displayName: folder.toUpperCase(),
+            ...info
+          };
+        } catch (e) {
+          // Use default if info.json is malformed
+        }
+      }
+
+      paths.push({
+        params: { character: folder },
+        props: { playerData }
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { character } = Astro.params;
+const { playerData } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{playerData.displayName} - PSZ Player Viewer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .header {
+        margin-bottom: 2rem;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-family: 'Courier New', monospace;
+      }
+
+      .header p {
+        color: #aaa;
+        font-size: 1.1rem;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        padding: 0.5rem 1rem;
+        background: #2a2a2a;
+        border: 1px solid #333;
+        border-radius: 4px;
+        color: #fff;
+        text-decoration: none;
+        transition: background 0.2s;
+      }
+
+      .back-link:hover {
+        background: #3a3a3a;
+      }
+
+      .error {
+        padding: 2rem;
+        background: #2a1a1a;
+        border: 1px solid #ff6b6b;
+        border-radius: 8px;
+        color: #ff6b6b;
+      }
+
+      .info-box {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 8px;
+        color: #aaa;
+      }
+
+      .info-box h3 {
+        color: #667eea;
+        margin-bottom: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/player" class="back-link">← Back to Characters</a>
+
+      <div class="header">
+        <h1>{playerData.displayName}</h1>
+        <p>Character Model • {playerData.textureCount} texture variants</p>
+      </div>
+
+      <PlayerViewer characterName={character} client:load />
+
+      <div class="info-box">
+        <h3>About Player Characters</h3>
+        <p>
+          Player character models in Phantasy Star Zero include multiple texture variants representing
+          different costumes and color schemes. Each character can be animated using the shared animation
+          library that includes actions like walking, running, attacking, and taking damage.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,90 @@
+[
+  {
+    "name": "pmbn_wait",
+    "file": "binpmbn_wait.nsbca"
+  },
+  {
+    "name": "dummy1",
+    "file": "bindummy1.nsbca"
+  },
+  {
+    "name": "pmsa_run",
+    "file": "binpmsa_run.nsbca"
+  },
+  {
+    "name": "pmsa_esc_f",
+    "file": "binpmsa_esc_f.nsbca"
+  },
+  {
+    "name": "pmsa_chg",
+    "file": "binpmsa_chg.nsbca"
+  },
+  {
+    "name": "pmsa_stp_fb",
+    "file": "binpmsa_stp_fb.nsbca"
+  },
+  {
+    "name": "pmsa_stp_lr",
+    "file": "binpmsa_stp_lr.nsbca"
+  },
+  {
+    "name": "pmbn_dam_n",
+    "file": "binpmbn_dam_n.nsbca"
+  },
+  {
+    "name": "pmbn_dam_h",
+    "file": "binpmbn_dam_h.nsbca"
+  },
+  {
+    "name": "pmbn_dam_d",
+    "file": "binpmbn_dam_d.nsbca"
+  },
+  {
+    "name": "pmbn_dam_d_lp",
+    "file": "binpmbn_dam_d_lp.nsbca"
+  },
+  {
+    "name": "pmbn_dam_d_wa",
+    "file": "binpmbn_dam_d_wa.nsbca"
+  },
+  {
+    "name": "dummy2",
+    "file": "bindummy2.nsbca"
+  },
+  {
+    "name": "pmsa_slp",
+    "file": "binpmsa_slp.nsbca"
+  },
+  {
+    "name": "pmbn_atk1",
+    "file": "binpmbn_atk1.nsbca"
+  },
+  {
+    "name": "pmbn_atk2",
+    "file": "binpmbn_atk2.nsbca"
+  },
+  {
+    "name": "pmbn_atk3",
+    "file": "binpmbn_atk3.nsbca"
+  },
+  {
+    "name": "pmbn_pa1",
+    "file": "binpmbn_pa1.nsbca"
+  },
+  {
+    "name": "pmbn_tec",
+    "file": "binpmbn_tec.nsbca"
+  },
+  {
+    "name": "pmbn_pb",
+    "file": "binpmbn_pb.nsbca"
+  },
+  {
+    "name": "pmbn_pb_lp",
+    "file": "binpmbn_pb_lp.nsbca"
+  },
+  {
+    "name": "dummy4",
+    "file": "bindummy4.nsbca"
+  }
+]

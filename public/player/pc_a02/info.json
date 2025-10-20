@@ -1,0 +1,11 @@
+{
+  "name": "pc_a02",
+  "modelFile": "pc_a02_000.nsbmd",
+  "textureCount": 1,
+  "textures": [
+    {
+      "name": "pc_a02_000",
+      "file": "pc_a02_000.nsbtx"
+    }
+  ]
+}

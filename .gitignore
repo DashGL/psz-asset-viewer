@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# temporary build files
+temp/
+
+# raw assets (too large for git)
+raw/

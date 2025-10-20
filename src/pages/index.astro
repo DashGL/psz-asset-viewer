@@ -52,6 +52,17 @@ const tower6Count = countAssets('./public/tower_6');
 const tower7Count = countAssets('./public/tower_7');
 const towerECount = countAssets('./public/tower_e');
 
+// Count player characters
+function countPlayers(): number {
+  const playerDir = './public/player';
+  if (!existsSync(playerDir)) return 0;
+
+  return readdirSync(playerDir).filter(name => {
+    const fullPath = join(playerDir, name);
+    return statSync(fullPath).isDirectory() && name.startsWith('pc_');
+  }).length;
+}
+
 // Count enemies
 function countEnemies(): number {
   const enemiesDir = './public/enemies';
@@ -63,6 +74,7 @@ function countEnemies(): number {
   }).length;
 }
 
+const playerCount = countPlayers();
 const enemyCount = countEnemies();
 ---
 
@@ -200,8 +212,21 @@ const enemyCount = countEnemies();
       <h1>Phantasy Star Zero</h1>
       <p class="subtitle">Scene Asset Viewer</p>
 
-      <h2 style="margin-bottom: 1rem; font-size: 1.5rem;">Enemies</h2>
+      <h2 style="margin-bottom: 1rem; font-size: 1.5rem;">Characters & Enemies</h2>
       <div class="cities">
+        <a href="/player" class="city-card" style="background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);">
+          <h2>Player Characters</h2>
+          <div class="count">
+            {playerCount > 0
+              ? `${playerCount} characters available`
+              : 'No characters processed yet'
+            }
+          </div>
+          <p class="description">
+            View all player character models with 45 texture variants and 22 shared animations. Interactive 3D viewer.
+          </p>
+        </a>
+
         <a href="/enemies" class="city-card" style="background: linear-gradient(135deg, #ff6b6b22 0%, #ee5a6f22 100%);">
           <h2>Enemy Models</h2>
           <div class="count">
