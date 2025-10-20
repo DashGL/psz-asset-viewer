@@ -5,7 +5,7 @@ import react from '@astrojs/react';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://dashgl.github.io',
-  base: '/psz-asset-viewer',
+  base: '/psz-asset-viewer/',
   integrations: [react()],
   vite: {
     server: {

@@ -1,44 +1,22 @@
 ---
-import { readdirSync, existsSync, statSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { getCollection } from 'astro:content';
 
-// Scan the public/objects directory for object models
-const objectsDir = './public/objects';
-const objects = [];
+const base = import.meta.env.BASE_URL;
 
-if (existsSync(objectsDir)) {
-  const objectFolders = readdirSync(objectsDir).filter(name => {
-    const fullPath = join(objectsDir, name);
-    return statSync(fullPath).isDirectory();
-  });
+// Get all objects from the collection
+const allObjects = await getCollection('objects');
 
-  for (const folder of objectFolders) {
-    // Try to read info.json to get object metadata
-    const infoPath = join(objectsDir, folder, 'info.json');
-    if (existsSync(infoPath)) {
-      try {
-        const info = JSON.parse(readFileSync(infoPath, 'utf-8'));
-        objects.push({
-          id: folder,
-          displayName: folder.toUpperCase(),
-          ...info
-        });
-      } catch (e) {
-        objects.push({
-          id: folder,
-          displayName: folder.toUpperCase(),
-          modelCount: 0
-        });
-      }
-    } else {
-      objects.push({
-        id: folder,
-        displayName: folder.toUpperCase(),
-        modelCount: 0
-      });
-    }
-  }
-}
+// Transform to match the expected structure
+const objects = allObjects.map(entry => {
+  // Strip /index from the ID
+  const cleanId = entry.id.replace('/index', '');
+  return {
+    id: cleanId,
+    displayName: cleanId.toUpperCase(),
+    modelCount: entry.data.modelCount,
+    textureCount: entry.data.textureCount
+  };
+});
 
 // Sort objects by id
 objects.sort((a, b) => a.id.localeCompare(b.id));
@@ -210,7 +188,7 @@ for (const obj of objects) {
   </head>
   <body>
     <div class="container">
-      <a href="/" class="back-link">← Back to Home</a>
+      <a href={`${base}/`} class="back-link">← Back to Home</a>
 
       <div class="header">
         <h1>Objects</h1>
@@ -229,7 +207,7 @@ for (const obj of objects) {
               <h2 class="category-heading">{category} ({categoryObjects.length})</h2>
               <div class="object-grid">
                 {categoryObjects.map(obj => (
-                  <a href={`/objects/${obj.id}`} class="object-card">
+                  <a href={`${base}objects/${obj.id}`} class="object-card">
                     <div class="object-name">{obj.displayName}</div>
                     <div class="object-stats">
                       {obj.modelCount} models

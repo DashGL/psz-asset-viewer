@@ -1,48 +1,22 @@
 ---
-import { readdirSync, existsSync, statSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { getCollection } from 'astro:content';
 
-// Scan the public/enemies directory for enemy folders
-const enemiesDir = './public/enemies';
-const enemies = [];
+const base = import.meta.env.BASE_URL;
 
-if (existsSync(enemiesDir)) {
-  const enemyFolders = readdirSync(enemiesDir).filter(name => {
-    const fullPath = join(enemiesDir, name);
-    return statSync(fullPath).isDirectory();
-  });
+// Get all enemies from the collection
+const allEnemies = await getCollection('enemies');
 
-  for (const folder of enemyFolders) {
-    // Try to read info.json to get enemy metadata
-    const infoPath = join(enemiesDir, folder, 'info.json');
-    if (existsSync(infoPath)) {
-      try {
-        const info = JSON.parse(readFileSync(infoPath, 'utf-8'));
-        enemies.push({
-          name: folder,
-          displayName: folder.charAt(0).toUpperCase() + folder.slice(1),
-          ...info
-        });
-      } catch (e) {
-        // If info.json is malformed, just use folder name
-        enemies.push({
-          name: folder,
-          displayName: folder.charAt(0).toUpperCase() + folder.slice(1),
-          animationCount: 0,
-          effectCount: 0
-        });
-      }
-    } else {
-      // No info.json, just use folder name
-      enemies.push({
-        name: folder,
-        displayName: folder.charAt(0).toUpperCase() + folder.slice(1),
-        animationCount: 0,
-        effectCount: 0
-      });
-    }
-  }
-}
+// Transform to match the expected structure
+const enemies = allEnemies.map(entry => {
+  // Strip /index from the ID
+  const cleanId = entry.id.replace('/index', '');
+  return {
+    name: cleanId,
+    displayName: entry.data.name.charAt(0).toUpperCase() + entry.data.name.slice(1),
+    animationCount: entry.data.animationCount,
+    effectCount: entry.data.effectCount
+  };
+});
 
 // Sort enemies by name
 enemies.sort((a, b) => a.name.localeCompare(b.name));
@@ -163,7 +137,7 @@ enemies.sort((a, b) => a.name.localeCompare(b.name));
   </head>
   <body>
     <div class="container">
-      <a href="/" class="back-link">← Back to Home</a>
+      <a href={`${base}/`} class="back-link">← Back to Home</a>
 
       <div class="header">
         <h1>Enemy Models</h1>
@@ -178,7 +152,7 @@ enemies.sort((a, b) => a.name.localeCompare(b.name));
       ) : (
         <div class="enemy-grid">
           {enemies.map(enemy => (
-            <a href={`/enemies/${enemy.name}`} class="enemy-card">
+            <a href={`${base}enemies/${enemy.name}`} class="enemy-card">
               <div class="enemy-name">{enemy.displayName}</div>
               <div class="enemy-stats">
                 {enemy.animationCount > 0 && `${enemy.animationCount} animations`}

@@ -1,46 +1,22 @@
 ---
-import { readdirSync, existsSync, statSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { getCollection } from 'astro:content';
 
-// Scan the public/weapons directory for weapon models
-const weaponsDir = './public/weapons';
-const weapons = [];
+const base = import.meta.env.BASE_URL;
 
-if (existsSync(weaponsDir)) {
-  const weaponFolders = readdirSync(weaponsDir).filter(name => {
-    const fullPath = join(weaponsDir, name);
-    return statSync(fullPath).isDirectory();
-  });
+// Get all weapons from the collection
+const allWeapons = await getCollection('weapons');
 
-  for (const folder of weaponFolders) {
-    // Try to read info.json to get weapon metadata
-    const infoPath = join(weaponsDir, folder, 'info.json');
-    if (existsSync(infoPath)) {
-      try {
-        const info = JSON.parse(readFileSync(infoPath, 'utf-8'));
-        weapons.push({
-          id: folder,
-          displayName: folder.toUpperCase(),
-          ...info
-        });
-      } catch (e) {
-        weapons.push({
-          id: folder,
-          displayName: folder.toUpperCase(),
-          animationCount: 0,
-          textureCount: 0
-        });
-      }
-    } else {
-      weapons.push({
-        id: folder,
-        displayName: folder.toUpperCase(),
-        animationCount: 0,
-        textureCount: 0
-      });
-    }
-  }
-}
+// Transform to match the expected structure
+const weapons = allWeapons.map(entry => {
+  // Strip /index from the ID
+  const cleanId = entry.id.replace('/index', '');
+  return {
+    id: cleanId,
+    displayName: cleanId.toUpperCase(),
+    animationCount: entry.data.animationCount,
+    textureCount: entry.data.textureCount
+  };
+});
 
 // Sort weapons by id
 weapons.sort((a, b) => a.id.localeCompare(b.id));
@@ -212,7 +188,7 @@ for (const weapon of weapons) {
   </head>
   <body>
     <div class="container">
-      <a href="/" class="back-link">← Back to Home</a>
+      <a href={`${base}/`} class="back-link">← Back to Home</a>
 
       <div class="header">
         <h1>Weapons</h1>
@@ -231,7 +207,7 @@ for (const weapon of weapons) {
               <h2 class="type-heading">{typeName} ({typeWeapons.length})</h2>
               <div class="weapon-grid">
                 {typeWeapons.map(weapon => (
-                  <a href={`/weapons/${weapon.id}`} class="weapon-card">
+                  <a href={`${base}weapons/${weapon.id}`} class="weapon-card">
                     <div class="weapon-name">{weapon.displayName}</div>
                     <div class="weapon-stats">
                       {weapon.animationCount > 0 && `${weapon.animationCount} anims • `}

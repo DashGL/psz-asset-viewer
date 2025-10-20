@@ -1,0 +1,17 @@
+{
+  "id": "00_o00a",
+  "modelCount": 9,
+  "totalModels": 9,
+  "textureCount": 8,
+  "models": [
+    "o0c_dropit.imd",
+    "o0c_droppr.imd",
+    "o0c_dropra.imd",
+    "o0c_dropwe.imd",
+    "o0c_meseta.imd",
+    "o0c_mspack.imd",
+    "o0c_point.imd",
+    "o0c_recont.imd",
+    "o0c_trebox.imd"
+  ]
+}

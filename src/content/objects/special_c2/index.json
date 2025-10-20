@@ -1,0 +1,18 @@
+{
+  "id": "special_c2",
+  "modelCount": 10,
+  "totalModels": 10,
+  "textureCount": 10,
+  "models": [
+    "np_000_00_0.imd",
+    "np_000_00_1.imd",
+    "np_001_00_0.imd",
+    "np_001_00_1.imd",
+    "np_009_00_0.imd",
+    "np_009_00_1.imd",
+    "np_012_00_0.imd",
+    "np_012_00_1.imd",
+    "np_013_00_0.imd",
+    "np_013_00_1.imd"
+  ]
+}

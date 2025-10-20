@@ -1,44 +1,23 @@
 ---
-import { readdirSync, existsSync, statSync, readFileSync } from 'fs';
+import { getCollection } from 'astro:content';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 
-// Scan the public/player directory for player models
-const playerDir = './public/player';
-const players = [];
+const base = import.meta.env.BASE_URL;
 
-if (existsSync(playerDir)) {
-  const playerFolders = readdirSync(playerDir).filter(name => {
-    const fullPath = join(playerDir, name);
-    return statSync(fullPath).isDirectory() && name.startsWith('pc_');
-  });
+// Get all players from the collection
+const allPlayers = await getCollection('players');
 
-  for (const folder of playerFolders) {
-    // Try to read info.json to get player metadata
-    const infoPath = join(playerDir, folder, 'info.json');
-    if (existsSync(infoPath)) {
-      try {
-        const info = JSON.parse(readFileSync(infoPath, 'utf-8'));
-        players.push({
-          name: folder,
-          displayName: folder.toUpperCase(),
-          ...info
-        });
-      } catch (e) {
-        players.push({
-          name: folder,
-          displayName: folder.toUpperCase(),
-          textureCount: 0
-        });
-      }
-    } else {
-      players.push({
-        name: folder,
-        displayName: folder.toUpperCase(),
-        textureCount: 0
-      });
-    }
-  }
-}
+// Transform to match the expected structure
+const players = allPlayers.map(entry => {
+  // Strip /index from the ID
+  const cleanId = entry.id.replace('/index', '');
+  return {
+    name: cleanId,
+    displayName: cleanId.toUpperCase(),
+    textureCount: entry.data.textureCount
+  };
+});
 
 // Sort players by name
 players.sort((a, b) => a.name.localeCompare(b.name));
@@ -99,7 +78,7 @@ for (const player of players) {
 }
 
 // Load shared animations
-const animationsPath = join(playerDir, 'animations', 'animations.json');
+const animationsPath = './public/player/animations/animations.json';
 let sharedAnimations = [];
 if (existsSync(animationsPath)) {
   try {
@@ -252,7 +231,7 @@ if (existsSync(animationsPath)) {
   </head>
   <body>
     <div class="container">
-      <a href="/" class="back-link">← Back to Home</a>
+      <a href={`${base}/`} class="back-link">← Back to Home</a>
 
       <div class="header">
         <h1>Player Characters</h1>
@@ -277,7 +256,7 @@ if (existsSync(animationsPath)) {
               <h2 class="class-heading">{className}</h2>
               <div class="player-grid">
                 {classPlayers.map(player => (
-                  <a href={`/player/${player.name}`} class="player-card">
+                  <a href={`${base}player/${player.name}`} class="player-card">
                     <div class="player-name">{player.displayName}</div>
                     <div class="player-stats">
                       {player.npcName ? player.npcName : (player.textureCount > 0 && `${player.textureCount} textures`)}

@@ -1,0 +1,26 @@
+{
+  "id": "special_c1",
+  "modelCount": 18,
+  "totalModels": 18,
+  "textureCount": 18,
+  "models": [
+    "np_002_00_0.imd",
+    "np_002_00_1.imd",
+    "np_003_00_0.imd",
+    "np_003_00_1.imd",
+    "np_004_00_0.imd",
+    "np_004_00_1.imd",
+    "np_005_00_0.imd",
+    "np_005_00_1.imd",
+    "np_006_00_0.imd",
+    "np_006_00_1.imd",
+    "np_007_00_0.imd",
+    "np_007_00_1.imd",
+    "np_008_00_0.imd",
+    "np_008_02_0.imd",
+    "np_010_00_0.imd",
+    "np_010_00_1.imd",
+    "o0c_butterfly.imd",
+    "o0c_ruller01.imd"
+  ]
+}
