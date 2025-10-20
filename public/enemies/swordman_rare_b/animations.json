@@ -1,0 +1,54 @@
+[
+  {
+    "name": "atk_pu",
+    "file": "b062_atk_pu.nsbca"
+  },
+  {
+    "name": "atk_sw",
+    "file": "b062_atk_sw.nsbca"
+  },
+  {
+    "name": "atk_th_ed",
+    "file": "b062_atk_th_ed.nsbca"
+  },
+  {
+    "name": "atk_th_st",
+    "file": "b062_atk_th_st.nsbca"
+  },
+  {
+    "name": "atk_th_sw",
+    "file": "b062_atk_th_sw.nsbca"
+  },
+  {
+    "name": "dam",
+    "file": "b062_dam.nsbca"
+  },
+  {
+    "name": "ded",
+    "file": "b062_ded.nsbca"
+  },
+  {
+    "name": "stp_ed",
+    "file": "b062_stp_ed.nsbca"
+  },
+  {
+    "name": "stp_lp",
+    "file": "b062_stp_lp.nsbca"
+  },
+  {
+    "name": "stp_st",
+    "file": "b062_stp_st.nsbca"
+  },
+  {
+    "name": "stt",
+    "file": "b062_stt.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "b062_wat.nsbca"
+  },
+  {
+    "name": "wlk",
+    "file": "b062_wlk.nsbca"
+  }
+]

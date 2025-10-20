@@ -1,0 +1,42 @@
+[
+  {
+    "name": "atk_dl_lp",
+    "file": "z003_atk_dl_lp.nsbca"
+  },
+  {
+    "name": "dummy",
+    "file": "z003_dummy.nsbca"
+  },
+  {
+    "name": "ve_ded_a_n",
+    "file": "z003_ve_ded_a_n.nsbca"
+  },
+  {
+    "name": "ve_ded_a_u",
+    "file": "z003_ve_ded_a_u.nsbca"
+  },
+  {
+    "name": "ve_ded_b_n",
+    "file": "z003_ve_ded_b_n.nsbca"
+  },
+  {
+    "name": "ve_ded_b_u",
+    "file": "z003_ve_ded_b_u.nsbca"
+  },
+  {
+    "name": "ve_stt_n",
+    "file": "z003_ve_stt_n.nsbca"
+  },
+  {
+    "name": "ve_stt_u",
+    "file": "z003_ve_stt_u.nsbca"
+  },
+  {
+    "name": "ve_wat_n",
+    "file": "z003_ve_wat_n.nsbca"
+  },
+  {
+    "name": "ve_wat_u",
+    "file": "z003_ve_wat_u.nsbca"
+  }
+]

@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
   <asset>
-    <created>2025-10-20T01:24:12Z</created>
-    <modified>2025-10-20T01:24:12Z</modified>
+    <created>2025-10-20T19:03:19Z</created>
+    <modified>2025-10-20T19:03:19Z</modified>
   </asset>
   <library_images>
+    <image id="image-z_001_body">
+      <init_from>z_001_body.png</init_from>
+    </image>
+    <image id="image-z_001_head">
+      <init_from>z_001_head.png</init_from>
+    </image>
   </library_images>
   <library_materials>
     <material id="material0" name="Material__308">
@@ -23,6 +29,22 @@
   <library_effects>
     <effect id="effect0" name="Material__308">
       <profile_COMMON>
+        <newparam sid="Image-surface">
+          <surface type="2D">
+            <init_from>image-z_001_head</init_from>
+            <format>A8R8G8B8</format>
+          </surface>
+        </newparam>
+        <newparam sid="Image-sampler">
+          <sampler2D>
+            <source>Image-surface</source>
+            <wrap_s>WRAP</wrap_s>
+            <wrap_t>WRAP</wrap_t>
+            <minfilter>NEAREST</minfilter>
+            <magfilter>NEAREST</magfilter>
+            <mipfilter>NEAREST</mipfilter>
+          </sampler2D>
+        </newparam>
         <technique sid="common">
           <phong>
             <emission>
@@ -32,17 +54,36 @@
               <color>1 1 1 1</color>
             </ambient>
             <diffuse>
-              <color>1 1 1 1</color>
+              <texture texture="Image-sampler" texcoord="tc"/>
             </diffuse>
             <specular>
               <color>1 1 1 1</color>
             </specular>
+            <transparent>
+              <texture texture="Image-sampler" texcoord="tc"/>
+            </transparent>
           </phong>
         </technique>
       </profile_COMMON>
     </effect>
     <effect id="effect1" name="bod">
       <profile_COMMON>
+        <newparam sid="Image-surface">
+          <surface type="2D">
+            <init_from>image-z_001_body</init_from>
+            <format>A8R8G8B8</format>
+          </surface>
+        </newparam>
+        <newparam sid="Image-sampler">
+          <sampler2D>
+            <source>Image-surface</source>
+            <wrap_s>WRAP</wrap_s>
+            <wrap_t>WRAP</wrap_t>
+            <minfilter>NEAREST</minfilter>
+            <magfilter>NEAREST</magfilter>
+            <mipfilter>NEAREST</mipfilter>
+          </sampler2D>
+        </newparam>
         <technique sid="common">
           <phong>
             <emission>
@@ -52,17 +93,36 @@
               <color>1 1 1 1</color>
             </ambient>
             <diffuse>
-              <color>1 1 1 1</color>
+              <texture texture="Image-sampler" texcoord="tc"/>
             </diffuse>
             <specular>
               <color>1 1 1 1</color>
             </specular>
+            <transparent>
+              <texture texture="Image-sampler" texcoord="tc"/>
+            </transparent>
           </phong>
         </technique>
       </profile_COMMON>
     </effect>
     <effect id="effect2" name="red_horn">
       <profile_COMMON>
+        <newparam sid="Image-surface">
+          <surface type="2D">
+            <init_from>image-z_001_head</init_from>
+            <format>A8R8G8B8</format>
+          </surface>
+        </newparam>
+        <newparam sid="Image-sampler">
+          <sampler2D>
+            <source>Image-surface</source>
+            <wrap_s>WRAP</wrap_s>
+            <wrap_t>WRAP</wrap_t>
+            <minfilter>NEAREST</minfilter>
+            <magfilter>NEAREST</magfilter>
+            <mipfilter>NEAREST</mipfilter>
+          </sampler2D>
+        </newparam>
         <technique sid="common">
           <phong>
             <emission>
@@ -72,17 +132,36 @@
               <color>1 1 1 1</color>
             </ambient>
             <diffuse>
-              <color>1 1 1 1</color>
+              <texture texture="Image-sampler" texcoord="tc"/>
             </diffuse>
             <specular>
               <color>1 1 1 1</color>
             </specular>
+            <transparent>
+              <texture texture="Image-sampler" texcoord="tc"/>
+            </transparent>
           </phong>
         </technique>
       </profile_COMMON>
     </effect>
     <effect id="effect3" name="wing">
       <profile_COMMON>
+        <newparam sid="Image-surface">
+          <surface type="2D">
+            <init_from>image-z_001_body</init_from>
+            <format>A8R8G8B8</format>
+          </surface>
+        </newparam>
+        <newparam sid="Image-sampler">
+          <sampler2D>
+            <source>Image-surface</source>
+            <wrap_s>WRAP</wrap_s>
+            <wrap_t>WRAP</wrap_t>
+            <minfilter>NEAREST</minfilter>
+            <magfilter>NEAREST</magfilter>
+            <mipfilter>NEAREST</mipfilter>
+          </sampler2D>
+        </newparam>
         <technique sid="common">
           <phong>
             <emission>
@@ -92,11 +171,14 @@
               <color>1 1 1 1</color>
             </ambient>
             <diffuse>
-              <color>1 1 1 1</color>
+              <texture texture="Image-sampler" texcoord="tc"/>
             </diffuse>
             <specular>
               <color>1 1 1 1</color>
             </specular>
+            <transparent>
+              <texture texture="Image-sampler" texcoord="tc"/>
+            </transparent>
           </phong>
         </technique>
       </profile_COMMON>

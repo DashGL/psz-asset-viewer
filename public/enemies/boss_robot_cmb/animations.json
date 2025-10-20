@@ -1,0 +1,150 @@
+[
+  {
+    "name": "atk_dl_at",
+    "file": "z003_atk_dl_at.nsbca"
+  },
+  {
+    "name": "atk_dl_ed",
+    "file": "z003_atk_dl_ed.nsbca"
+  },
+  {
+    "name": "atk_dl_lp",
+    "file": "z003_atk_dl_lp.nsbca"
+  },
+  {
+    "name": "atk_dl_st",
+    "file": "z003_atk_dl_st.nsbca"
+  },
+  {
+    "name": "atk_dr_at",
+    "file": "z003_atk_dr_at.nsbca"
+  },
+  {
+    "name": "atk_dr_ed",
+    "file": "z003_atk_dr_ed.nsbca"
+  },
+  {
+    "name": "atk_dr_lp",
+    "file": "z003_atk_dr_lp.nsbca"
+  },
+  {
+    "name": "atk_dr_st",
+    "file": "z003_atk_dr_st.nsbca"
+  },
+  {
+    "name": "atk_gl_at",
+    "file": "z003_atk_gl_at.nsbca"
+  },
+  {
+    "name": "atk_gl_ed",
+    "file": "z003_atk_gl_ed.nsbca"
+  },
+  {
+    "name": "atk_gl_st",
+    "file": "z003_atk_gl_st.nsbca"
+  },
+  {
+    "name": "atk_gr_at",
+    "file": "z003_atk_gr_at.nsbca"
+  },
+  {
+    "name": "atk_gr_ed",
+    "file": "z003_atk_gr_ed.nsbca"
+  },
+  {
+    "name": "atk_gr_st",
+    "file": "z003_atk_gr_st.nsbca"
+  },
+  {
+    "name": "atk_sw_at",
+    "file": "z003_atk_sw_at.nsbca"
+  },
+  {
+    "name": "atk_sw_ed",
+    "file": "z003_atk_sw_ed.nsbca"
+  },
+  {
+    "name": "atk_sw_lp",
+    "file": "z003_atk_sw_lp.nsbca"
+  },
+  {
+    "name": "atk_sw_st",
+    "file": "z003_atk_sw_st.nsbca"
+  },
+  {
+    "name": "ch_in_n",
+    "file": "z003_ch_in_n.nsbca"
+  },
+  {
+    "name": "ch_in_u",
+    "file": "z003_ch_in_u.nsbca"
+  },
+  {
+    "name": "ch_out_n",
+    "file": "z003_ch_out_n.nsbca"
+  },
+  {
+    "name": "ch_out_u",
+    "file": "z003_ch_out_u.nsbca"
+  },
+  {
+    "name": "ded_n",
+    "file": "z003_ded_n.nsbca"
+  },
+  {
+    "name": "ded_u",
+    "file": "z003_ded_u.nsbca"
+  },
+  {
+    "name": "dummy",
+    "file": "z003_dummy.nsbca"
+  },
+  {
+    "name": "dwn_ed",
+    "file": "z003_dwn_ed.nsbca"
+  },
+  {
+    "name": "dwn_lp",
+    "file": "z003_dwn_lp.nsbca"
+  },
+  {
+    "name": "dwn_st",
+    "file": "z003_dwn_st.nsbca"
+  },
+  {
+    "name": "mov_ed",
+    "file": "z003_mov_ed.nsbca"
+  },
+  {
+    "name": "mov_lp",
+    "file": "z003_mov_lp.nsbca"
+  },
+  {
+    "name": "mov_st",
+    "file": "z003_mov_st.nsbca"
+  },
+  {
+    "name": "stp",
+    "file": "z003_stp.nsbca"
+  },
+  {
+    "name": "stt_n",
+    "file": "z003_stt_n.nsbca"
+  },
+  {
+    "name": "stt_u",
+    "file": "z003_stt_u.nsbca"
+  },
+  {
+    "name": "ve_wat_n",
+    "file": "z003_ve_wat_n.nsbca"
+  },
+  {
+    "name": "ve_wat_u",
+    "file": "z003_ve_wat_u.nsbca"
+  },
+  {
+    "name": "wat",
+    "file": "z003_wat.nsbca"
+  }
+]
