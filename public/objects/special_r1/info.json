@@ -1,0 +1,16 @@
+{
+  "id": "special_r1",
+  "modelCount": 8,
+  "totalModels": 8,
+  "textureCount": 8,
+  "models": [
+    "np_011_00_0.imd",
+    "np_011_00_1.imd",
+    "np_014_00_0.imd",
+    "np_014_00_1.imd",
+    "o0c_healhp.imd",
+    "o0s_warpb.imd",
+    "o0s_warpm.imd",
+    "o0s_warps.imd"
+  ]
+}

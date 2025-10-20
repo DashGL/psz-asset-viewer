@@ -1,0 +1,94 @@
+---
+import ObjectViewer from '../../components/ObjectViewer';
+import { readdirSync, existsSync, statSync } from 'fs';
+import { join } from 'path';
+
+export async function getStaticPaths() {
+  const objectsDir = './public/objects';
+
+  if (!existsSync(objectsDir)) {
+    return [];
+  }
+
+  const objectFolders = readdirSync(objectsDir).filter(name => {
+    const fullPath = join(objectsDir, name);
+    return statSync(fullPath).isDirectory();
+  });
+
+  return objectFolders.map(objectId => ({
+    params: { objectId }
+  }));
+}
+
+const { objectId } = Astro.params;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{objectId.toUpperCase()} - PSZ Asset Viewer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .header {
+        margin-bottom: 2rem;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-family: 'Courier New', monospace;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        padding: 0.5rem 1rem;
+        background: #2a2a2a;
+        border: 1px solid #333;
+        border-radius: 4px;
+        color: #fff;
+        text-decoration: none;
+        transition: background 0.2s;
+      }
+
+      .back-link:hover {
+        background: #3a3a3a;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/objects" class="back-link">← Back to Objects</a>
+
+      <div class="header">
+        <h1>{objectId.toUpperCase()}</h1>
+      </div>
+
+      <ObjectViewer client:load objectId={objectId} />
+    </div>
+  </body>
+</html>

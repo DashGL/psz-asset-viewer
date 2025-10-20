@@ -1,0 +1,16 @@
+{
+  "id": "special_sg",
+  "modelCount": 8,
+  "totalModels": 8,
+  "textureCount": 8,
+  "models": [
+    "o0c_bird.imd",
+    "o0c_butterfly.imd",
+    "o0c_dragonfly.imd",
+    "o0c_healhp.imd",
+    "o0c_return.imd",
+    "o0s_warpb.imd",
+    "o0s_warpm.imd",
+    "o0s_warps.imd"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "special_r2",
+  "modelCount": 5,
+  "totalModels": 5,
+  "textureCount": 5,
+  "models": [
+    "o0c_healhp.imd",
+    "o0c_warparena1.imd",
+    "o0s_warpb.imd",
+    "o0s_warpm.imd",
+    "o0s_warps.imd"
+  ]
+}
