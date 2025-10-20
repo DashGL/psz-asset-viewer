@@ -43,6 +43,44 @@ if (existsSync(playerDir)) {
 // Sort players by name
 players.sort((a, b) => a.name.localeCompare(b.name));
 
+// Group players by race/class
+function getCharacterClass(name: string): string {
+  const prefix = name.replace('pc_', '').substring(0, 2);
+
+  const classMap: { [key: string]: string } = {
+    '00': 'Humar',
+    '01': 'HUmarl',
+    '02': 'RAmar',
+    '03': 'RAmarl',
+    '04': 'FOmar',
+    '05': 'FOmarl',
+    '06': 'HUnewm',
+    '07': 'HUnewearl',
+    '08': 'FOnewm',
+    '09': 'FOnewearl',
+    '10': 'HUcast',
+    '11': 'HUcaseal',
+    '12': 'RAcast',
+    '13': 'RAcaseal',
+    'a0': 'NPCs',
+    'a1': 'NPCs',
+    'a2': 'NPCs',
+    'a3': 'NPCs',
+    'a4': 'NPCs',
+  };
+
+  return classMap[prefix] || 'Unknown';
+}
+
+const groupedPlayers: { [key: string]: typeof players } = {};
+for (const player of players) {
+  const className = getCharacterClass(player.name);
+  if (!groupedPlayers[className]) {
+    groupedPlayers[className] = [];
+  }
+  groupedPlayers[className].push(player);
+}
+
 // Load shared animations
 const animationsPath = join(playerDir, 'animations', 'animations.json');
 let sharedAnimations = [];
@@ -128,6 +166,19 @@ if (existsSync(animationsPath)) {
         color: #667eea;
       }
 
+      .class-section {
+        margin-bottom: 3rem;
+      }
+
+      .class-heading {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #667eea33;
+      }
+
       .player-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -203,14 +254,21 @@ if (existsSync(animationsPath)) {
           <p>Run <code>npm run processPlayer</code> to convert player character models.</p>
         </div>
       ) : (
-        <div class="player-grid">
-          {players.map(player => (
-            <a href={`/player/${player.name}`} class="player-card">
-              <div class="player-name">{player.displayName}</div>
-              <div class="player-stats">
-                {player.textureCount > 0 && `${player.textureCount} textures`}
+        <div>
+          {Object.entries(groupedPlayers).map(([className, classPlayers]) => (
+            <div class="class-section">
+              <h2 class="class-heading">{className}</h2>
+              <div class="player-grid">
+                {classPlayers.map(player => (
+                  <a href={`/player/${player.name}`} class="player-card">
+                    <div class="player-name">{player.displayName}</div>
+                    <div class="player-stats">
+                      {player.textureCount > 0 && `${player.textureCount} textures`}
+                    </div>
+                  </a>
+                ))}
               </div>
-            </a>
+            </div>
           ))}
         </div>
       )}
