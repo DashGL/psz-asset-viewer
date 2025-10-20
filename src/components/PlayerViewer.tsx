@@ -14,6 +14,16 @@ interface AnimationInfo {
   file: string;
 }
 
+interface AnimationSet {
+  id: string;
+  category: string;
+  weaponType: string;
+  classPrefix: string;
+  glbFile: string;
+  animationCount: number;
+  animations: string[];
+}
+
 interface PlayerInfo {
   name: string;
   modelFile: string;
@@ -25,6 +35,7 @@ interface PlayerData {
   info: PlayerInfo | null;
   textures: TextureInfo[];
   sharedAnimations: AnimationInfo[];
+  animationSets: AnimationSet[];
 }
 
 interface ModelProps {
@@ -32,18 +43,34 @@ interface ModelProps {
   animationName?: string;
   onAnimationsLoaded?: (names: string[]) => void;
   texturePath?: string;
+  externalAnimationsUrl?: string;
+  onExternalAnimationsLoaded?: (names: string[]) => void;
 }
 
-function AnimatedModel({ url, animationName, onAnimationsLoaded, texturePath }: ModelProps) {
+function AnimatedModel({ url, animationName, onAnimationsLoaded, texturePath, externalAnimationsUrl, onExternalAnimationsLoaded }: ModelProps) {
   const group = useRef<Group>(null);
   const gltf = useGLTF(url);
-  const { actions, names } = useAnimations(gltf.animations, group);
 
+  // Load external animation GLB if provided
+  const externalGltf = externalAnimationsUrl ? useGLTF(externalAnimationsUrl) : null;
+
+  // Use animations from external GLB if available, otherwise use model's own animations
+  const animationsToUse = externalGltf?.animations || gltf.animations;
+  const { actions, names } = useAnimations(animationsToUse, group);
+
+  // Report model's own animations
   useEffect(() => {
-    if (names.length > 0 && onAnimationsLoaded) {
-      onAnimationsLoaded(names);
+    if (gltf.animations.length > 0 && onAnimationsLoaded) {
+      onAnimationsLoaded(gltf.animations.map(a => a.name));
     }
-  }, [names, onAnimationsLoaded]);
+  }, [gltf.animations, onAnimationsLoaded]);
+
+  // Report external animations when loaded
+  useEffect(() => {
+    if (externalGltf?.animations && externalGltf.animations.length > 0 && onExternalAnimationsLoaded) {
+      onExternalAnimationsLoaded(externalGltf.animations.map(a => a.name));
+    }
+  }, [externalGltf?.animations, onExternalAnimationsLoaded]);
 
   useEffect(() => {
     if (animationName && actions[animationName]) {
@@ -103,10 +130,12 @@ interface PlayerViewerProps {
 }
 
 export default function PlayerViewer({ characterName, basePath = '/player' }: PlayerViewerProps) {
-  const [playerData, setPlayerData] = useState<PlayerData>({ info: null, textures: [], sharedAnimations: [] });
+  const [playerData, setPlayerData] = useState<PlayerData>({ info: null, textures: [], sharedAnimations: [], animationSets: [] });
   const [selectedAnimation, setSelectedAnimation] = useState<string | undefined>();
   const [selectedTexture, setSelectedTexture] = useState<number>(0);
+  const [selectedAnimationSet, setSelectedAnimationSet] = useState<string | null>(null);
   const [glbAnimations, setGlbAnimations] = useState<string[]>([]);
+  const [animationSetAnimations, setAnimationSetAnimations] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -136,7 +165,7 @@ export default function PlayerViewer({ characterName, basePath = '/player' }: Pl
           console.log('No info.json or textures.json found');
         }
 
-        // Load shared animations
+        // Load shared animations (deprecated - keeping for backwards compatibility)
         let sharedAnimations: AnimationInfo[] = [];
         try {
           const animResponse = await fetch(`${basePath}/animations/animations.json`);
@@ -147,7 +176,18 @@ export default function PlayerViewer({ characterName, basePath = '/player' }: Pl
           console.log('No shared animations found');
         }
 
-        setPlayerData({ info, textures, sharedAnimations });
+        // Load animation sets
+        let animationSets: AnimationSet[] = [];
+        try {
+          const animSetsResponse = await fetch(`${basePath}/animations/animation_sets.json`);
+          if (animSetsResponse.ok) {
+            animationSets = await animSetsResponse.json();
+          }
+        } catch (e) {
+          console.log('No animation sets found');
+        }
+
+        setPlayerData({ info, textures, sharedAnimations, animationSets });
         setIsLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load player data');
@@ -179,8 +219,40 @@ export default function PlayerViewer({ characterName, basePath = '/player' }: Pl
         gap: '2rem',
         flexWrap: 'wrap'
       }}>
+        {/* Animation Set Selection */}
+        {playerData.animationSets.length > 0 && (
+          <div style={{ flex: '1', minWidth: '200px' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', color: '#fff', fontWeight: 'bold' }}>
+              Animation Set
+            </label>
+            <select
+              value={selectedAnimationSet || ''}
+              onChange={(e) => {
+                const setId = e.target.value || null;
+                setSelectedAnimationSet(setId);
+                setSelectedAnimation(undefined);
+              }}
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                background: '#1a1a1a',
+                color: '#fff',
+                border: '1px solid #444',
+                borderRadius: '4px'
+              }}
+            >
+              <option value="">Select a set...</option>
+              {playerData.animationSets.map((set) => (
+                <option key={set.id} value={set.id}>
+                  {set.category} - {set.weaponType} ({set.animationCount} anims)
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         {/* Animation Selection */}
-        {glbAnimations.length > 0 && (
+        {(glbAnimations.length > 0 || animationSetAnimations.length > 0) && (
           <div style={{ flex: '1', minWidth: '200px' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', color: '#fff', fontWeight: 'bold' }}>
               Animation
@@ -198,11 +270,19 @@ export default function PlayerViewer({ characterName, basePath = '/player' }: Pl
               }}
             >
               <option value="">None</option>
-              {glbAnimations.map((animName) => (
-                <option key={animName} value={animName}>
-                  {animName}
-                </option>
-              ))}
+              {animationSetAnimations.length > 0 ? (
+                animationSetAnimations.map((animName) => (
+                  <option key={animName} value={animName}>
+                    {animName}
+                  </option>
+                ))
+              ) : (
+                glbAnimations.map((animName) => (
+                  <option key={animName} value={animName}>
+                    {animName}
+                  </option>
+                ))
+              )}
             </select>
           </div>
         )}
@@ -231,8 +311,8 @@ export default function PlayerViewer({ characterName, basePath = '/player' }: Pl
 
         {/* Stats */}
         <div style={{ color: '#aaa', fontSize: '0.9rem', alignSelf: 'center' }}>
-          {playerData.sharedAnimations.length > 0 && (
-            <div>{playerData.sharedAnimations.length} shared animations</div>
+          {playerData.animationSets.length > 0 && (
+            <div>{playerData.animationSets.length} animation sets available</div>
           )}
           {playerData.textures.length > 0 && (
             <div>{playerData.textures.length} texture variants</div>
@@ -265,6 +345,12 @@ export default function PlayerViewer({ characterName, basePath = '/player' }: Pl
                 animationName={selectedAnimation}
                 onAnimationsLoaded={setGlbAnimations}
                 texturePath={currentTexturePath}
+                externalAnimationsUrl={
+                  selectedAnimationSet
+                    ? `${basePath}/animations/${playerData.animationSets.find(s => s.id === selectedAnimationSet)?.glbFile}`
+                    : undefined
+                }
+                onExternalAnimationsLoaded={setAnimationSetAnimations}
               />
             </Suspense>
           </Canvas>
