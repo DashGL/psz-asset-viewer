@@ -238,7 +238,18 @@ const objectCount = countObjects();
       <h1>Phantasy Star Zero</h1>
       <p class="subtitle">Scene Asset Viewer</p>
 
-      <h2 style="margin-bottom: 1rem; font-size: 1.5rem;">Characters & Enemies</h2>
+      <h2 style="margin-bottom: 1rem; font-size: 1.5rem;">Gameplay</h2>
+      <div class="cities">
+        <a href={`${base}walkable`} class="city-card" style="background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%); grid-column: 1 / -1;">
+          <h2>Walkable Scene Demo</h2>
+          <div class="count">Interactive 3D Environment</div>
+          <p class="description">
+            Explore the Wetlands B environment with a playable character. Use WASD to move, click and drag to rotate the camera. Features third-person controls and running animations.
+          </p>
+        </a>
+      </div>
+
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">Characters & Enemies</h2>
       <div class="cities">
         <a href={`${base}player`} class="city-card" style="background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);">
           <h2>Player Characters</h2>
