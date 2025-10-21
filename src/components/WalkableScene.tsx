@@ -56,11 +56,11 @@ interface PlayerCharacterProps {
   textureUrl?: string;
   animationsUrl?: string;
   position: THREE.Vector3;
-  rotation: number;
+  rotationRef: { current: number };
   isMoving: boolean;
 }
 
-function PlayerCharacter({ characterUrl, textureUrl, animationsUrl, position, rotation, isMoving }: PlayerCharacterProps) {
+function PlayerCharacter({ characterUrl, textureUrl, animationsUrl, position, rotationRef, isMoving }: PlayerCharacterProps) {
   const group = useRef<Group>(null);
   const gltf = useGLTF(characterUrl);
 
@@ -110,7 +110,7 @@ function PlayerCharacter({ characterUrl, textureUrl, animationsUrl, position, ro
   useFrame(() => {
     if (group.current) {
       group.current.position.copy(position);
-      group.current.rotation.y = rotation;
+      group.current.rotation.y = rotationRef.current;
     }
   });
 
@@ -260,7 +260,9 @@ function ThirdPersonControls({ playerPosition, playerRotation, onMove }: ThirdPe
       playerPosition.z += moveZ;
 
       // Update player rotation to face movement direction
-      playerRotation.current = Math.atan2(moveX, moveZ);
+      // Calculate the angle based on the actual movement direction
+      const movementAngle = Math.atan2(moveX, moveZ);
+      playerRotation.current = movementAngle;
     }
 
     // Camera follows player from behind and above
@@ -365,7 +367,7 @@ export default function WalkableScene({ stageUrl, characterUrl, textureUrl, anim
             textureUrl={textureUrl}
             animationsUrl={animationsUrl}
             position={playerPosition.current}
-            rotation={playerRotation.current}
+            rotationRef={playerRotation}
             isMoving={isMoving}
           />
         </Suspense>
