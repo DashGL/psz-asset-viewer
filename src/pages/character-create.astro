@@ -1,0 +1,67 @@
+---
+import CharacterCreator from '../components/CharacterCreator';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Character Creation - PSZ Asset Viewer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #ffffff;
+        font-family: system-ui, -apple-system, sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);
+        border-bottom: 1px solid #333;
+        padding: 1.5rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(10px);
+      }
+
+      .header h1 {
+        font-size: 1.8rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .back-link {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: inline-block;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Character Creation</h1>
+      <a href={base} class="back-link">← Back to Home</a>
+    </div>
+
+    <CharacterCreator basePath={base} client:load />
+  </body>
+</html>
