@@ -283,21 +283,31 @@ function ThirdPersonControls({ playerPosition, playerRotation, onMove }: ThirdPe
 
 // Rain particle effect component
 function Rain() {
-  const particleCount = 2000;
-  const rainRef = useRef<THREE.Points>(null);
+  const dropCount = 1500;
+  const rainRef = useRef<THREE.LineSegments>(null);
 
   const [positions, velocities] = useMemo(() => {
-    const positions = new Float32Array(particleCount * 3);
-    const velocities = new Float32Array(particleCount);
+    // Each raindrop is a line segment (2 vertices = 6 position values)
+    const positions = new Float32Array(dropCount * 6);
+    const velocities = new Float32Array(dropCount);
 
-    for (let i = 0; i < particleCount; i++) {
-      // Spread particles in a wide area
-      positions[i * 3] = (Math.random() - 0.5) * 100; // x
-      positions[i * 3 + 1] = Math.random() * 30; // y (height)
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 100; // z
+    for (let i = 0; i < dropCount; i++) {
+      const x = (Math.random() - 0.5) * 100;
+      const y = Math.random() * 30;
+      const z = (Math.random() - 0.5) * 100;
 
-      // Random fall speed for each particle
-      velocities[i] = 0.1 + Math.random() * 0.15;
+      // Top vertex of raindrop line
+      positions[i * 6] = x;
+      positions[i * 6 + 1] = y;
+      positions[i * 6 + 2] = z;
+
+      // Bottom vertex (create a vertical streak)
+      positions[i * 6 + 3] = x;
+      positions[i * 6 + 4] = y - 0.3; // Streak length
+      positions[i * 6 + 5] = z;
+
+      // Random fall speed for each raindrop
+      velocities[i] = 0.2 + Math.random() * 0.2;
     }
 
     return [positions, velocities];
@@ -308,15 +318,23 @@ function Rain() {
 
     const posArray = rainRef.current.geometry.attributes.position.array as Float32Array;
 
-    for (let i = 0; i < particleCount; i++) {
-      // Update Y position (falling down)
-      posArray[i * 3 + 1] -= velocities[i];
+    for (let i = 0; i < dropCount; i++) {
+      // Update both vertices of the line segment
+      posArray[i * 6 + 1] -= velocities[i]; // Top Y
+      posArray[i * 6 + 4] -= velocities[i]; // Bottom Y
 
-      // Reset particle to top when it falls below ground
-      if (posArray[i * 3 + 1] < 0) {
-        posArray[i * 3 + 1] = 30;
-        posArray[i * 3] = (Math.random() - 0.5) * 100;
-        posArray[i * 3 + 2] = (Math.random() - 0.5) * 100;
+      // Reset raindrop to top when it falls below ground
+      if (posArray[i * 6 + 1] < 0) {
+        const x = (Math.random() - 0.5) * 100;
+        const z = (Math.random() - 0.5) * 100;
+
+        posArray[i * 6] = x;
+        posArray[i * 6 + 1] = 30;
+        posArray[i * 6 + 2] = z;
+
+        posArray[i * 6 + 3] = x;
+        posArray[i * 6 + 4] = 30 - 0.3;
+        posArray[i * 6 + 5] = z;
       }
     }
 
@@ -324,23 +342,22 @@ function Rain() {
   });
 
   return (
-    <points ref={rainRef}>
+    <lineSegments ref={rainRef}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={particleCount}
+          count={dropCount * 2}
           array={positions}
           itemSize={3}
         />
       </bufferGeometry>
-      <pointsMaterial
-        size={0.1}
-        color="#a8c8dc"
+      <lineBasicMaterial
+        color="#b8d4e8"
         transparent
-        opacity={0.6}
-        sizeAttenuation
+        opacity={0.5}
+        linewidth={1}
       />
-    </points>
+    </lineSegments>
   );
 }
 
