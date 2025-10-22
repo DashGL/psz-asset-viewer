@@ -358,6 +358,32 @@ function OverShoulderControls({
   return null;
 }
 
+// Lantern lights component
+function Lanterns() {
+  const lanternPositions: [number, number, number][] = [
+    [-22, 10, 8.40],
+    [-23.4, 10, -12.61],
+    [-4.46, 10, -21.3],
+    [25.08, 10, -8.4],
+    [13.16, 10, 20.3],
+  ];
+
+  return (
+    <>
+      {lanternPositions.map((position, index) => (
+        <pointLight
+          key={index}
+          position={position}
+          color="#ff4422"
+          intensity={50}
+          distance={30}
+          decay={2}
+        />
+      ))}
+    </>
+  );
+}
+
 // Snow particle effect component
 function Snow() {
   const flakeCount = 2000;
@@ -704,7 +730,7 @@ export default function AttackableScene({
           pointerEvents: 'none',
         }}
       >
-        <div><strong>Scene:</strong> Rioh Snowfield</div>
+        <div><strong>Scene:</strong> Rioh Snowfield (Night)</div>
         <div><strong>Weather:</strong> Snow</div>
         <div><strong>Character:</strong> HUmarl (pc_010)</div>
         <div><strong>Animation:</strong> {currentAnimation}</div>
@@ -722,15 +748,17 @@ export default function AttackableScene({
       <Canvas
         camera={{ position: [0, 2, 5], fov: 75 }}
         onCreated={({ gl, scene }) => {
-          gl.setClearColor('#d0e8f2');
-          scene.fog = new THREE.Fog('#d0e8f2', 10, 60);
+          gl.setClearColor('#000000');
+          scene.fog = new THREE.FogExp2('#000000', 0.03);
         }}
       >
-        {/* Lighting - Bright and cold for snowy environment */}
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[10, 20, 10]} intensity={1.5} castShadow />
-        <directionalLight position={[-10, 15, -5]} intensity={0.3} color="#b8d4e8" />
-        <hemisphereLight args={['#d0e8f2', '#ffffff', 0.5]} />
+        {/* Lighting - Dark night atmosphere with lanterns */}
+        <ambientLight intensity={0.01} />
+        <directionalLight position={[10, 20, 10]} intensity={0.05} color="#0a0a1a" castShadow />
+        <hemisphereLight args={['#000000', '#000000', 0.02]} />
+
+        {/* Red lantern lights */}
+        <Lanterns />
 
         {/* Snow Particle Effect */}
         <Snow />
