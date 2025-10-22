@@ -278,7 +278,7 @@ export default function CharacterCreator({ basePath }: CharacterCreatorProps) {
                 style={{
                   width: '100%',
                   height: '8px',
-                  background: 'linear-gradient(90deg, #8b7355, #f5d5c0)',
+                  background: 'linear-gradient(90deg, #f5d5c0, #8b7355)',
                   borderRadius: '4px',
                   outline: 'none',
                   WebkitAppearance: 'none'
