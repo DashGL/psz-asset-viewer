@@ -240,25 +240,30 @@ export const CHARACTER_RACES: RaceConfig[] = [
  * Get the texture name for a specific character variation, color, and skin tone
  */
 export function getTextureName(variation: string, colorIndex: number, skinTone: number): string {
-  // Texture naming: pc_XXX_YZZ where:
-  // XXX = variation number (000, 001, etc.)
-  // Y = skin tone (0-8)
-  // ZZ = color index (00-04)
-  const skinToneDigit = skinTone;
-  const colorDigits = colorIndex.toString().padStart(2, '0');
-  return `${variation}_${skinToneDigit}${colorDigits}`;
+  // Texture naming pattern: pc_XXX_ABC where:
+  // A = skin tone group (0-2 = 0, 3-5 = 1, 6-8 = 2)
+  // B = skin tone within group (0, 1, or 2)
+  // C = color index (0-4)
+  // Examples:
+  // Skin 0, Color 0 = 000
+  // Skin 1, Color 0 = 010
+  // Skin 2, Color 0 = 020
+  // Skin 3, Color 0 = 100
+  // Skin 4, Color 0 = 110
+  const textureIndex = Math.floor(skinTone / 3) * 100 + (skinTone % 3) * 10 + colorIndex;
+  return `${variation}_${textureIndex.toString().padStart(3, '0')}`;
 }
 
 /**
  * Get the model path for a character variation
  */
 export function getModelPath(variation: string): string {
-  return `/player/${variation}/${variation}/${variation}_000.glb`;
+  return `player/${variation}/${variation}/${variation}_000.glb`;
 }
 
 /**
  * Get the texture path for a character
  */
 export function getTexturePath(variation: string, textureName: string): string {
-  return `/player/${variation}/textures/${textureName}.png`;
+  return `player/${variation}/textures/${textureName}.png`;
 }
