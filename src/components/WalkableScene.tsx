@@ -9,13 +9,8 @@ interface StageModelProps {
 }
 
 function SingleStageAsset({ url }: { url: string }) {
-  try {
-    const gltf = useGLTF(url);
-    return <primitive object={gltf.scene} />;
-  } catch (error) {
-    console.error('Error loading stage asset:', url, error);
-    return null;
-  }
+  const gltf = useGLTF(url);
+  return <primitive object={gltf.scene} />;
 }
 
 function StageModel({ stageUrl }: StageModelProps) {
@@ -80,13 +75,20 @@ function PlayerCharacter({ characterUrl, textureUrl, animationsUrl, position, ro
         texture.magFilter = THREE.NearestFilter;
         texture.minFilter = THREE.NearestFilter;
         texture.flipY = false;
+        texture.colorSpace = THREE.SRGBColorSpace;
 
         gltf.scene.traverse((child: any) => {
-          if (child.isMesh) {
-            child.material = new THREE.MeshBasicMaterial({
-              map: texture,
-              side: THREE.DoubleSide,
-            });
+          if (child.isMesh && child.material) {
+            // Instead of replacing material, just update the texture
+            if (Array.isArray(child.material)) {
+              child.material.forEach((mat: any) => {
+                mat.map = texture;
+                mat.needsUpdate = true;
+              });
+            } else {
+              child.material.map = texture;
+              child.material.needsUpdate = true;
+            }
           }
         });
       },
@@ -339,14 +341,17 @@ export default function WalkableScene({ stageUrl, characterUrl, textureUrl, anim
       {/* 3D Canvas */}
       <Canvas
         camera={{ position: [0, 2, 3], fov: 75 }}
-        onCreated={({ gl }) => {
-          gl.setClearColor('#87ceeb');
+        onCreated={({ gl, scene }) => {
+          gl.setClearColor('#6b8e9e');
+          // Add fog for atmospheric marsh effect
+          scene.fog = new THREE.Fog('#6b8e9e', 5, 50);
         }}
       >
-        {/* Lighting */}
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[10, 10, 5]} intensity={0.8} castShadow />
-        <hemisphereLight args={['#87ceeb', '#3a5f3a', 0.4]} />
+        {/* Lighting - Darker ambient with stronger directional for dramatic highlights */}
+        <ambientLight intensity={0.3} />
+        <directionalLight position={[10, 15, 10]} intensity={2.5} castShadow />
+        <directionalLight position={[-10, 10, -5]} intensity={0.4} color="#b8d4e8" />
+        <hemisphereLight args={['#6b8e9e', '#2a3f3a', 0.3]} />
 
         {/* Third Person Movement Controls */}
         <ThirdPersonControls
