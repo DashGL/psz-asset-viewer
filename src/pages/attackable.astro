@@ -1,0 +1,53 @@
+---
+import AttackableScene from '../components/AttackableScene';
+
+const base = import.meta.env.BASE_URL;
+
+// URLs for the Rioh Snowfield stage
+const stageUrl = `${base}snowfield_a`;
+// HUmarl character (pc_010)
+const characterUrl = `${base}player/pc_010/pc_010/pc_010_000.glb`;
+const textureUrl = `${base}player/pc_010/textures/pc_010_000.png`;
+// HUmarl common/w animations
+const animationsUrl = `${base}player/animations/common/w/00_common_w/pc_000_000.glb`;
+// Rappy enemy (s_070 is the model base name from info.json)
+const enemyUrl = `${base}enemies/rappy/s_070/s_070.glb`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attack System Demo - PSZ Asset Viewer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <AttackableScene
+      client:only="react"
+      stageUrl={stageUrl}
+      characterUrl={characterUrl}
+      textureUrl={textureUrl}
+      animationsUrl={animationsUrl}
+      enemyUrl={enemyUrl}
+    />
+  </body>
+</html>
