@@ -1,6 +1,6 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useGLTF, useAnimations } from '@react-three/drei';
-import { Suspense, useRef, useState, useEffect } from 'react';
+import { Suspense, useRef, useState, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import type { Group } from 'three';
 
@@ -281,6 +281,69 @@ function ThirdPersonControls({ playerPosition, playerRotation, onMove }: ThirdPe
   return null;
 }
 
+// Rain particle effect component
+function Rain() {
+  const particleCount = 2000;
+  const rainRef = useRef<THREE.Points>(null);
+
+  const [positions, velocities] = useMemo(() => {
+    const positions = new Float32Array(particleCount * 3);
+    const velocities = new Float32Array(particleCount);
+
+    for (let i = 0; i < particleCount; i++) {
+      // Spread particles in a wide area
+      positions[i * 3] = (Math.random() - 0.5) * 100; // x
+      positions[i * 3 + 1] = Math.random() * 30; // y (height)
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 100; // z
+
+      // Random fall speed for each particle
+      velocities[i] = 0.1 + Math.random() * 0.15;
+    }
+
+    return [positions, velocities];
+  }, []);
+
+  useFrame(() => {
+    if (!rainRef.current) return;
+
+    const posArray = rainRef.current.geometry.attributes.position.array as Float32Array;
+
+    for (let i = 0; i < particleCount; i++) {
+      // Update Y position (falling down)
+      posArray[i * 3 + 1] -= velocities[i];
+
+      // Reset particle to top when it falls below ground
+      if (posArray[i * 3 + 1] < 0) {
+        posArray[i * 3 + 1] = 30;
+        posArray[i * 3] = (Math.random() - 0.5) * 100;
+        posArray[i * 3 + 2] = (Math.random() - 0.5) * 100;
+      }
+    }
+
+    rainRef.current.geometry.attributes.position.needsUpdate = true;
+  });
+
+  return (
+    <points ref={rainRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={particleCount}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.1}
+        color="#a8c8dc"
+        transparent
+        opacity={0.6}
+        sizeAttenuation
+      />
+    </points>
+  );
+}
+
 interface WalkableSceneProps {
   stageUrl: string;
   characterUrl: string;
@@ -334,6 +397,7 @@ export default function WalkableScene({ stageUrl, characterUrl, textureUrl, anim
         }}
       >
         <div><strong>Scene:</strong> Wetlands B</div>
+        <div><strong>Weather:</strong> Rain</div>
         <div><strong>Character:</strong> pc_000</div>
         <div><strong>Status:</strong> {isMoving ? 'Running' : 'Idle'}</div>
       </div>
@@ -352,6 +416,9 @@ export default function WalkableScene({ stageUrl, characterUrl, textureUrl, anim
         <directionalLight position={[10, 15, 10]} intensity={2.5} castShadow />
         <directionalLight position={[-10, 10, -5]} intensity={0.4} color="#b8d4e8" />
         <hemisphereLight args={['#6b8e9e', '#2a3f3a', 0.3]} />
+
+        {/* Rain Particle Effect */}
+        <Rain />
 
         {/* Third Person Movement Controls */}
         <ThirdPersonControls
