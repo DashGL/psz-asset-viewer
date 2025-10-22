@@ -98,15 +98,20 @@ function AnimatedModel({ url, animationName, onAnimationsLoaded, texturePath, ex
         texture.magFilter = THREE.NearestFilter;
         texture.minFilter = THREE.NearestFilter;
         texture.flipY = false;
+        texture.colorSpace = THREE.SRGBColorSpace;
 
-        // Replace materials with unlit MeshBasicMaterial
+        // Update texture on existing materials instead of replacing them
         gltf.scene.traverse((child: any) => {
-          if (child.isMesh) {
-            // Create new basic material (unlit, ignores lighting)
-            child.material = new THREE.MeshBasicMaterial({
-              map: texture,
-              side: THREE.DoubleSide,
-            });
+          if (child.isMesh && child.material) {
+            if (Array.isArray(child.material)) {
+              child.material.forEach((mat: any) => {
+                mat.map = texture;
+                mat.needsUpdate = true;
+              });
+            } else {
+              child.material.map = texture;
+              child.material.needsUpdate = true;
+            }
           }
         });
       },
