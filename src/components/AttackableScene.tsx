@@ -621,7 +621,7 @@ function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTi
           >
             <div
               style={{
-                width: `${(comboWindowProgress / 18) * 100}%`,
+                width: `${(comboWindowProgress / 24) * 100}%`,
                 height: '100%',
                 background: 'linear-gradient(90deg, #4ade80, #22c55e)',
                 transition: 'width 0.05s linear',
@@ -725,6 +725,7 @@ function TimerManager({
       setComboWindowProgress(comboWindowProgress - 1);
       if (comboWindowProgress === 1) {
         // Window expired, enter cooldown
+        console.log('Combo window expired, entering cooldown');
         setComboState('cooldown');
         setCooldownTimer(60); // 1 second cooldown
         setComboWindowProgress(0);
@@ -767,7 +768,7 @@ export default function AttackableScene({
 
   const comboWindowStart = 0.98; // Combo window starts at 98% (very end of animation)
   const cooldownDuration = 60; // frames (1 second at 60fps)
-  const comboWindowDuration = 18; // 300ms at 60fps
+  const comboWindowDuration = 24; // 400ms at 60fps
 
   // Update debug position periodically
   useEffect(() => {
@@ -807,6 +808,8 @@ export default function AttackableScene({
 
       if (progress >= comboWindowStart) {
         // Animation reached end, freeze and start combo window
+        // Only transition once by checking current state
+        console.log('Animation reached 98%, transitioning to combo_window');
         setComboState('combo_window');
         setComboWindowProgress(comboWindowDuration);
       }
@@ -816,6 +819,7 @@ export default function AttackableScene({
   const handleAttack = () => {
     if (comboState === 'idle') {
       // Start new combo
+      console.log('Starting new combo - attack 1');
       setComboState('attacking');
       setComboStep(1);
       setCurrentAnimation('pwbn_atk1');
@@ -824,12 +828,15 @@ export default function AttackableScene({
       // Continue combo
       const nextStep = comboStep + 1;
       if (nextStep <= 3) {
+        console.log(`Continuing combo - attack ${nextStep}`);
         setComboState('attacking');
         setComboStep(nextStep);
         setCurrentAnimation(`pwbn_atk${nextStep}`);
         setComboWindowProgress(0);
         setAttackProgress(0); // Reset attack progress for next attack
       }
+    } else {
+      console.log(`Ignoring attack click, state: ${comboState}`);
     }
     // Ignore clicks during attacking or cooldown states
   };
@@ -985,7 +992,7 @@ export default function AttackableScene({
             currentAnimation={currentAnimation}
             onAnimationEnd={handleAnimationEnd}
             onAnimationProgress={handleAnimationProgress}
-            shouldPauseAtEnd={comboState === 'attacking'}
+            shouldPauseAtEnd={comboState === 'attacking' || comboState === 'combo_window'}
           />
         </Suspense>
       </Canvas>
