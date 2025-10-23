@@ -108,7 +108,8 @@ function PlayerCharacter({
         }
 
         // Pause at end if requested and near completion
-        if (shouldPauseAtEnd && progress >= 0.95 && !isPaused.current) {
+        // Use 0.98 to ensure we're on the last frame, not earlier
+        if (shouldPauseAtEnd && progress >= 0.98 && !isPaused.current) {
           action.paused = true;
           isPaused.current = true;
         }
@@ -528,12 +529,14 @@ interface ComboIndicatorProps {
   comboStep: number;
   comboWindowProgress: number;
   cooldownTimer: number;
+  attackProgress: number; // 0 to 1, current attack animation progress
 }
 
-function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTimer }: ComboIndicatorProps) {
-  // Only show during combo window or when showing combo count
-  if (comboState === 'idle' || (comboState !== 'combo_window' && comboStep === 0)) return null;
+function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTimer, attackProgress }: ComboIndicatorProps) {
+  // Only show when in combat states
+  if (comboState === 'idle') return null;
 
+  const showAttacking = comboState === 'attacking';
   const showWindow = comboState === 'combo_window';
   const showCooldown = comboState === 'cooldown';
 
@@ -564,7 +567,46 @@ function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTi
         </div>
       )}
 
-      {/* Timing window bar */}
+      {/* Attack charging bar (red, fills up during attack animation) */}
+      {showAttacking && (
+        <>
+          <div
+            style={{
+              width: '100%',
+              height: '20px',
+              background: 'rgba(0, 0, 0, 0.7)',
+              borderRadius: '10px',
+              overflow: 'hidden',
+              border: '2px solid rgba(255, 100, 100, 0.5)',
+            }}
+          >
+            <div
+              style={{
+                width: `${attackProgress * 100}%`,
+                height: '100%',
+                background: 'linear-gradient(90deg, #dc2626, #ef4444)',
+                transition: 'width 0.05s linear',
+                boxShadow: '0 0 10px rgba(239, 68, 68, 0.8)',
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              textAlign: 'center',
+              marginTop: '0.5rem',
+              fontSize: '0.9rem',
+              color: '#ef4444',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)',
+              fontWeight: 'bold',
+            }}
+          >
+            ATTACKING...
+          </div>
+        </>
+      )}
+
+      {/* Combo window bar (green, empties during window countdown) */}
       {showWindow && (
         <>
           <div
@@ -574,7 +616,7 @@ function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTi
               background: 'rgba(0, 0, 0, 0.7)',
               borderRadius: '10px',
               overflow: 'hidden',
-              border: '2px solid rgba(255, 255, 255, 0.3)',
+              border: '2px solid rgba(74, 222, 128, 0.8)',
             }}
           >
             <div
@@ -604,20 +646,43 @@ function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTi
         </>
       )}
 
-      {/* Cooldown indicator */}
+      {/* Cooldown bar (orange/yellow, empties during cooldown) */}
       {showCooldown && (
-        <div
-          style={{
-            textAlign: 'center',
-            marginTop: '0.5rem',
-            fontSize: '1rem',
-            color: '#ef4444',
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)',
-            fontWeight: 'bold',
-          }}
-        >
-          COOLDOWN
-        </div>
+        <>
+          <div
+            style={{
+              width: '100%',
+              height: '20px',
+              background: 'rgba(0, 0, 0, 0.7)',
+              borderRadius: '10px',
+              overflow: 'hidden',
+              border: '2px solid rgba(251, 146, 60, 0.5)',
+            }}
+          >
+            <div
+              style={{
+                width: `${(cooldownTimer / 60) * 100}%`,
+                height: '100%',
+                background: 'linear-gradient(90deg, #f59e0b, #fb923c)',
+                transition: 'width 0.05s linear',
+                boxShadow: '0 0 10px rgba(251, 146, 60, 0.6)',
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              textAlign: 'center',
+              marginTop: '0.5rem',
+              fontSize: '1rem',
+              color: '#fb923c',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)',
+              fontWeight: 'bold',
+            }}
+          >
+            COOLDOWN ({Math.ceil((cooldownTimer / 60) * 1000)}ms)
+          </div>
+        </>
       )}
     </div>
   );
@@ -663,6 +728,8 @@ function TimerManager({
         setComboState('cooldown');
         setCooldownTimer(60); // 1 second cooldown
         setComboWindowProgress(0);
+        // If we completed all 3 attacks, we need to enter cooldown
+        // The animation will be reset to idle in the next effect cycle
       }
     }
   });
@@ -693,11 +760,12 @@ export default function AttackableScene({
   const [comboState, setComboState] = useState<'idle' | 'attacking' | 'combo_window' | 'cooldown'>('idle');
   const [comboWindowProgress, setComboWindowProgress] = useState(0);
   const [cooldownTimer, setCooldownTimer] = useState(0);
+  const [attackProgress, setAttackProgress] = useState(0); // 0 to 1, current attack animation progress
 
   const [movement, setMovement] = useState({ forward: 0, strafe: 0 });
   const [debugPosition, setDebugPosition] = useState({ x: 0, y: 0, z: 0 });
 
-  const comboWindowStart = 0.95; // Combo window starts at 95% (end of animation)
+  const comboWindowStart = 0.98; // Combo window starts at 98% (very end of animation)
   const cooldownDuration = 60; // frames (1 second at 60fps)
   const comboWindowDuration = 18; // 300ms at 60fps
 
@@ -715,8 +783,10 @@ export default function AttackableScene({
 
   // Update animation based on movement and combat state
   useEffect(() => {
-    if (comboState !== 'idle') return; // Don't change animation during attack/cooldown
+    // During attacking or combo_window, don't change animation
+    if (comboState === 'attacking' || comboState === 'combo_window') return;
 
+    // During cooldown or idle, allow movement animations
     if (movement.forward !== 0 && movement.strafe === 0) {
       setCurrentAnimation('pmsa_stp_fb');
     } else if (movement.strafe !== 0 && movement.forward === 0) {
@@ -731,10 +801,15 @@ export default function AttackableScene({
 
   // Handle animation progress for combo windows
   const handleAnimationProgress = (progress: number) => {
-    if (comboState === 'attacking' && progress >= comboWindowStart) {
-      // Animation reached end, freeze and start combo window
-      setComboState('combo_window');
-      setComboWindowProgress(comboWindowDuration);
+    // Update attack progress bar
+    if (comboState === 'attacking') {
+      setAttackProgress(progress);
+
+      if (progress >= comboWindowStart) {
+        // Animation reached end, freeze and start combo window
+        setComboState('combo_window');
+        setComboWindowProgress(comboWindowDuration);
+      }
     }
   };
 
@@ -744,6 +819,7 @@ export default function AttackableScene({
       setComboState('attacking');
       setComboStep(1);
       setCurrentAnimation('pwbn_atk1');
+      setAttackProgress(0); // Reset attack progress
     } else if (comboState === 'combo_window') {
       // Continue combo
       const nextStep = comboStep + 1;
@@ -752,6 +828,7 @@ export default function AttackableScene({
         setComboStep(nextStep);
         setCurrentAnimation(`pwbn_atk${nextStep}`);
         setComboWindowProgress(0);
+        setAttackProgress(0); // Reset attack progress for next attack
       }
     }
     // Ignore clicks during attacking or cooldown states
@@ -844,6 +921,7 @@ export default function AttackableScene({
         comboStep={comboStep}
         comboWindowProgress={comboWindowProgress}
         cooldownTimer={cooldownTimer}
+        attackProgress={attackProgress}
       />
 
       {/* 3D Canvas */}
