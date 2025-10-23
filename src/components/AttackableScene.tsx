@@ -529,10 +529,11 @@ interface ComboIndicatorProps {
   comboStep: number;
   comboWindowProgress: number;
   cooldownTimer: number;
+  cooldownMax: number; // Maximum cooldown duration for progress bar calculation
   attackProgress: number; // 0 to 1, current attack animation progress
 }
 
-function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTimer, attackProgress }: ComboIndicatorProps) {
+function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTimer, cooldownMax, attackProgress }: ComboIndicatorProps) {
   // Only show when in combat states
   if (comboState === 'idle') return null;
 
@@ -661,7 +662,7 @@ function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTi
           >
             <div
               style={{
-                width: `${(cooldownTimer / 60) * 100}%`,
+                width: `${(cooldownTimer / cooldownMax) * 100}%`,
                 height: '100%',
                 background: 'linear-gradient(90deg, #f59e0b, #fb923c)',
                 transition: 'width 0.05s linear',
@@ -680,7 +681,7 @@ function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTi
               fontWeight: 'bold',
             }}
           >
-            COOLDOWN ({Math.ceil((cooldownTimer / 60) * 1000)}ms)
+            COOLDOWN ({Math.round((cooldownTimer / 60) * 1000)}ms)
           </div>
         </>
       )}
@@ -698,6 +699,8 @@ interface TimerManagerProps {
   comboStep: number;
   setComboState: (state: 'idle' | 'attacking' | 'combo_window' | 'cooldown') => void;
   setComboStep: (step: number) => void;
+  longCooldownDuration: number;
+  setCooldownMax: (value: number) => void;
 }
 
 function TimerManager({
@@ -708,7 +711,9 @@ function TimerManager({
   comboState,
   comboStep,
   setComboState,
-  setComboStep
+  setComboStep,
+  longCooldownDuration,
+  setCooldownMax
 }: TimerManagerProps) {
   useFrame(() => {
     // Handle cooldown timer
@@ -724,13 +729,12 @@ function TimerManager({
     if (comboState === 'combo_window' && comboWindowProgress > 0) {
       setComboWindowProgress(comboWindowProgress - 1);
       if (comboWindowProgress === 1) {
-        // Window expired, enter cooldown
-        console.log('Combo window expired, entering cooldown');
+        // Window expired, enter long cooldown (failed combo)
+        console.log('Combo window expired, entering long cooldown (750ms)');
         setComboState('cooldown');
-        setCooldownTimer(60); // 1 second cooldown
+        setCooldownTimer(longCooldownDuration); // 750ms cooldown for failed window
+        setCooldownMax(longCooldownDuration);
         setComboWindowProgress(0);
-        // If we completed all 3 attacks, we need to enter cooldown
-        // The animation will be reset to idle in the next effect cycle
       }
     }
   });
@@ -761,13 +765,15 @@ export default function AttackableScene({
   const [comboState, setComboState] = useState<'idle' | 'attacking' | 'combo_window' | 'cooldown'>('idle');
   const [comboWindowProgress, setComboWindowProgress] = useState(0);
   const [cooldownTimer, setCooldownTimer] = useState(0);
+  const [cooldownMax, setCooldownMax] = useState(0); // Track max cooldown for progress bar
   const [attackProgress, setAttackProgress] = useState(0); // 0 to 1, current attack animation progress
 
   const [movement, setMovement] = useState({ forward: 0, strafe: 0 });
   const [debugPosition, setDebugPosition] = useState({ x: 0, y: 0, z: 0 });
 
   const comboWindowStart = 0.98; // Combo window starts at 98% (very end of animation)
-  const cooldownDuration = 60; // frames (1 second at 60fps)
+  const longCooldownDuration = 45; // 750ms at 60fps - for failed combo windows
+  const shortCooldownDuration = 21; // 350ms at 60fps - for completed combo chain
   const comboWindowDuration = 24; // 400ms at 60fps
 
   // Update debug position periodically
@@ -807,11 +813,19 @@ export default function AttackableScene({
       setAttackProgress(progress);
 
       if (progress >= comboWindowStart) {
-        // Animation reached end, freeze and start combo window
-        // Only transition once by checking current state
-        console.log('Animation reached 98%, transitioning to combo_window');
-        setComboState('combo_window');
-        setComboWindowProgress(comboWindowDuration);
+        // Animation reached end
+        // Only show combo window after attacks 1 and 2, NOT after attack 3
+        if (comboStep === 1 || comboStep === 2) {
+          console.log(`Attack ${comboStep} reached 98%, transitioning to combo_window`);
+          setComboState('combo_window');
+          setComboWindowProgress(comboWindowDuration);
+        } else if (comboStep === 3) {
+          // After attack 3, go directly to short cooldown (completed chain)
+          console.log('Attack 3 completed, entering short cooldown');
+          setComboState('cooldown');
+          setCooldownTimer(shortCooldownDuration);
+          setCooldownMax(shortCooldownDuration);
+        }
       }
     }
   };
@@ -928,6 +942,7 @@ export default function AttackableScene({
         comboStep={comboStep}
         comboWindowProgress={comboWindowProgress}
         cooldownTimer={cooldownTimer}
+        cooldownMax={cooldownMax}
         attackProgress={attackProgress}
       />
 
@@ -960,6 +975,8 @@ export default function AttackableScene({
           comboStep={comboStep}
           setComboState={setComboState}
           setComboStep={setComboStep}
+          longCooldownDuration={longCooldownDuration}
+          setCooldownMax={setCooldownMax}
         />
 
         {/* Over-the-shoulder Controls */}
