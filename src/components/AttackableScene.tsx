@@ -60,6 +60,8 @@ interface PlayerCharacterProps {
   rotationRef: { current: number };
   currentAnimation: string;
   onAnimationEnd: () => void;
+  onAnimationProgress?: (progress: number) => void;
+  shouldPauseAtEnd?: boolean;
 }
 
 function PlayerCharacter({
@@ -70,6 +72,8 @@ function PlayerCharacter({
   rotationRef,
   currentAnimation,
   onAnimationEnd,
+  onAnimationProgress,
+  shouldPauseAtEnd,
 }: PlayerCharacterProps) {
   const group = useRef<Group>(null);
   const gltf = useGLTF(characterUrl);
@@ -80,6 +84,7 @@ function PlayerCharacter({
   const { actions, mixer } = useAnimations(animationsToUse, group);
 
   const previousAnimation = useRef<string>('');
+  const isPaused = useRef(false);
 
   // Log available animations once
   useEffect(() => {
@@ -87,6 +92,40 @@ function PlayerCharacter({
       console.log('Available animations:', animationsToUse.map(a => a.name));
     }
   }, [animationsToUse]);
+
+  // Track animation progress and handle pausing
+  useFrame(() => {
+    if (group.current && currentAnimation) {
+      const action = actions[currentAnimation];
+      if (action && action.isRunning()) {
+        const duration = action.getClip().duration;
+        const time = action.time;
+        const progress = duration > 0 ? time / duration : 0;
+
+        // Report progress
+        if (onAnimationProgress) {
+          onAnimationProgress(progress);
+        }
+
+        // Pause at end if requested and near completion
+        if (shouldPauseAtEnd && progress >= 0.95 && !isPaused.current) {
+          action.paused = true;
+          isPaused.current = true;
+        }
+      }
+    }
+  });
+
+  // Resume animation when shouldPauseAtEnd changes to false
+  useEffect(() => {
+    if (!shouldPauseAtEnd && isPaused.current) {
+      const action = actions[currentAnimation];
+      if (action) {
+        action.paused = false;
+        isPaused.current = false;
+      }
+    }
+  }, [shouldPauseAtEnd, currentAnimation, actions]);
 
   // Apply texture when available
   useEffect(() => {
@@ -137,6 +176,10 @@ function PlayerCharacter({
       actions[previousAnimation.current]?.fadeOut(0.1);
     }
 
+    // Reset pause state
+    isPaused.current = false;
+    action.paused = false;
+
     // Play new animation
     action.reset().fadeIn(0.1);
 
@@ -144,8 +187,10 @@ function PlayerCharacter({
     if (currentAnimation.includes('atk')) {
       action.setLoop(THREE.LoopOnce, 1);
       action.clampWhenFinished = true;
+      action.timeScale = 0.75; // Slow down attack animations by 25%
     } else {
       action.setLoop(THREE.LoopRepeat, Infinity);
+      action.timeScale = 1.0; // Normal speed for movement
     }
 
     action.play();
@@ -479,16 +524,18 @@ function Snow() {
 }
 
 interface ComboIndicatorProps {
-  comboWindow: number;
-  maxComboWindow: number;
-  comboCount: number;
+  comboState: 'idle' | 'attacking' | 'combo_window' | 'cooldown';
+  comboStep: number;
+  comboWindowProgress: number;
+  cooldownTimer: number;
 }
 
-function ComboIndicator({ comboWindow, maxComboWindow, comboCount }: ComboIndicatorProps) {
-  if (comboWindow <= 0) return null;
+function ComboIndicator({ comboState, comboStep, comboWindowProgress, cooldownTimer }: ComboIndicatorProps) {
+  // Only show during combo window or when showing combo count
+  if (comboState === 'idle' || (comboState !== 'combo_window' && comboStep === 0)) return null;
 
-  const percentage = (comboWindow / maxComboWindow) * 100;
-  const isGoodTiming = percentage > 30;
+  const showWindow = comboState === 'combo_window';
+  const showCooldown = comboState === 'cooldown';
 
   return (
     <div
@@ -502,77 +549,120 @@ function ComboIndicator({ comboWindow, maxComboWindow, comboCount }: ComboIndica
       }}
     >
       {/* Combo counter */}
-      <div
-        style={{
-          textAlign: 'center',
-          fontSize: '2rem',
-          fontWeight: 'bold',
-          color: '#fff',
-          textShadow: '0 0 10px rgba(255, 100, 100, 0.8), 0 0 20px rgba(255, 100, 100, 0.5)',
-          marginBottom: '0.5rem',
-        }}
-      >
-        {comboCount} HIT{comboCount > 1 ? 'S' : ''}
-      </div>
-
-      {/* Timing window bar */}
-      <div
-        style={{
-          width: '100%',
-          height: '20px',
-          background: 'rgba(0, 0, 0, 0.7)',
-          borderRadius: '10px',
-          overflow: 'hidden',
-          border: '2px solid rgba(255, 255, 255, 0.3)',
-        }}
-      >
+      {comboStep > 0 && (
         <div
           style={{
-            width: `${percentage}%`,
-            height: '100%',
-            background: isGoodTiming
-              ? 'linear-gradient(90deg, #4ade80, #22c55e)'
-              : 'linear-gradient(90deg, #fbbf24, #f59e0b)',
-            transition: 'width 0.05s linear',
-            boxShadow: isGoodTiming
-              ? '0 0 10px rgba(74, 222, 128, 0.8)'
-              : '0 0 10px rgba(251, 191, 36, 0.8)',
+            textAlign: 'center',
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            color: '#fff',
+            textShadow: '0 0 10px rgba(255, 100, 100, 0.8), 0 0 20px rgba(255, 100, 100, 0.5)',
+            marginBottom: '0.5rem',
           }}
-        />
-      </div>
+        >
+          {comboStep} HIT{comboStep > 1 ? 'S' : ''}
+        </div>
+      )}
 
-      {/* Instruction text */}
-      <div
-        style={{
-          textAlign: 'center',
-          marginTop: '0.5rem',
-          fontSize: '1rem',
-          color: isGoodTiming ? '#4ade80' : '#fbbf24',
-          textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)',
-          fontWeight: 'bold',
-        }}
-      >
-        {isGoodTiming ? 'CLICK NOW!' : 'TIMING...'}
-      </div>
+      {/* Timing window bar */}
+      {showWindow && (
+        <>
+          <div
+            style={{
+              width: '100%',
+              height: '20px',
+              background: 'rgba(0, 0, 0, 0.7)',
+              borderRadius: '10px',
+              overflow: 'hidden',
+              border: '2px solid rgba(255, 255, 255, 0.3)',
+            }}
+          >
+            <div
+              style={{
+                width: `${(comboWindowProgress / 18) * 100}%`,
+                height: '100%',
+                background: 'linear-gradient(90deg, #4ade80, #22c55e)',
+                transition: 'width 0.05s linear',
+                boxShadow: '0 0 10px rgba(74, 222, 128, 0.8)',
+              }}
+            />
+          </div>
+
+          {/* Instruction text */}
+          <div
+            style={{
+              textAlign: 'center',
+              marginTop: '0.5rem',
+              fontSize: '1rem',
+              color: '#4ade80',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)',
+              fontWeight: 'bold',
+            }}
+          >
+            CLICK NOW! ({Math.ceil((comboWindowProgress / 60) * 1000)}ms)
+          </div>
+        </>
+      )}
+
+      {/* Cooldown indicator */}
+      {showCooldown && (
+        <div
+          style={{
+            textAlign: 'center',
+            marginTop: '0.5rem',
+            fontSize: '1rem',
+            color: '#ef4444',
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)',
+            fontWeight: 'bold',
+          }}
+        >
+          COOLDOWN
+        </div>
+      )}
     </div>
   );
 }
 
-interface ComboManagerProps {
-  comboWindowRef: React.MutableRefObject<number>;
-  setComboWindow: (value: number) => void;
-  setComboCount: (value: number) => void;
+
+interface TimerManagerProps {
+  cooldownTimer: number;
+  setCooldownTimer: (value: number) => void;
+  comboWindowProgress: number;
+  setComboWindowProgress: (value: number) => void;
+  comboState: 'idle' | 'attacking' | 'combo_window' | 'cooldown';
+  comboStep: number;
+  setComboState: (state: 'idle' | 'attacking' | 'combo_window' | 'cooldown') => void;
+  setComboStep: (step: number) => void;
 }
 
-function ComboManager({ comboWindowRef, setComboWindow, setComboCount }: ComboManagerProps) {
-  // Handle combo window countdown
+function TimerManager({
+  cooldownTimer,
+  setCooldownTimer,
+  comboWindowProgress,
+  setComboWindowProgress,
+  comboState,
+  comboStep,
+  setComboState,
+  setComboStep
+}: TimerManagerProps) {
   useFrame(() => {
-    if (comboWindowRef.current > 0) {
-      comboWindowRef.current--;
-      setComboWindow(comboWindowRef.current);
+    // Handle cooldown timer
+    if (cooldownTimer > 0) {
+      setCooldownTimer(cooldownTimer - 1);
+      if (cooldownTimer === 1) {
+        setComboState('idle');
+        setComboStep(0);
+      }
+    }
 
-      if (comboWindowRef.current === 0) {
-        setComboCount(0);
+    // Handle combo window countdown
+    if (comboState === 'combo_window' && comboWindowProgress > 0) {
+      setComboWindowProgress(comboWindowProgress - 1);
+      if (comboWindowProgress === 1) {
+        // Window expired, enter cooldown
+        setComboState('cooldown');
+        setCooldownTimer(60); // 1 second cooldown
+        setComboWindowProgress(0);
       }
     }
   });
@@ -599,16 +689,17 @@ export default function AttackableScene({
   const playerRotation = useRef(0);
 
   const [currentAnimation, setCurrentAnimation] = useState('pwbn_wait');
-  const [comboCount, setComboCount] = useState(0);
-  const [comboWindow, setComboWindow] = useState(0);
-  const [isAttacking, setIsAttacking] = useState(false);
-
-  const maxComboWindow = 60; // frames (approximately 1 second at 60fps)
-  const comboWindowRef = useRef(0);
-  const isAttackingRef = useRef(false);
+  const [comboStep, setComboStep] = useState(0); // 0 = idle, 1-3 = attack number
+  const [comboState, setComboState] = useState<'idle' | 'attacking' | 'combo_window' | 'cooldown'>('idle');
+  const [comboWindowProgress, setComboWindowProgress] = useState(0);
+  const [cooldownTimer, setCooldownTimer] = useState(0);
 
   const [movement, setMovement] = useState({ forward: 0, strafe: 0 });
   const [debugPosition, setDebugPosition] = useState({ x: 0, y: 0, z: 0 });
+
+  const comboWindowStart = 0.95; // Combo window starts at 95% (end of animation)
+  const cooldownDuration = 60; // frames (1 second at 60fps)
+  const comboWindowDuration = 18; // 300ms at 60fps
 
   // Update debug position periodically
   useEffect(() => {
@@ -622,9 +713,9 @@ export default function AttackableScene({
     return () => clearInterval(interval);
   }, []);
 
-  // Update animation based on movement and attack state
+  // Update animation based on movement and combat state
   useEffect(() => {
-    if (isAttacking) return; // Don't change animation during attack
+    if (comboState !== 'idle') return; // Don't change animation during attack/cooldown
 
     if (movement.forward !== 0 && movement.strafe === 0) {
       setCurrentAnimation('pmsa_stp_fb');
@@ -636,36 +727,39 @@ export default function AttackableScene({
     } else {
       setCurrentAnimation('pwbn_wait');
     }
-  }, [movement, isAttacking]);
+  }, [movement, comboState]);
 
-  const handleAttack = () => {
-    if (isAttackingRef.current) {
-      // Clicked during combo window
-      if (comboWindowRef.current > 0) {
-        const nextCombo = (comboCount % 3) + 1;
-        setComboCount(nextCombo);
-        setCurrentAnimation(`pwbn_atk${nextCombo}`);
-        comboWindowRef.current = maxComboWindow;
-        setComboWindow(maxComboWindow);
-      }
-    } else {
-      // Start new combo
-      setIsAttacking(true);
-      isAttackingRef.current = true;
-      setComboCount(1);
-      setCurrentAnimation('pwbn_atk1');
-      comboWindowRef.current = maxComboWindow;
-      setComboWindow(maxComboWindow);
+  // Handle animation progress for combo windows
+  const handleAnimationProgress = (progress: number) => {
+    if (comboState === 'attacking' && progress >= comboWindowStart) {
+      // Animation reached end, freeze and start combo window
+      setComboState('combo_window');
+      setComboWindowProgress(comboWindowDuration);
     }
   };
 
-  const handleAnimationEnd = () => {
-    if (currentAnimation.includes('atk')) {
-      // Attack animation finished
-      // Wait for combo window to expire before resetting
-      setIsAttacking(false);
-      isAttackingRef.current = false;
+  const handleAttack = () => {
+    if (comboState === 'idle') {
+      // Start new combo
+      setComboState('attacking');
+      setComboStep(1);
+      setCurrentAnimation('pwbn_atk1');
+    } else if (comboState === 'combo_window') {
+      // Continue combo
+      const nextStep = comboStep + 1;
+      if (nextStep <= 3) {
+        setComboState('attacking');
+        setComboStep(nextStep);
+        setCurrentAnimation(`pwbn_atk${nextStep}`);
+        setComboWindowProgress(0);
+      }
     }
+    // Ignore clicks during attacking or cooldown states
+  };
+
+  const handleAnimationEnd = () => {
+    // Animation finished events - not really used anymore since we handle via progress
+    // The combo window will expire naturally if not clicked
   };
 
   return (
@@ -741,14 +835,15 @@ export default function AttackableScene({
         <div><strong>Weather:</strong> Snow</div>
         <div><strong>Character:</strong> HUmarl (pc_010)</div>
         <div><strong>Animation:</strong> {currentAnimation}</div>
-        <div><strong>Combo:</strong> {comboCount > 0 ? `${comboCount} hit${comboCount > 1 ? 's' : ''}` : 'None'}</div>
+        <div><strong>State:</strong> {comboState}</div>
       </div>
 
       {/* Combo Indicator */}
       <ComboIndicator
-        comboWindow={comboWindow}
-        maxComboWindow={maxComboWindow}
-        comboCount={comboCount}
+        comboState={comboState}
+        comboStep={comboStep}
+        comboWindowProgress={comboWindowProgress}
+        cooldownTimer={cooldownTimer}
       />
 
       {/* 3D Canvas */}
@@ -770,11 +865,16 @@ export default function AttackableScene({
         {/* Snow Particle Effect */}
         <Snow />
 
-        {/* Combo Window Manager */}
-        <ComboManager
-          comboWindowRef={comboWindowRef}
-          setComboWindow={setComboWindow}
-          setComboCount={setComboCount}
+        {/* Timer Manager for cooldowns and combo windows */}
+        <TimerManager
+          cooldownTimer={cooldownTimer}
+          setCooldownTimer={setCooldownTimer}
+          comboWindowProgress={comboWindowProgress}
+          setComboWindowProgress={setComboWindowProgress}
+          comboState={comboState}
+          comboStep={comboStep}
+          setComboState={setComboState}
+          setComboStep={setComboStep}
         />
 
         {/* Over-the-shoulder Controls */}
@@ -806,6 +906,8 @@ export default function AttackableScene({
             rotationRef={playerRotation}
             currentAnimation={currentAnimation}
             onAnimationEnd={handleAnimationEnd}
+            onAnimationProgress={handleAnimationProgress}
+            shouldPauseAtEnd={comboState === 'attacking'}
           />
         </Suspense>
       </Canvas>
