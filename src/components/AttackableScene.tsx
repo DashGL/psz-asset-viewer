@@ -81,6 +81,13 @@ function PlayerCharacter({
 
   const previousAnimation = useRef<string>('');
 
+  // Log available animations once
+  useEffect(() => {
+    if (animationsToUse.length > 0) {
+      console.log('Available animations:', animationsToUse.map(a => a.name));
+    }
+  }, [animationsToUse]);
+
   // Apply texture when available
   useEffect(() => {
     if (!textureUrl || !gltf.scene) return;
@@ -336,8 +343,8 @@ function OverShoulderControls({
       playerPosition.x += moveX;
       playerPosition.z += moveZ;
 
-      // Update player rotation to face camera direction
-      playerRotation.current = cameraAngle.current.horizontal + Math.PI;
+      // Update player rotation to face movement direction
+      playerRotation.current = cameraAngle.current.horizontal;
     }
 
     // Position camera behind and above player (over-the-shoulder)
@@ -620,12 +627,12 @@ export default function AttackableScene({
     if (isAttacking) return; // Don't change animation during attack
 
     if (movement.forward !== 0 && movement.strafe === 0) {
-      setCurrentAnimation('pmsa_stp_fp');
+      setCurrentAnimation('pmsa_stp_fb');
     } else if (movement.strafe !== 0 && movement.forward === 0) {
       setCurrentAnimation('pmsa_stp_lr');
     } else if (movement.forward !== 0 && movement.strafe !== 0) {
       // Diagonal movement - use forward/back strafe
-      setCurrentAnimation('pmsa_stp_fp');
+      setCurrentAnimation('pmsa_stp_fb');
     } else {
       setCurrentAnimation('pwbn_wait');
     }
