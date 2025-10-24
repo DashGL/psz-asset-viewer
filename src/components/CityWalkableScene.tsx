@@ -39,18 +39,18 @@ function CityModel({ modelUrl }: { modelUrl: string }) {
             if (materialName === 'house') {
               // For house material, keep texture but add diffuse color for transparent areas
               newMaterial = material.clone();
-              newMaterial.color = new THREE.Color(0x8b7355); // Brown color for houses
+              newMaterial.color = new THREE.Color(0xff0000); // RED for testing
               newMaterial.transparent = false;
               newMaterial.opacity = 1.0;
-              console.log(`Modified material: ${materialName} (added brown diffuse color)`);
+              console.log(`Modified material: ${materialName} (RED diffuse color)`);
             } else if (materialName === 'Material__794') {
               // For Material__794, remove texture and use solid color for floor
               newMaterial = new THREE.MeshStandardMaterial({
-                color: 0x4a5a6a, // Gray-blue floor color
+                color: 0xff0000, // RED for testing
                 roughness: 0.8,
                 metalness: 0.2,
               });
-              console.log(`Modified material: ${materialName} (solid gray-blue for floor)`);
+              console.log(`Modified material: ${materialName} (RED solid color)`);
             } else {
               // Keep other materials as-is
               newMaterial = material.clone();
