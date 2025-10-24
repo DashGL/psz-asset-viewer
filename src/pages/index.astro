@@ -333,6 +333,14 @@ const objectCount = countObjects();
 
       <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">City (Scene 00)</h2>
       <div class="cities">
+        <a href={`${base}city-walkable`} class="city-card" style="background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%); grid-column: 1 / -1; border: 2px solid #667eea;">
+          <h2>🏙️ City Walkable Scene</h2>
+          <div class="count">Interactive City Environment</div>
+          <p class="description">
+            Walk around City E with third-person controls. Broken materials hidden, floor made usable. Features character movement, running animations, and cleaned geometry for gameplay prototyping.
+          </p>
+        </a>
+
         <a href={`${base}city_a`} class="city-card">
           <h2>City - Area A</h2>
           <div class="count">
@@ -356,6 +364,33 @@ const objectCount = countObjects();
           </div>
           <p class="description">
             City 'e' area assets. Environmental structures and objects.
+          </p>
+        </a>
+      </div>
+
+      <h2 style="margin: 2rem 0 1rem 0; font-size: 1.5rem;">City Debug Tools</h2>
+      <div class="cities">
+        <a href={`${base}city-uv-investigation`} class="city-card" style="background: linear-gradient(135deg, #f59e0b22 0%, #d9770622 100%);">
+          <h2>UV Investigation (Mesh)</h2>
+          <div class="count">Debug Tool</div>
+          <p class="description">
+            Analyze texture UV mapping at the mesh level. Toggle meshes on/off, view UV bounds, and identify out-of-range coordinates. Shows vertex/UV/index counts for debugging.
+          </p>
+        </a>
+
+        <a href={`${base}city-face-investigation`} class="city-card" style="background: linear-gradient(135deg, #f59e0b22 0%, #d9770622 100%);">
+          <h2>Face Investigation</h2>
+          <div class="count">Debug Tool</div>
+          <p class="description">
+            Analyze UVs organized by face. Toggle individual faces, copy UV data to clipboard, filter by material. Shows all 3 UV coordinates per face with vertex positions.
+          </p>
+        </a>
+
+        <a href={`${base}city-uv-corrected`} class="city-card" style="background: linear-gradient(135deg, #f59e0b22 0%, #d9770622 100%);">
+          <h2>UV Corrected Viewer</h2>
+          <div class="count">Experimental</div>
+          <p class="description">
+            Attempted UV correction for Material__794. Applies scale+offset transformations based on face orientation. Result: Did not solve texture atlas issue.
           </p>
         </a>
       </div>
