@@ -189,16 +189,57 @@ export default function FaceInvestigationViewer({ modelUrl }: FaceInvestigationV
     return uv.u < -0.1 || uv.u > 1.1 || uv.v < -0.1 || uv.v > 1.1;
   };
 
+  const copyFaceData = (face: FaceInfo) => {
+    const text = `Face ${face.faceIndex} - ${face.materialName}
+UV Coordinates:
+  Vertex 0: U=${face.uvs[0].u.toFixed(4)}, V=${face.uvs[0].v.toFixed(4)}
+  Vertex 1: U=${face.uvs[1].u.toFixed(4)}, V=${face.uvs[1].v.toFixed(4)}
+  Vertex 2: U=${face.uvs[2].u.toFixed(4)}, V=${face.uvs[2].v.toFixed(4)}
+Vertex Positions:
+  V0: (${face.vertices[0].x.toFixed(2)}, ${face.vertices[0].y.toFixed(2)}, ${face.vertices[0].z.toFixed(2)})
+  V1: (${face.vertices[1].x.toFixed(2)}, ${face.vertices[1].y.toFixed(2)}, ${face.vertices[1].z.toFixed(2)})
+  V2: (${face.vertices[2].x.toFixed(2)}, ${face.vertices[2].y.toFixed(2)}, ${face.vertices[2].z.toFixed(2)})`;
+    navigator.clipboard.writeText(text);
+  };
+
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '400px 1fr', height: '100vh', gap: '1rem' }}>
-      {/* Control Panel */}
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 500px', height: '100vh', gap: '1rem' }}>
+      {/* 3D Viewer */}
+      <div style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', background: '#000' }}>
+        <Canvas camera={{ position: [10, 5, 10], fov: 60 }}>
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[10, 10, 5]} intensity={1} />
+          <directionalLight position={[-10, -10, -5]} intensity={0.3} />
+          <Model modelUrl={modelUrl} visibleFaces={visibleFaces} />
+          <OrbitControls />
+          <gridHelper args={[20, 20]} />
+        </Canvas>
+
+        {/* Stats Overlay */}
+        <div style={{
+          position: 'absolute',
+          top: '1rem',
+          left: '1rem',
+          background: 'rgba(0, 0, 0, 0.8)',
+          padding: '0.75rem',
+          borderRadius: '8px',
+          fontSize: '0.85rem',
+          backdropFilter: 'blur(10px)',
+        }}>
+          <strong>Total Faces:</strong> {faces.length}<br />
+          <strong>Filtered:</strong> {filteredFaces.length}<br />
+          <strong>Visible:</strong> {visibleFaces.size}
+        </div>
+      </div>
+
+      {/* Face List Panel */}
       <div style={{
         background: '#1a1a1a',
         padding: '1rem',
         overflowY: 'auto',
         borderRadius: '8px',
       }}>
-        <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Face Investigation</h2>
+        <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Face List</h2>
 
         <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -231,134 +272,104 @@ export default function FaceInvestigationViewer({ modelUrl }: FaceInvestigationV
           </select>
         </div>
 
-        <div style={{
-          fontSize: '0.85rem',
-          marginBottom: '1rem',
-          padding: '0.75rem',
-          background: '#2a2a2a',
-          borderRadius: '4px',
-        }}>
-          <strong>Total Faces:</strong> {faces.length}<br />
-          <strong>Filtered:</strong> {filteredFaces.length}<br />
-          <strong>Visible:</strong> {visibleFaces.size}
-        </div>
-
-        <h3 style={{ fontSize: '1rem', marginBottom: '0.75rem' }}>Faces</h3>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {filteredFaces.map((face) => {
             const faceKey = `${face.meshName}_face_${face.faceIndex}`;
             const isVisible = visibleFaces.has(faceKey);
             const hasOutOfRangeUVs = face.uvs.some(isUVOutOfRange);
+            const isSelected = selectedFace === faceKey;
 
             return (
               <div
                 key={faceKey}
                 style={{
-                  padding: '0.5rem',
-                  background: selectedFace === faceKey ? '#3a4a5a' : '#2a2a2a',
+                  padding: '0.75rem',
+                  background: isSelected ? '#3a4a5a' : '#2a2a2a',
                   borderRadius: '4px',
-                  cursor: 'pointer',
-                  border: isVisible ? '1px solid #4a90e2' : '1px solid #444',
+                  border: isVisible ? '2px solid #4a90e2' : '2px solid #444',
                 }}
-                onClick={() => setSelectedFace(faceKey)}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                {/* Header */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                   <input
                     type="checkbox"
                     checked={isVisible}
-                    onChange={(e) => {
-                      e.stopPropagation();
-                      toggleFace(face.meshName, face.faceIndex);
-                    }}
+                    onChange={() => toggleFace(face.meshName, face.faceIndex)}
                     style={{ cursor: 'pointer' }}
                   />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '0.85rem' }}>
-                      Face {face.faceIndex}
-                      {hasOutOfRangeUVs && <span style={{ marginLeft: '0.5rem', color: '#ff453a' }}>⚠️</span>}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', opacity: 0.6 }}>
-                      {face.materialName}
-                    </div>
+                  <div style={{ flex: 1, fontWeight: 'bold', fontSize: '0.9rem' }}>
+                    Face {face.faceIndex}
+                    {hasOutOfRangeUVs && <span style={{ marginLeft: '0.5rem', color: '#ff453a' }}>⚠️</span>}
                   </div>
+                  <button
+                    onClick={() => {
+                      copyFaceData(face);
+                      setSelectedFace(faceKey);
+                    }}
+                    style={{
+                      padding: '0.25rem 0.5rem',
+                      background: '#4a90e2',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '0.75rem'
+                    }}
+                  >
+                    Copy
+                  </button>
                 </div>
+
+                {/* Material */}
+                <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '0.5rem' }}>
+                  {face.materialName}
+                </div>
+
+                {/* UV Coordinates */}
+                <div style={{
+                  background: 'rgba(0, 0, 0, 0.3)',
+                  padding: '0.5rem',
+                  borderRadius: '4px',
+                  fontFamily: 'monospace',
+                  fontSize: '0.75rem'
+                }}>
+                  <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>UVs:</div>
+                  {face.uvs.map((uv, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        color: isUVOutOfRange(uv) ? '#ff453a' : 'inherit',
+                        padding: '1px 0'
+                      }}
+                    >
+                      V{i}: ({uv.u.toFixed(4)}, {uv.v.toFixed(4)})
+                      {isUVOutOfRange(uv) && ' ⚠️'}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Vertex Positions (collapsed by default, expand on selection) */}
+                {isSelected && (
+                  <div style={{
+                    marginTop: '0.5rem',
+                    background: 'rgba(0, 0, 0, 0.2)',
+                    padding: '0.5rem',
+                    borderRadius: '4px',
+                    fontFamily: 'monospace',
+                    fontSize: '0.7rem'
+                  }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>Positions:</div>
+                    {face.vertices.map((v, i) => (
+                      <div key={i} style={{ padding: '1px 0' }}>
+                        V{i}: ({v.x.toFixed(2)}, {v.y.toFixed(2)}, {v.z.toFixed(2)})
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
-      </div>
-
-      {/* 3D Viewer */}
-      <div style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', background: '#000' }}>
-        <Canvas camera={{ position: [10, 5, 10], fov: 60 }}>
-          <ambientLight intensity={0.5} />
-          <directionalLight position={[10, 10, 5]} intensity={1} />
-          <directionalLight position={[-10, -10, -5]} intensity={0.3} />
-          <Model modelUrl={modelUrl} visibleFaces={visibleFaces} />
-          <OrbitControls />
-          <gridHelper args={[20, 20]} />
-        </Canvas>
-
-        {/* Selected Face Info Overlay */}
-        {selectedFaceInfo && (
-          <div style={{
-            position: 'absolute',
-            bottom: '1rem',
-            left: '1rem',
-            right: '1rem',
-            background: 'rgba(0, 0, 0, 0.9)',
-            padding: '1rem',
-            borderRadius: '8px',
-            fontSize: '0.9rem',
-            backdropFilter: 'blur(10px)',
-            maxHeight: '50vh',
-            overflowY: 'auto',
-          }}>
-            <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Face {selectedFaceInfo.faceIndex} - {selectedFaceInfo.materialName}
-            </div>
-
-            <div style={{
-              marginTop: '0.75rem',
-              padding: '0.5rem',
-              background: 'rgba(74, 144, 226, 0.2)',
-              borderRadius: '4px',
-              fontFamily: 'monospace',
-              fontSize: '0.8rem'
-            }}>
-              <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>UV Coordinates:</div>
-              {selectedFaceInfo.uvs.map((uv, i) => (
-                <div
-                  key={i}
-                  style={{
-                    padding: '2px 0',
-                    color: isUVOutOfRange(uv) ? '#ff453a' : 'inherit'
-                  }}
-                >
-                  Vertex {i}: U={uv.u.toFixed(4)}, V={uv.v.toFixed(4)}
-                  {isUVOutOfRange(uv) && ' ⚠️ OUT OF RANGE'}
-                </div>
-              ))}
-            </div>
-
-            <div style={{
-              marginTop: '0.75rem',
-              padding: '0.5rem',
-              background: 'rgba(74, 144, 226, 0.1)',
-              borderRadius: '4px',
-              fontFamily: 'monospace',
-              fontSize: '0.75rem'
-            }}>
-              <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Vertex Positions:</div>
-              {selectedFaceInfo.vertices.map((v, i) => (
-                <div key={i} style={{ padding: '2px 0' }}>
-                  V{i}: ({v.x.toFixed(2)}, {v.y.toFixed(2)}, {v.z.toFixed(2)})
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
