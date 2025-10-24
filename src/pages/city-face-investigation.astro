@@ -1,0 +1,37 @@
+---
+import FaceInvestigationViewer from '../components/FaceInvestigationViewer';
+
+const base = import.meta.env.BASE_URL;
+const modelUrl = `${base}city_e/s00e_sa1/lndmd/s00e_sa1_m.glb`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Face Investigation - City E</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <FaceInvestigationViewer client:only="react" modelUrl={modelUrl} />
+  </body>
+</html>
