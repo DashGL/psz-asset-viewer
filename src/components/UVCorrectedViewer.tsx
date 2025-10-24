@@ -49,11 +49,13 @@ function CorrectedModel({ modelUrl, materialFilter }: { modelUrl: string; materi
 
                     let newV = v;
                     if (isHorizontal) {
-                      // Floor faces: shift V down by 0.48 to map to top half (0.0-0.5)
-                      newV = v - 0.48;
+                      // Floor faces: scale to top half (0.0-0.5)
+                      // UVs are relative to atlas region, so scale by 0.5
+                      newV = v * 0.5;
                     } else {
-                      // Vertical faces (billboards): shift V up by 0.5 to map to bottom half (0.5-1.0)
-                      newV = v + 0.5;
+                      // Vertical faces (billboards): scale to bottom half (0.5-1.0)
+                      // UVs are relative to atlas region, so scale by 0.5 and offset by 0.5
+                      newV = v * 0.5 + 0.5;
                     }
 
                     uvAttr.setXY(vertexIndex, u, newV);
@@ -118,8 +120,8 @@ export default function UVCorrectedViewer({ modelUrl, materialFilter = 'Material
           <strong>Material:</strong> {materialFilter}<br />
           <strong>UV Corrections Applied:</strong><br />
           <div style={{ marginLeft: '1rem', marginTop: '0.25rem', fontFamily: 'monospace', fontSize: '0.8rem' }}>
-            • Horizontal faces: V = V - 0.48<br />
-            • Vertical faces: V = V + 0.5
+            • Horizontal faces: V = V × 0.5<br />
+            • Vertical faces: V = V × 0.5 + 0.5
           </div>
         </div>
         <div style={{
