@@ -93,13 +93,40 @@ export default function UVInvestigationViewer({ modelUrl }: UVInvestigationViewe
 
         setMeshes(meshInfos);
 
-        // Initialize visibility map
+        // Initialize visibility map from localStorage or default to all visible
         const visMap = new Map<string, boolean>();
-        meshInfos.forEach(m => visMap.set(m.name, true));
+        const savedVisibility = localStorage.getItem('uv-investigation-visibility');
+
+        if (savedVisibility) {
+          try {
+            const saved = JSON.parse(savedVisibility);
+            meshInfos.forEach(m => {
+              visMap.set(m.name, saved[m.name] ?? true);
+            });
+          } catch (e) {
+            // If parse fails, default to all visible
+            meshInfos.forEach(m => visMap.set(m.name, true));
+          }
+        } else {
+          // First load - default to all visible
+          meshInfos.forEach(m => visMap.set(m.name, true));
+        }
+
         setMeshVisibility(visMap);
       });
     });
   }, [modelUrl]);
+
+  // Save visibility to localStorage whenever it changes
+  useEffect(() => {
+    if (meshVisibility.size > 0) {
+      const visibilityObj: Record<string, boolean> = {};
+      meshVisibility.forEach((visible, name) => {
+        visibilityObj[name] = visible;
+      });
+      localStorage.setItem('uv-investigation-visibility', JSON.stringify(visibilityObj));
+    }
+  }, [meshVisibility]);
 
   const toggleMesh = (meshName: string) => {
     setMeshVisibility(prev => {
@@ -145,36 +172,55 @@ export default function UVInvestigationViewer({ modelUrl }: UVInvestigationViewe
       }}>
         <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>UV Investigation</h2>
 
-        <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
+        <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button
+              onClick={() => toggleAll(true)}
+              style={{
+                flex: 1,
+                padding: '0.5rem',
+                background: '#4a90e2',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+              }}
+            >
+              Show All
+            </button>
+            <button
+              onClick={() => toggleAll(false)}
+              style={{
+                flex: 1,
+                padding: '0.5rem',
+                background: '#666',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+              }}
+            >
+              Hide All
+            </button>
+          </div>
           <button
-            onClick={() => toggleAll(true)}
+            onClick={() => {
+              localStorage.removeItem('uv-investigation-visibility');
+              window.location.reload();
+            }}
             style={{
-              flex: 1,
               padding: '0.5rem',
-              background: '#4a90e2',
+              background: '#ff6b6b',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: '0.85rem',
+              fontSize: '0.75rem',
             }}
           >
-            Show All
-          </button>
-          <button
-            onClick={() => toggleAll(false)}
-            style={{
-              flex: 1,
-              padding: '0.5rem',
-              background: '#666',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '0.85rem',
-            }}
-          >
-            Hide All
+            Reset Saved State
           </button>
         </div>
 
