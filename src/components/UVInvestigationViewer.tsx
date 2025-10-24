@@ -9,6 +9,11 @@ interface MeshInfo {
   textureName: string;
   visible: boolean;
   mesh: THREE.Mesh;
+  faceCount: number;
+  uvBounds: {
+    min: { u: number; v: number };
+    max: { u: number; v: number };
+  };
 }
 
 function Model({ modelUrl, meshVisibility }: { modelUrl: string; meshVisibility: Map<string, boolean> }) {
@@ -35,6 +40,7 @@ export default function UVInvestigationViewer({ modelUrl }: UVInvestigationViewe
   const [meshes, setMeshes] = useState<MeshInfo[]>([]);
   const [meshVisibility, setMeshVisibility] = useState<Map<string, boolean>>(new Map());
   const [selectedMesh, setSelectedMesh] = useState<string | null>(null);
+  const [showUVDetails, setShowUVDetails] = useState(false);
 
   // Load and analyze the model
   useEffect(() => {
@@ -52,12 +58,35 @@ export default function UVInvestigationViewer({ modelUrl }: UVInvestigationViewe
             const materialName = material.name || 'Unnamed Material';
             const textureName = texture?.name || texture?.image?.src?.split('/').pop() || 'No Texture';
 
+            // Calculate face count and UV bounds
+            const geometry = child.geometry;
+            const faceCount = geometry.index ? geometry.index.count / 3 : geometry.attributes.position.count / 3;
+
+            let uvBounds = {
+              min: { u: Infinity, v: Infinity },
+              max: { u: -Infinity, v: -Infinity }
+            };
+
+            if (geometry.attributes.uv) {
+              const uvAttribute = geometry.attributes.uv;
+              for (let i = 0; i < uvAttribute.count; i++) {
+                const u = uvAttribute.getX(i);
+                const v = uvAttribute.getY(i);
+                uvBounds.min.u = Math.min(uvBounds.min.u, u);
+                uvBounds.min.v = Math.min(uvBounds.min.v, v);
+                uvBounds.max.u = Math.max(uvBounds.max.u, u);
+                uvBounds.max.v = Math.max(uvBounds.max.v, v);
+              }
+            }
+
             meshInfos.push({
               name: meshName,
               materialName,
               textureName,
               visible: true,
               mesh: child,
+              faceCount: Math.floor(faceCount),
+              uvBounds,
             });
           }
         });
@@ -207,6 +236,9 @@ export default function UVInvestigationViewer({ modelUrl }: UVInvestigationViewe
                       <div style={{ fontSize: '0.7rem', opacity: 0.6 }}>
                         {mesh.textureName}
                       </div>
+                      <div style={{ fontSize: '0.7rem', opacity: 0.5 }}>
+                        {mesh.faceCount} faces
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -246,7 +278,81 @@ export default function UVInvestigationViewer({ modelUrl }: UVInvestigationViewe
             <div style={{ fontSize: '0.85rem', opacity: 0.8 }}>
               <strong>Material:</strong> {selectedMeshInfo.materialName}<br />
               <strong>Texture:</strong> {selectedMeshInfo.textureName}<br />
+              <strong>Faces:</strong> {selectedMeshInfo.faceCount}<br />
               <strong>Visible:</strong> {meshVisibility.get(selectedMeshInfo.name) ? 'Yes' : 'No'}
+            </div>
+
+            {/* UV Bounds */}
+            <div style={{
+              marginTop: '0.75rem',
+              padding: '0.5rem',
+              background: 'rgba(74, 144, 226, 0.2)',
+              borderRadius: '4px',
+              fontSize: '0.85rem'
+            }}>
+              <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>UV Bounds:</div>
+              <div style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}>
+                Min: ({selectedMeshInfo.uvBounds.min.u.toFixed(4)}, {selectedMeshInfo.uvBounds.min.v.toFixed(4)})<br />
+                Max: ({selectedMeshInfo.uvBounds.max.u.toFixed(4)}, {selectedMeshInfo.uvBounds.max.v.toFixed(4)})<br />
+                <div style={{ marginTop: '0.25rem', opacity: 0.8 }}>
+                  Range: U=[{selectedMeshInfo.uvBounds.min.u.toFixed(2)} to {selectedMeshInfo.uvBounds.max.u.toFixed(2)}],
+                  V=[{selectedMeshInfo.uvBounds.min.v.toFixed(2)} to {selectedMeshInfo.uvBounds.max.v.toFixed(2)}]
+                </div>
+              </div>
+            </div>
+
+            {/* UV Details Toggle */}
+            <div style={{ marginTop: '0.75rem' }}>
+              <button
+                onClick={() => setShowUVDetails(!showUVDetails)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: showUVDetails ? '#4a90e2' : '#666',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '0.85rem',
+                  width: '100%',
+                }}
+              >
+                {showUVDetails ? 'Hide' : 'Show'} All UV Coordinates
+              </button>
+
+              {showUVDetails && selectedMeshInfo.mesh.geometry.attributes.uv && (
+                <div style={{
+                  marginTop: '0.5rem',
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  padding: '0.5rem',
+                  borderRadius: '4px',
+                  fontFamily: 'monospace',
+                  fontSize: '0.75rem'
+                }}>
+                  {(() => {
+                    const uvAttr = selectedMeshInfo.mesh.geometry.attributes.uv;
+                    const uvList = [];
+                    for (let i = 0; i < Math.min(uvAttr.count, 100); i++) {
+                      const u = uvAttr.getX(i);
+                      const v = uvAttr.getY(i);
+                      uvList.push(
+                        <div key={i} style={{ padding: '2px 0' }}>
+                          UV[{i}]: ({u.toFixed(4)}, {v.toFixed(4)})
+                        </div>
+                      );
+                    }
+                    if (uvAttr.count > 100) {
+                      uvList.push(
+                        <div key="more" style={{ padding: '2px 0', opacity: 0.6 }}>
+                          ... and {uvAttr.count - 100} more
+                        </div>
+                      );
+                    }
+                    return uvList;
+                  })()}
+                </div>
+              )}
             </div>
 
             {/* Show texture if available */}
