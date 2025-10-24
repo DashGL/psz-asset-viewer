@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.4.0",
+    "@pixiv/three-vrm": "^3.4.3",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.4.0",
     "astro": "^5.14.6",
