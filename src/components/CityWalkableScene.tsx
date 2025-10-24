@@ -10,7 +10,14 @@ const MATERIALS_TO_HIDE = [
   'kantei01',
   'kantei02',
   'kawara',
-  'Material__766'
+  'Material__766',
+  '1_wave2',
+  '1_wave',
+  '1_ppl',
+  'house',
+  'set05',
+  'wood',
+  'set04'
 ];
 
 function CityModel({ modelUrl }: { modelUrl: string }) {
@@ -156,7 +163,9 @@ function ThirdPersonControls({ playerPosition, playerRotation, onMove }: ThirdPe
 
   const isDragging = useRef(false);
   const lastMouseX = useRef(0);
+  const lastMouseY = useRef(0);
   const cameraAngle = useRef(0);
+  const cameraPitch = useRef(0.3); // Vertical angle, clamped between limits
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -209,6 +218,7 @@ function ThirdPersonControls({ playerPosition, playerRotation, onMove }: ThirdPe
       if (event.button === 0) {
         isDragging.current = true;
         lastMouseX.current = event.clientX;
+        lastMouseY.current = event.clientY;
       }
     };
 
@@ -219,8 +229,17 @@ function ThirdPersonControls({ playerPosition, playerRotation, onMove }: ThirdPe
     const handleMouseMove = (event: MouseEvent) => {
       if (isDragging.current) {
         const deltaX = event.clientX - lastMouseX.current;
+        const deltaY = event.clientY - lastMouseY.current;
+
+        // Horizontal rotation
         cameraAngle.current -= deltaX * rotateSpeed;
+
+        // Vertical rotation (pitch) - clamped between -0.5 and 1.2 radians
+        cameraPitch.current += deltaY * rotateSpeed;
+        cameraPitch.current = Math.max(-0.5, Math.min(1.2, cameraPitch.current));
+
         lastMouseX.current = event.clientX;
+        lastMouseY.current = event.clientY;
       }
     };
 
@@ -273,11 +292,12 @@ function ThirdPersonControls({ playerPosition, playerRotation, onMove }: ThirdPe
     }
 
     const cameraDistance = 3;
-    const cameraHeight = 2;
+    const horizontalDistance = cameraDistance * Math.cos(cameraPitch.current);
+    const verticalOffset = cameraDistance * Math.sin(cameraPitch.current);
 
-    camera.position.x = playerPosition.x - Math.sin(cameraAngle.current) * cameraDistance;
-    camera.position.y = playerPosition.y + cameraHeight;
-    camera.position.z = playerPosition.z - Math.cos(cameraAngle.current) * cameraDistance;
+    camera.position.x = playerPosition.x - Math.sin(cameraAngle.current) * horizontalDistance;
+    camera.position.y = playerPosition.y + 1 + verticalOffset;
+    camera.position.z = playerPosition.z - Math.cos(cameraAngle.current) * horizontalDistance;
 
     camera.lookAt(playerPosition.x, playerPosition.y + 1, playerPosition.z);
   });
@@ -301,6 +321,19 @@ export default function CityWalkableScene({
   const playerPosition = useRef(new THREE.Vector3(0, 0, 0));
   const playerRotation = useRef(0);
   const [isMoving, setIsMoving] = useState(false);
+  const [displayPosition, setDisplayPosition] = useState({ x: 0, y: 0, z: 0 });
+
+  // Update display position periodically
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDisplayPosition({
+        x: playerPosition.current.x,
+        y: playerPosition.current.y,
+        z: playerPosition.current.z
+      });
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div style={{ width: '100%', height: '100vh', position: 'relative', background: '#0a0a0a' }}>
@@ -323,6 +356,26 @@ export default function CityWalkableScene({
         <div>A/← - Left</div>
         <div>D/→ - Right</div>
         <div>Click + Drag - Rotate Camera</div>
+      </div>
+
+      {/* Position Display */}
+      <div style={{
+        position: 'absolute',
+        bottom: '1rem',
+        left: '1rem',
+        zIndex: 100,
+        background: 'rgba(0, 0, 0, 0.7)',
+        padding: '1rem',
+        borderRadius: '4px',
+        color: '#fff',
+        fontSize: '0.85rem',
+        pointerEvents: 'none',
+        fontFamily: 'monospace',
+      }}>
+        <div><strong>Position:</strong></div>
+        <div>X: {displayPosition.x.toFixed(2)}</div>
+        <div>Y: {displayPosition.y.toFixed(2)}</div>
+        <div>Z: {displayPosition.z.toFixed(2)}</div>
       </div>
 
       {/* Scene Info */}
