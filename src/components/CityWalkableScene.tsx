@@ -36,23 +36,16 @@ function CityModel({ modelUrl }: { modelUrl: string }) {
             const geometry = child.geometry.clone();
             let newMaterial: THREE.MeshStandardMaterial;
 
-            if (materialName === 'house') {
-              // For house material, keep texture but add diffuse color for transparent areas
-              newMaterial = material.clone();
-              newMaterial.color = new THREE.Color(0xff0000); // RED for testing
-              newMaterial.transparent = false;
-              newMaterial.opacity = 1.0;
-              console.log(`Modified material: ${materialName} (RED diffuse color)`);
-            } else if (materialName === 'Material__794') {
+            if (materialName === 'Material__794') {
               // For Material__794, remove texture and use solid color for floor
               newMaterial = new THREE.MeshStandardMaterial({
-                color: 0xff0000, // RED for testing
+                color: 0x6b7a8a, // Gray-blue floor color
                 roughness: 0.8,
                 metalness: 0.2,
               });
-              console.log(`Modified material: ${materialName} (RED solid color)`);
+              console.log(`Modified material: ${materialName} (solid gray-blue floor)`);
             } else {
-              // Keep other materials as-is
+              // Keep other materials as-is (including house)
               newMaterial = material.clone();
             }
 
@@ -348,11 +341,8 @@ export default function CityWalkableScene({
         <div><strong>Scene:</strong> City E</div>
         <div><strong>Status:</strong> {isMoving ? 'Running' : 'Idle'}</div>
         <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', opacity: 0.8 }}>
-          <strong>Hidden Materials:</strong><br />
-          {MATERIALS_TO_HIDE.slice(0, 3).map(mat => (
-            <div key={mat}>• {mat}</div>
-          ))}
-          <div>• +{MATERIALS_TO_HIDE.length - 3} more</div>
+          <strong>Modified:</strong> Material__794 (gray floor)<br />
+          <strong>Hidden:</strong> {MATERIALS_TO_HIDE.length} materials
         </div>
       </div>
 
