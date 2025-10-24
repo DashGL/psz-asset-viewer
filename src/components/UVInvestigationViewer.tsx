@@ -279,6 +279,12 @@ export default function UVInvestigationViewer({ modelUrl }: UVInvestigationViewe
               <strong>Material:</strong> {selectedMeshInfo.materialName}<br />
               <strong>Texture:</strong> {selectedMeshInfo.textureName}<br />
               <strong>Faces:</strong> {selectedMeshInfo.faceCount}<br />
+              <strong>Vertices:</strong> {selectedMeshInfo.mesh.geometry.attributes.position?.count || 0}<br />
+              <strong>UV Count:</strong> {selectedMeshInfo.mesh.geometry.attributes.uv?.count || 0}<br />
+              <strong>Indexed:</strong> {selectedMeshInfo.mesh.geometry.index ? 'Yes' : 'No'}<br />
+              {selectedMeshInfo.mesh.geometry.index && (
+                <span><strong>Indices:</strong> {selectedMeshInfo.mesh.geometry.index.count}<br /></span>
+              )}
               <strong>Visible:</strong> {meshVisibility.get(selectedMeshInfo.name) ? 'Yes' : 'No'}
             </div>
 
@@ -286,11 +292,19 @@ export default function UVInvestigationViewer({ modelUrl }: UVInvestigationViewe
             <div style={{
               marginTop: '0.75rem',
               padding: '0.5rem',
-              background: 'rgba(74, 144, 226, 0.2)',
+              background: (selectedMeshInfo.uvBounds.min.u < -0.1 || selectedMeshInfo.uvBounds.max.u > 1.1 ||
+                           selectedMeshInfo.uvBounds.min.v < -0.1 || selectedMeshInfo.uvBounds.max.v > 1.1)
+                ? 'rgba(255, 69, 58, 0.3)' : 'rgba(74, 144, 226, 0.2)',
               borderRadius: '4px',
               fontSize: '0.85rem'
             }}>
-              <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>UV Bounds:</div>
+              <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>
+                UV Bounds:
+                {(selectedMeshInfo.uvBounds.min.u < -0.1 || selectedMeshInfo.uvBounds.max.u > 1.1 ||
+                  selectedMeshInfo.uvBounds.min.v < -0.1 || selectedMeshInfo.uvBounds.max.v > 1.1) && (
+                  <span style={{ marginLeft: '0.5rem', color: '#ff453a', fontSize: '0.75rem' }}>⚠️ OUT OF RANGE</span>
+                )}
+              </div>
               <div style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}>
                 Min: ({selectedMeshInfo.uvBounds.min.u.toFixed(4)}, {selectedMeshInfo.uvBounds.min.v.toFixed(4)})<br />
                 Max: ({selectedMeshInfo.uvBounds.max.u.toFixed(4)}, {selectedMeshInfo.uvBounds.max.v.toFixed(4)})<br />
