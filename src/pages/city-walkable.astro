@@ -3,6 +3,9 @@ import CityWalkableScene from '../components/CityWalkableScene';
 
 const base = import.meta.env.BASE_URL;
 const modelUrl = `${base}city_e/s00e_sa1/lndmd/s00e_sa1_m.glb`;
+const characterUrl = `${base}player/pc_000/pc_000/pc_000_000.glb`;
+const textureUrl = `${base}player/pc_000/textures/pc_000_000.png`;
+const animationsUrl = `${base}player/animations/common/m/00_common_m/pc_000_000.glb`;
 ---
 
 <!DOCTYPE html>
@@ -35,6 +38,9 @@ const modelUrl = `${base}city_e/s00e_sa1/lndmd/s00e_sa1_m.glb`;
     <CityWalkableScene
       client:only="react"
       modelUrl={modelUrl}
+      characterUrl={characterUrl}
+      textureUrl={textureUrl}
+      animationsUrl={animationsUrl}
     />
   </body>
 </html>
