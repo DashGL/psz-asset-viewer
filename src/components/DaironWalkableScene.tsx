@@ -7,7 +7,11 @@ import type { Group } from 'three';
 function DaironModel({ modelUrl }: { modelUrl: string }) {
   const gltf = useGLTF(modelUrl);
 
-  return <primitive object={gltf.scene} />;
+  return (
+    <group scale={[3, 3, 3]}>
+      <primitive object={gltf.scene} />
+    </group>
+  );
 }
 
 interface PlayerCharacterProps {
