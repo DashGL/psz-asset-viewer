@@ -34,7 +34,7 @@ const INITIAL_INVENTORY: InventoryItem[] = [
   { id: 'moon_atomizer', name: 'Moon Atomizer', buyPrice: 500, sellPrice: 250, description: 'Revives one ally', quantity: 1 },
 ];
 
-export default function ItemShop() {
+export default function ItemShop({ baseUrl = '/' }: { baseUrl?: string }) {
   const [mode, setMode] = useState<'menu' | 'buy' | 'sell'>('menu');
   const [meseta, setMeseta] = useState(5000); // Player currency
   const [inventory, setInventory] = useState<InventoryItem[]>(INITIAL_INVENTORY);
@@ -83,7 +83,7 @@ export default function ItemShop() {
       justifyContent: 'center',
       fontFamily: 'system-ui, -apple-system, sans-serif',
       color: '#fff',
-      padding: '2rem',
+      overflow: 'hidden',
     }}>
       <div style={{
         maxWidth: '1000px',
@@ -103,24 +103,18 @@ export default function ItemShop() {
             background: 'linear-gradient(135deg, #667eea22 0%, #764ba222 100%)',
             border: '2px solid #667eea',
             borderRadius: '12px',
-            padding: '2rem',
+            padding: '1rem',
             textAlign: 'center',
           }}>
-            <div style={{
-              width: '200px',
-              height: '200px',
-              background: 'linear-gradient(135deg, #667eea44 0%, #764ba244 100%)',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem',
-              fontSize: '4rem',
-            }}>
-              🛍️
-            </div>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Item Shop</h2>
-            <p style={{ color: '#aaa', fontSize: '0.9rem' }}>Welcome, traveler!</p>
+            <img
+              src={`${baseUrl}dairon/item-shop-sprite.png`}
+              alt="Shop Keeper"
+              style={{
+                width: '100%',
+                height: 'auto',
+                borderRadius: '8px',
+              }}
+            />
           </div>
 
           <div style={{
@@ -205,7 +199,14 @@ export default function ItemShop() {
                 </button>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+                maxHeight: '400px',
+                overflowY: 'auto',
+                paddingRight: '0.5rem',
+              }}>
                 {SHOP_ITEMS.map(item => (
                   <div
                     key={item.id}
@@ -286,7 +287,14 @@ export default function ItemShop() {
                   Your inventory is empty!
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.5rem',
+                  maxHeight: '400px',
+                  overflowY: 'auto',
+                  paddingRight: '0.5rem',
+                }}>
                   {inventory.map(item => (
                     <div
                       key={item.id}
