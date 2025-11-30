@@ -356,15 +356,15 @@ const objectCount = countObjects();
           <h2>🏙️ City Walkable Scene</h2>
           <div class="count">Interactive City Environment</div>
           <p class="description">
-            Walk around City E with third-person controls. Broken materials hidden, floor made usable. Features character movement, running animations, and cleaned geometry for gameplay prototyping.
+            Walk around City E with third-person controls using the fixed model with complete mirrored textures. Features character movement, running animations, and proper texture rendering.
           </p>
         </a>
 
-        <a href={`${base}city-editor`} class="city-card" style="background: linear-gradient(135deg, #10b98122 0%, #0ea5e922 100%); grid-column: 1 / -1; border: 2px solid #10b981;">
-          <h2>🏗️ City Editor</h2>
-          <div class="count">Asset Placement Tool</div>
+        <a href={`${base}city-model-comparison`} class="city-card" style="background: linear-gradient(135deg, #f59e0b22 0%, #d9770622 100%); grid-column: 1 / -1; border: 2px solid #f59e0b;">
+          <h2>🔍 Model Comparison: lndmd vs fixed</h2>
+          <div class="count">UV Analysis Tool</div>
           <p class="description">
-            Place and transform NPC assets in the city scene. Features: free camera movement, position/rotation/scale controls, asset management, and JSON export. Assets saved to localStorage.
+            Side-by-side comparison of the original lndmd model and fixed model. Compare textures, UVs, and geometry to identify differences and potential automated fixing approaches.
           </p>
         </a>
 
