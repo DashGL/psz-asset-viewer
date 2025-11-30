@@ -4,75 +4,20 @@ import { Suspense, useRef, useState, useEffect } from 'react';
 import * as THREE from 'three';
 import type { Group } from 'three';
 
-const MATERIALS_TO_HIDE = [
-  'itemshop',
-  'itemshop_1',
-  'kantei01',
-  'kantei02',
-  'kawara',
-  'Material__766',
-  '1_wave2',
-  '1_wave',
-  '1_ppl',
-  'house',
-  'set05',
-  'wood',
-  'set04'
-];
-
 function CityModel({ modelUrl }: { modelUrl: string }) {
-  const [cityScene, setCityScene] = useState<THREE.Group | null>(null);
+  const gltf = useGLTF(modelUrl);
 
   useEffect(() => {
-    import('three/examples/jsm/loaders/GLTFLoader').then(({ GLTFLoader }) => {
-      const loader = new GLTFLoader();
-      loader.load(modelUrl, (gltf) => {
-        const newScene = new THREE.Group();
-
-        gltf.scene.traverse((child) => {
-          if (child instanceof THREE.Mesh) {
-            const material = child.material as THREE.MeshStandardMaterial;
-            const materialName = material.name || 'Unnamed Material';
-
-            // Skip materials we want to hide
-            if (MATERIALS_TO_HIDE.includes(materialName)) {
-              console.log(`Hiding material: ${materialName}`);
-              return;
-            }
-
-            const geometry = child.geometry.clone();
-            let newMaterial: THREE.MeshStandardMaterial;
-
-            if (materialName === 'Material__794') {
-              // For Material__794, remove texture and use solid color for floor
-              newMaterial = new THREE.MeshStandardMaterial({
-                color: 0x6b7a8a, // Gray-blue floor color
-                roughness: 0.8,
-                metalness: 0.2,
-              });
-              console.log(`Modified material: ${materialName} (solid gray-blue floor)`);
-            } else {
-              // Keep other materials as-is (including house)
-              newMaterial = material.clone();
-            }
-
-            const newMesh = new THREE.Mesh(geometry, newMaterial);
-            newMesh.position.copy(child.position);
-            newMesh.rotation.copy(child.rotation);
-            newMesh.scale.copy(child.scale);
-            newMesh.castShadow = true;
-            newMesh.receiveShadow = true;
-            newScene.add(newMesh);
-          }
-        });
-
-        console.log(`City scene created with ${newScene.children.length} meshes`);
-        setCityScene(newScene);
-      });
+    // Enable shadows on all meshes
+    gltf.scene.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
     });
-  }, [modelUrl]);
+  }, [gltf.scene]);
 
-  return cityScene ? <primitive object={cityScene} /> : null;
+  return <primitive object={gltf.scene} />;
 }
 
 interface PlayerCharacterProps {
@@ -393,10 +338,6 @@ export default function CityWalkableScene({
       }}>
         <div><strong>Scene:</strong> City E</div>
         <div><strong>Status:</strong> {isMoving ? 'Running' : 'Idle'}</div>
-        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', opacity: 0.8 }}>
-          <strong>Modified:</strong> Material__794 (gray floor)<br />
-          <strong>Hidden:</strong> {MATERIALS_TO_HIDE.length} materials
-        </div>
       </div>
 
       <Canvas
