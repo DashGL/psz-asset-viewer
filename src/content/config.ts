@@ -46,9 +46,19 @@ const weaponsCollection = defineCollection({
   }),
 });
 
+const photonBlastsCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    name: z.string(),
+    displayName: z.string(),
+    animationCount: z.number(),
+  }),
+});
+
 export const collections = {
   objects: objectsCollection,
   players: playersCollection,
   enemies: enemiesCollection,
   weapons: weaponsCollection,
+  'photon-blasts': photonBlastsCollection,
 };

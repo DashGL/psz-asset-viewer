@@ -20,6 +20,8 @@
     "processEnemies": "bun run scripts/processEnemies.ts",
     "processEnemiesTest": "bun run scripts/processEnemiesTest.ts",
     "processPlayer": "bun run scripts/processPlayer.ts",
+    "processPlayerAnimations": "bun run scripts/processPlayerAnimations.ts",
+    "processPhotonBlasts": "bun run scripts/processPhotonBlasts.ts",
     "processWeapons": "bun run scripts/processWeapons.ts",
     "processObjects": "bun run scripts/processObjects.ts",
     "syncCollections": "bun run scripts/syncCollections.ts"
