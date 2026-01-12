@@ -1,0 +1,10 @@
+{
+  "id": "pb_bird",
+  "name": "mylla_youlla",
+  "displayName": "Mylla & Youlla",
+  "modelFile": "fb_bird.glb",
+  "animations": [
+    "fb_birdfb_bird_st",
+    "fb_birdfb_bird_atk"
+  ]
+}

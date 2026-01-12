@@ -1,0 +1,10 @@
+{
+  "id": "pb_centaur",
+  "name": "konda_konda",
+  "displayName": "Konda Konda",
+  "modelFile": "fb_kenta.glb",
+  "animations": [
+    "fb_kentafb_kenta_st",
+    "fb_kentafb_kenta_atk"
+  ]
+}

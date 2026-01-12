@@ -1,0 +1,10 @@
+{
+  "id": "pb_rabbit",
+  "name": "bunny",
+  "displayName": "Bunny",
+  "modelFile": "fb_rabbit.glb",
+  "animations": [
+    "fb_rabbitfb_rabbit_rnd",
+    "fb_rabbitfb_rabbit_hit"
+  ]
+}

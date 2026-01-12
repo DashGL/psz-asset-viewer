@@ -1,0 +1,42 @@
+[
+  {
+    "id": "pb_bird",
+    "name": "mylla_youlla",
+    "displayName": "Mylla & Youlla",
+    "modelFile": "fb_bird.glb",
+    "animations": [
+      "fb_birdfb_bird_st",
+      "fb_birdfb_bird_atk"
+    ]
+  },
+  {
+    "id": "pb_centaur",
+    "name": "konda_konda",
+    "displayName": "Konda Konda",
+    "modelFile": "fb_kenta.glb",
+    "animations": [
+      "fb_kentafb_kenta_st",
+      "fb_kentafb_kenta_atk"
+    ]
+  },
+  {
+    "id": "pb_dragon",
+    "name": "leogini",
+    "displayName": "Leogini",
+    "modelFile": "fb_hebi.glb",
+    "animations": [
+      "fb_hebifb_hebi_st",
+      "fb_hebifb_hebi_atk"
+    ]
+  },
+  {
+    "id": "pb_rabbit",
+    "name": "bunny",
+    "displayName": "Bunny",
+    "modelFile": "fb_rabbit.glb",
+    "animations": [
+      "fb_rabbitfb_rabbit_rnd",
+      "fb_rabbitfb_rabbit_hit"
+    ]
+  }
+]
