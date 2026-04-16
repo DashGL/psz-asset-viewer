@@ -85,16 +85,10 @@ async function processGroup(
     // a background palette file (e.g. obs_menuapc + bgs_menuapc).
     const flatPalette = nclr.palettes.flat();
 
-    // Some object NCGRs mis-report their bit depth — the header claims 8bpp
-    // but the pixel data is actually 4bpp (only a handful of byte values
-    // used, arranged in the antialiased-edge pattern typical of paletted
-    // icons). Detect that and fall back to 4bpp rendering with bank 0.
-    let effectiveBpp: 4 | 8 = ncgr.bpp;
-    if (ncgr.bpp === 8) {
-      const used = new Set<number>();
-      for (let i = 0; i < ncgr.data.length; i++) used.add(ncgr.data[i]);
-      if (used.size <= 16) effectiveBpp = 4;
-    }
+    // Trust the NCGR's claimed bit depth. Some sprite sheets that look
+    // wrong as 8bpp actually need a different palette (not a different bit
+    // depth) — handled below with multi-bank variants and 4bpp alternates.
+    const effectiveBpp: 4 | 8 = ncgr.bpp;
 
     // Some palette files reserve bank 0 as a magenta "unused" sentinel
     // (color 1 = #F700DE — a known NITRO debug marker). When that happens,
@@ -125,9 +119,22 @@ async function processGroup(
       join(outDir, `${base}.tiles.png`),
     );
 
-    // For 4bpp sprites with multiple palette banks, also emit a per-bank
-    // variants PNG so the viewer can pick the right bank for OAM-composed
-    // icons (e.g. action-palette icons cycle through banks per sprite).
+    // For obs_/obm_ sprite sheets the icons are stored as N×N-tile blocks,
+    // so a flat 16/32-wide grid scrambles them across rows. Emit variants
+    // at tile widths 2/4/8 — the right one is whichever matches the sprite
+    // size in tiles (16/32/64 px wide).
+    const isSpriteSheet = base.startsWith('obs_') || base.startsWith('obm_');
+    if (isSpriteSheet) {
+      for (const w of [4, 2, 8]) {
+        await writePng(
+          renderTileSheet(ncgr.data, effectiveBpp, tilePalette, w),
+          join(outDir, `${base}.tiles.w${w}.png`),
+        );
+      }
+    }
+
+    // For 4bpp sprites with multiple palette banks, also emit per-bank
+    // variants so the viewer can pick the right bank for OAM-composed icons.
     if (effectiveBpp === 4 && nclr.palettes.length > 1) {
       for (let b = 0; b < nclr.palettes.length; b++) {
         const bank = nclr.palettes[b];
@@ -136,6 +143,25 @@ async function processGroup(
           renderTileSheet(ncgr.data, 4, bank, tilesPerRow),
           join(outDir, `${base}.tiles.bank${b.toString().padStart(2, '0')}.png`),
         );
+      }
+    }
+
+    // For 8bpp sprite sheets that have suspiciously few unique byte values
+    // (≤32), emit a 4bpp alternative interpretation as well — covers the
+    // mis-reported-bpp case (e.g. obs_menuapc, some logos).
+    if (isSpriteSheet && effectiveBpp === 8) {
+      const used = new Set<number>();
+      for (let i = 0; i < ncgr.data.length; i++) used.add(ncgr.data[i]);
+      if (used.size <= 32) {
+        const fourBppPal = nclr.palettes.length > 1
+          ? defaultBank
+          : flatPalette.slice(0, 16);
+        for (const w of [4, 2, 8]) {
+          await writePng(
+            renderTileSheet(ncgr.data, 4, fourBppPal, w),
+            join(outDir, `${base}.tiles.4bpp.w${w}.png`),
+          );
+        }
       }
     }
 
@@ -198,7 +224,8 @@ const TARGETS: Target[] = [
   { src: 'all_map', dst: 'hud/all_map' },
   { src: 'radermap', dst: 'hud/radermap' },
   { src: 'activitylog', dst: 'hud/activitylog' },
-  // actplt (action-palette) sprites share the battle-HUD palette.
+  // actplt (action-palette) sprites are 8bpp and use obs_btl.NCLR for
+  // the main icons; the 4bpp alternates fall back to bgs_btlcom's banks.
   { src: 'actplt', dst: 'hud/actplt', paletteFallback: 'obs_btl/obs_btl.NCLR' },
   // editactplt's obs_menuapc (8bpp objects) uses bgs_menuapc (4bpp 256c)
   // as a flattened palette; the fallback is set explicitly in case the
