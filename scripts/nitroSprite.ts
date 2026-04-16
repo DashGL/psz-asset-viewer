@@ -77,15 +77,17 @@ export function parseNclr(buf: Buffer): { bpp: 4 | 8; palettes: RGBA[][] } {
     const r = Math.round(((v >> 0) & 0x1f) * 255 / 31);
     const g = Math.round(((v >> 5) & 0x1f) * 255 / 31);
     const b = Math.round(((v >> 10) & 0x1f) * 255 / 31);
-    // Index 0 is conventionally transparent for sprites
-    colors.push({ r, g, b, a: (i >> 1) === 0 ? 0 : 255 });
+    colors.push({ r, g, b, a: 255 });
   }
 
-  // Split into per-palette banks based on bpp
+  // Split into per-palette banks based on bpp. Index 0 in each bank is the
+  // sprite's transparent color by NDS convention.
   const bankSize = bpp === 4 ? 16 : 256;
   const palettes: RGBA[][] = [];
   for (let i = 0; i < colors.length; i += bankSize) {
-    palettes.push(colors.slice(i, i + bankSize));
+    const bank = colors.slice(i, i + bankSize);
+    if (bank.length > 0) bank[0] = { ...bank[0], a: 0 };
+    palettes.push(bank);
   }
   if (palettes.length === 0) palettes.push(colors);
   return { bpp, palettes };

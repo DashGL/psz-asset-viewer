@@ -80,32 +80,83 @@ async function processGroup(
     const nclr = parseNclr(readMaybeZpr(nclrPath));
     const ncgr = parseNcgr(readMaybeZpr(ncgrPath));
 
-    // Palette strip (first bank)
+    // When the NCGR is 8bpp but the palette was stored as 4bpp banks, flatten
+    // all banks into one 256-color palette — common for object sheets sharing
+    // a background palette file (e.g. obs_menuapc + bgs_menuapc).
+    const flatPalette = nclr.palettes.flat();
+
+    // Some object NCGRs mis-report their bit depth — the header claims 8bpp
+    // but the pixel data is actually 4bpp (only a handful of byte values
+    // used, arranged in the antialiased-edge pattern typical of paletted
+    // icons). Detect that and fall back to 4bpp rendering with bank 0.
+    let effectiveBpp: 4 | 8 = ncgr.bpp;
+    if (ncgr.bpp === 8) {
+      const used = new Set<number>();
+      for (let i = 0; i < ncgr.data.length; i++) used.add(ncgr.data[i]);
+      if (used.size <= 16) effectiveBpp = 4;
+    }
+
+    // Some palette files reserve bank 0 as a magenta "unused" sentinel
+    // (color 1 = #F700DE — a known NITRO debug marker). When that happens,
+    // real icon colors live in the later banks and the first usable bank is
+    // picked as the default for tile-sheet rendering.
+    const isSentinelBank = (bank: RGBA[]) => {
+      if (bank.length < 2) return false;
+      const c = bank[1];
+      return c.r === 247 && c.g === 0 && c.b === 222;
+    };
+    const firstRealBankIdx = Math.max(
+      0, nclr.palettes.findIndex(b => !isSentinelBank(b)),
+    );
+    const defaultBank = nclr.palettes[firstRealBankIdx] ?? nclr.palettes[0] ?? [];
+    const tilePalette: RGBA[] =
+      effectiveBpp === 8 ? flatPalette : defaultBank;
+
+    // Palette strip (flat palette for 8bpp, first bank for 4bpp)
     await writePng(
-      renderPaletteStrip(nclr.palettes[0] ?? []),
+      renderPaletteStrip(effectiveBpp === 8 ? flatPalette : (nclr.palettes[0] ?? [])),
       join(outDir, `${base}.palette.png`),
     );
 
-    // Tile sheet: 16 tiles wide for 4bpp, 32 tiles wide for 8bpp (arbitrary,
-    // just keeps the sheet readable)
-    const tilesPerRow = ncgr.bpp === 4 ? 16 : 32;
-    const palette = nclr.palettes[0] ?? [];
+    // Tile sheet: 16 tiles wide for 4bpp, 32 tiles wide for 8bpp
+    const tilesPerRow = effectiveBpp === 4 ? 16 : 32;
     await writePng(
-      renderTileSheet(ncgr.data, ncgr.bpp, palette, tilesPerRow),
+      renderTileSheet(ncgr.data, effectiveBpp, tilePalette, tilesPerRow),
       join(outDir, `${base}.tiles.png`),
     );
+
+    // For 4bpp sprites with multiple palette banks, also emit a per-bank
+    // variants PNG so the viewer can pick the right bank for OAM-composed
+    // icons (e.g. action-palette icons cycle through banks per sprite).
+    if (effectiveBpp === 4 && nclr.palettes.length > 1) {
+      for (let b = 0; b < nclr.palettes.length; b++) {
+        const bank = nclr.palettes[b];
+        if (isSentinelBank(bank)) continue;
+        await writePng(
+          renderTileSheet(ncgr.data, 4, bank, tilesPerRow),
+          join(outDir, `${base}.tiles.bank${b.toString().padStart(2, '0')}.png`),
+        );
+      }
+    }
 
     // Composed screen (if NSCR exists in same group)
     const nscrPath = files.get('NSCR');
     if (nscrPath) {
-      const scr = parseNscr(readMaybeZpr(nscrPath));
-      await writePng(
-        renderScreen(ncgr.data, ncgr.bpp, nclr.palettes, scr),
-        join(outDir, `${base}.screen.png`),
-      );
+      try {
+        const scr = parseNscr(readMaybeZpr(nscrPath));
+        const screenPalettes: RGBA[][] =
+          effectiveBpp === 8 ? [flatPalette] : nclr.palettes;
+        await writePng(
+          renderScreen(ncgr.data, effectiveBpp, screenPalettes, scr),
+          join(outDir, `${base}.screen.png`),
+        );
+      } catch (e: any) {
+        console.log(`  ⚠️  ${base}.screen: ${e.message}`);
+      }
     }
 
-    console.log(`  ✅ ${base} (${ncgr.bpp}bpp, ${nclr.palettes.length} banks)`);
+    const bppNote = effectiveBpp !== ncgr.bpp ? ` (detected 4bpp)` : '';
+    console.log(`  ✅ ${base} (${ncgr.bpp}bpp${bppNote}, ${nclr.palettes.length} banks)`);
   } catch (e: any) {
     console.log(`  ❌ ${base}: ${e.message}`);
   }
@@ -149,7 +200,10 @@ const TARGETS: Target[] = [
   { src: 'activitylog', dst: 'hud/activitylog' },
   // actplt (action-palette) sprites share the battle-HUD palette.
   { src: 'actplt', dst: 'hud/actplt', paletteFallback: 'obs_btl/obs_btl.NCLR' },
-  { src: 'editactplt', dst: 'hud/editactplt' },
+  // editactplt's obs_menuapc (8bpp objects) uses bgs_menuapc (4bpp 256c)
+  // as a flattened palette; the fallback is set explicitly in case the
+  // group-local NCLR isn't found.
+  { src: 'editactplt', dst: 'hud/editactplt', paletteFallback: 'editactplt/bgs_menuapc.NCLR' },
   // Main menu
   { src: 'mainmenu', dst: 'mainmenu' },
   { src: 'menu', dst: 'menu' },
@@ -158,10 +212,33 @@ const TARGETS: Target[] = [
   { src: 'ending', dst: 'ending' },
   { src: 'movie', dst: 'movie' },
   { src: 'event', dst: 'event' },
+  // Shops, quests, chat, misc UI
+  { src: 'shop', dst: 'shop' },
+  { src: 'shop_sub', dst: 'shop_sub' },
+  { src: 'dmyshop', dst: 'dmyshop' },
+  { src: 'trade', dst: 'trade' },
+  { src: 'quest_counter', dst: 'quest_counter' },
+  { src: 'chat', dst: 'chat' },
+  { src: 'chatlog', dst: 'chatlog' },
+  { src: 'soft_kbd', dst: 'soft_kbd' },
+  { src: 'titleseq', dst: 'titleseq_sprites' },
 ];
+
+// Process any loose NCGR/NCLR/NSCR files sitting at raw/sprite/ root (title
+// backgrounds, battle-common shared sheets, etc).
+async function processRootFiles(outDir: string) {
+  const groups = groupByBase(RAW);
+  if (groups.size === 0) return;
+  console.log(`\n📁 ${RAW} (root files)`);
+  for (const [base, files] of groups) {
+    if (!files.has('NCGR')) continue;
+    await processGroup(base, files, findNclr(groups, base, null), outDir);
+  }
+}
 
 async function main() {
   mkdirSync(OUT, { recursive: true });
+  await processRootFiles(join(OUT, 'root'));
   for (const t of TARGETS) {
     const fallback = t.paletteFallback ? join(RAW, t.paletteFallback) : null;
     await processDir(join(RAW, t.src), join(OUT, t.dst), fallback);
