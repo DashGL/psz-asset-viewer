@@ -25,6 +25,7 @@
     "processWeapons": "bun run scripts/processWeapons.ts",
     "processObjects": "bun run scripts/processObjects.ts",
     "processTitleseq": "bun run scripts/processTitleseq.ts",
+    "processSprites": "bun run scripts/processSprites.ts",
     "syncCollections": "bun run scripts/syncCollections.ts"
   },
   "dependencies": {
