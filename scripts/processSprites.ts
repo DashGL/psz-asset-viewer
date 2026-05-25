@@ -72,7 +72,13 @@ async function processGroup(
   const ncgrPath = files.get('NCGR');
   if (!ncgrPath) return;
 
-  const nclrPath = files.get('NCLR') ?? paletteOverride ?? nclrFallback;
+  // Groups with their own NCLR + NSCR are self-contained backgrounds — use
+  // their own palette.  OBJ sprite groups should prefer the override palette
+  // (e.g. obs_btlcom.NCLR) even when a same-name NCLR exists.
+  const hasOwnScreen = files.has('NCLR') && files.has('NSCR');
+  const nclrPath = hasOwnScreen
+    ? files.get('NCLR')!
+    : (paletteOverride ?? files.get('NCLR') ?? nclrFallback);
   if (!nclrPath) {
     console.log(`  ⚠️  ${base}: no NCLR available, skipping`);
     return;
