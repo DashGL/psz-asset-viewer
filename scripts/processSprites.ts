@@ -72,7 +72,7 @@ async function processGroup(
   const ncgrPath = files.get('NCGR');
   if (!ncgrPath) return;
 
-  const nclrPath = paletteOverride ?? files.get('NCLR') ?? nclrFallback;
+  const nclrPath = files.get('NCLR') ?? paletteOverride ?? nclrFallback;
   if (!nclrPath) {
     console.log(`  ⚠️  ${base}: no NCLR available, skipping`);
     return;
