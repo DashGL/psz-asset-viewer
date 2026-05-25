@@ -254,6 +254,151 @@ export function renderScreen(
   return { rgba, width: screenWidth, height: screenHeight };
 }
 
+// === NCER ===
+// Magic: "RECN"
+// CEBK section: "KBEC" (Cell Bank)
+//   off 08: cellCount (u16)
+//   off 0A: bankType (u16, 0=normal 8-byte entries, 1=extended 16-byte entries)
+//   off 0C: cellDataOffset (u32)
+//   off 10: boundarySize (u32) — OBJ 1D mapping boundary shift
+//   off 14: partDataOffset (u32)
+//   Cell table at section_base + 0x08 + cellDataOffset
+//   OAM data follows cell table
+
+export type OamEntry = {
+  x: number; y: number;
+  width: number; height: number;
+  tileIdx: number;
+  palBank: number;
+  hFlip: boolean; vFlip: boolean;
+};
+
+export type NcerCell = {
+  oamEntries: OamEntry[];
+};
+
+export function parseNcer(buf: Buffer): { cells: NcerCell[]; boundarySize: number } {
+  const { numSections, headerSize } = parseNitroHeader(buf);
+  const sections = findSections(buf, headerSize, numSections);
+  const cebk = sections.get('KBEC');
+  if (!cebk) throw new Error('No KBEC section in NCER');
+
+  const base = cebk.start;
+  const cellCount = buf.readUInt16LE(base + 0x08);
+  const bankType = buf.readUInt16LE(base + 0x0a);
+  const cellDataOffset = buf.readUInt32LE(base + 0x0c);
+  const boundarySize = buf.readUInt32LE(base + 0x10);
+
+  const cellTableBase = base + 0x08 + cellDataOffset;
+  const cellEntrySize = bankType === 1 ? 16 : 8;
+  const oamDataBase = cellTableBase + cellCount * cellEntrySize;
+
+  const sizes: [number, number][][] = [
+    [[8,8],[16,16],[32,32],[64,64]],
+    [[16,8],[32,8],[32,16],[64,32]],
+    [[8,16],[8,32],[16,32],[32,64]],
+  ];
+
+  const cells: NcerCell[] = [];
+  for (let c = 0; c < cellCount; c++) {
+    const entryOff = cellTableBase + c * cellEntrySize;
+    const oamCount = buf.readUInt16LE(entryOff);
+    const oamAttrOffset = bankType === 1
+      ? buf.readUInt32LE(entryOff + 4)
+      : buf.readUInt16LE(entryOff + 2);
+
+    const oamBase = oamDataBase + oamAttrOffset;
+    const oamEntries: OamEntry[] = [];
+    for (let o = 0; o < oamCount; o++) {
+      const a0 = buf.readUInt16LE(oamBase + o * 6);
+      const a1 = buf.readUInt16LE(oamBase + o * 6 + 2);
+      const a2 = buf.readUInt16LE(oamBase + o * 6 + 4);
+
+      const yRaw = a0 & 0xff;
+      const shape = (a0 >> 14) & 3;
+      const xRaw = a1 & 0x1ff;
+      const hFlip = !!((a1 >> 12) & 1);
+      const vFlip = !!((a1 >> 13) & 1);
+      const objSize = (a1 >> 14) & 3;
+      const tileIdx = a2 & 0x3ff;
+      const palBank = (a2 >> 12) & 0xf;
+
+      const [width, height] = sizes[shape][objSize];
+      const y = yRaw > 127 ? yRaw - 256 : yRaw;
+      const x = xRaw > 255 ? xRaw - 512 : xRaw;
+
+      oamEntries.push({ x, y, width, height, tileIdx, palBank, hFlip, vFlip });
+    }
+    cells.push({ oamEntries });
+  }
+
+  return { cells, boundarySize };
+}
+
+// Render a single NCER cell into an RGBA image.
+// boundarySize controls OBJ 1D tile mapping: byte offset = tileIdx * 2^(5+boundarySize).
+export function renderCell(
+  cell: NcerCell,
+  ncgrData: Buffer,
+  bpp: 4 | 8,
+  palettes: RGBA[][],
+  boundarySize: number,
+): { rgba: Buffer; width: number; height: number; x0: number; y0: number } {
+  // Compute bounding box
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const oam of cell.oamEntries) {
+    minX = Math.min(minX, oam.x);
+    minY = Math.min(minY, oam.y);
+    maxX = Math.max(maxX, oam.x + oam.width);
+    maxY = Math.max(maxY, oam.y + oam.height);
+  }
+  if (cell.oamEntries.length === 0) {
+    return { rgba: Buffer.alloc(0), width: 0, height: 0, x0: 0, y0: 0 };
+  }
+
+  const width = maxX - minX;
+  const height = maxY - minY;
+  const rgba = Buffer.alloc(width * height * 4, 0);
+
+  const bytesPerBoundary = 1 << (5 + boundarySize);
+  const bytesPerTile = bpp === 4 ? 32 : 64;
+
+  for (const oam of cell.oamEntries) {
+    const palette = bpp === 4
+      ? (palettes[oam.palBank] ?? palettes[0] ?? [])
+      : palettes.flat();
+
+    const tilesW = oam.width / 8;
+    const tilesH = oam.height / 8;
+    const baseByteOffset = oam.tileIdx * bytesPerBoundary;
+
+    for (let ty = 0; ty < tilesH; ty++) {
+      for (let tx = 0; tx < tilesW; tx++) {
+        const tileByteOffset = baseByteOffset + (ty * tilesW + tx) * bytesPerTile;
+        const tileDataIdx = Math.floor(tileByteOffset / bytesPerTile);
+        const tile = decodeTile(ncgrData, tileDataIdx, bpp);
+
+        for (let py = 0; py < 8; py++) {
+          for (let px = 0; px < 8; px++) {
+            const idx = tile[py * 8 + px];
+            const c = palette[idx] ?? { r: 0, g: 0, b: 0, a: 0 };
+            const localX = tx * 8 + px;
+            const localY = ty * 8 + py;
+            const destX = oam.x - minX + (oam.hFlip ? oam.width - 1 - localX : localX);
+            const destY = oam.y - minY + (oam.vFlip ? oam.height - 1 - localY : localY);
+            const o = (destY * width + destX) * 4;
+            if (o >= 0 && o + 3 < rgba.length) {
+              rgba[o] = c.r; rgba[o + 1] = c.g; rgba[o + 2] = c.b; rgba[o + 3] = c.a;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return { rgba, width, height, x0: minX, y0: minY };
+}
+
 export function renderPaletteStrip(palette: RGBA[]): { rgba: Buffer; width: number; height: number } {
   const swatch = 16;
   const cols = Math.min(16, palette.length);

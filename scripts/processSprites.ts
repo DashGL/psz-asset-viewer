@@ -14,8 +14,10 @@ import {
   parseNclr,
   parseNcgr,
   parseNscr,
+  parseNcer,
   renderTileSheet,
   renderScreen,
+  renderCell,
   renderPaletteStrip,
   type RGBA,
 } from './nitroSprite';
@@ -181,6 +183,32 @@ async function processGroup(
       }
     }
 
+    // NCER cell rendering — extract individual sprites using OAM composition
+    const ncerPath = files.get('NCER');
+    if (ncerPath) {
+      try {
+        const ncer = parseNcer(readMaybeZpr(ncerPath));
+        const cellPalettes: RGBA[][] =
+          effectiveBpp === 8 ? [flatPalette] : nclr.palettes;
+
+        const cellDir = join(outDir, `${base}.cells`);
+        mkdirSync(cellDir, { recursive: true });
+
+        for (let i = 0; i < ncer.cells.length; i++) {
+          const img = renderCell(
+            ncer.cells[i], ncgr.data, effectiveBpp,
+            cellPalettes, ncer.boundarySize,
+          );
+          if (img.width > 0 && img.height > 0) {
+            await writePng(img, join(cellDir, `${i.toString().padStart(3, '0')}.png`));
+          }
+        }
+        console.log(`    📦 ${ncer.cells.length} cells → ${base}.cells/`);
+      } catch (e: any) {
+        console.log(`  ⚠️  ${base}.cells: ${e.message}`);
+      }
+    }
+
     const bppNote = effectiveBpp !== ncgr.bpp ? ` (detected 4bpp)` : '';
     console.log(`  ✅ ${base} (${ncgr.bpp}bpp${bppNote}, ${nclr.palettes.length} banks)`);
   } catch (e: any) {
@@ -226,7 +254,7 @@ const TARGETS: Target[] = [
   { src: 'activitylog', dst: 'hud/activitylog' },
   // actplt (action-palette) sprites are 8bpp and use obs_btl.NCLR for
   // the main icons; the 4bpp alternates fall back to bgs_btlcom's banks.
-  { src: 'actplt', dst: 'hud/actplt', paletteFallback: 'obs_btl/obs_btl.NCLR' },
+  { src: 'actplt', dst: 'hud/actplt', paletteFallback: 'obs_btl/obs_btlcom.NCLR' },
   // editactplt's obs_menuapc (8bpp objects) uses bgs_menuapc (4bpp 256c)
   // as a flattened palette; the fallback is set explicitly in case the
   // group-local NCLR isn't found.

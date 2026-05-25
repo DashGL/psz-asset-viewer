@@ -1,0 +1,132 @@
+---
+import { readdirSync, existsSync } from 'fs';
+import { join } from 'path';
+
+const base = import.meta.env.BASE_URL;
+
+function getCells(dir: string): string[] {
+  const full = join('./public', dir);
+  if (!existsSync(full)) return [];
+  return readdirSync(full).filter(f => f.endsWith('.png')).sort();
+}
+
+const ap2a = getCells('sprites/hud/actplt/obs_btlap2a.cells');
+const ap2b = getCells('sprites/hud/actplt/obs_btlap2b.cells');
+const menuapc = getCells('sprites/hud/editactplt/obs_menuapc.cells');
+const btlCells = getCells('sprites/hud/obs_btl/obs_btl.cells');
+---
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Action Palette Assets — PSZ Asset Viewer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #1a1a2e; color: #eee; font-family: system-ui, sans-serif; padding: 2rem; }
+    h1 { margin-bottom: 1rem; color: #7fdbca; }
+    h2 { margin: 2rem 0 0.75rem; color: #c792ea; border-bottom: 1px solid #333; padding-bottom: 0.25rem; }
+    h3 { margin: 1.5rem 0 0.5rem; color: #82aaff; }
+    .grid {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: start;
+    }
+    .cell {
+      background: #16213e; border: 1px solid #333; border-radius: 4px;
+      padding: 4px; display: flex; flex-direction: column; align-items: center;
+      min-width: 64px;
+    }
+    .cell img {
+      image-rendering: pixelated;
+      min-width: 32px; min-height: 32px;
+    }
+    .cell .label { font-size: 10px; color: #888; margin-top: 2px; }
+    .cell img.x2 { width: 64px; height: 64px; }
+    .cell img.x3 { width: 96px; height: 96px; }
+    .cell img.auto { max-width: 256px; height: auto; }
+    .full-img {
+      background: #16213e; border: 1px solid #333; border-radius: 4px;
+      padding: 8px; margin: 0.5rem 0;
+    }
+    .full-img img { image-rendering: pixelated; max-width: 100%; height: auto; }
+    .section { margin-bottom: 2rem; }
+    a { color: #7fdbca; }
+    .scale-toggle { margin: 1rem 0 0.5rem; }
+    .scale-toggle button {
+      background: #16213e; color: #eee; border: 1px solid #555;
+      padding: 4px 12px; border-radius: 3px; cursor: pointer; margin-right: 4px;
+    }
+    .scale-toggle button.active { background: #7fdbca; color: #1a1a2e; }
+    .checkerboard {
+      background-image:
+        linear-gradient(45deg, #222 25%, transparent 25%),
+        linear-gradient(-45deg, #222 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #222 75%),
+        linear-gradient(-45deg, transparent 75%, #222 75%);
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Action Palette Assets</h1>
+  <p><a href={base}>← Back to index</a></p>
+
+  <div class="section">
+    <h2>Action Palette Editor HUD</h2>
+    <h3>Background (bgs_menuapc.screen)</h3>
+    <div class="full-img checkerboard">
+      <img src={`${base}sprites/hud/editactplt/bgs_menuapc.screen.png`} style="image-rendering: pixelated;" />
+    </div>
+
+    <h3>Slot Frames (obs_menuapc cells)</h3>
+    <div class="grid">
+      {menuapc.map((f, i) => (
+        <div class="cell checkerboard">
+          <img class="x3" src={`${base}sprites/hud/editactplt/obs_menuapc.cells/${f}`} />
+          <span class="label">{i}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Action Palette Icons — Set A (obs_btlap2a, {ap2a.length} icons)</h2>
+    <div class="grid">
+      {ap2a.map((f, i) => (
+        <div class="cell checkerboard">
+          <img class="x2" src={`${base}sprites/hud/actplt/obs_btlap2a.cells/${f}`} />
+          <span class="label">{i}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Action Palette Icons — Set B (obs_btlap2b, {ap2b.length} icons)</h2>
+    <div class="grid">
+      {ap2b.map((f, i) => (
+        <div class="cell checkerboard">
+          <img class="x2" src={`${base}sprites/hud/actplt/obs_btlap2b.cells/${f}`} />
+          <span class="label">{i}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Battle HUD</h2>
+    <h3>Background (bgs_btlcom.screen)</h3>
+    <div class="full-img checkerboard">
+      <img src={`${base}sprites/hud/obs_btl/bgs_btlcom.screen.png`} style="image-rendering: pixelated;" />
+    </div>
+
+    <h3>HUD Overlay Sprites (obs_btl cells, {btlCells.length} sprites)</h3>
+    <div class="grid">
+      {btlCells.map((f, i) => (
+        <div class="cell checkerboard">
+          <img class="auto" src={`${base}sprites/hud/obs_btl/obs_btl.cells/${f}`} style="image-rendering: pixelated;" />
+          <span class="label">{i}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</body>
+</html>
