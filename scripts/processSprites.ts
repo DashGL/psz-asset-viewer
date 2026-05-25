@@ -67,12 +67,12 @@ function findNclr(
 
 async function processGroup(
   base: string, files: Map<string, string>, nclrFallback: string | null,
-  outDir: string,
+  outDir: string, paletteOverride: string | null = null,
 ) {
   const ncgrPath = files.get('NCGR');
   if (!ncgrPath) return;
 
-  const nclrPath = files.get('NCLR') ?? nclrFallback;
+  const nclrPath = paletteOverride ?? files.get('NCLR') ?? nclrFallback;
   if (!nclrPath) {
     console.log(`  ⚠️  ${base}: no NCLR available, skipping`);
     return;
@@ -218,6 +218,7 @@ async function processGroup(
 
 async function processDir(
   rawDir: string, outDir: string, ancestorPalette: string | null = null,
+  paletteOverride: string | null = null,
 ) {
   if (!existsSync(rawDir)) { console.log(`skip missing: ${rawDir}`); return; }
   console.log(`\n📁 ${rawDir}`);
@@ -233,7 +234,7 @@ async function processDir(
 
   for (const [base, files] of groups) {
     if (!files.has('NCGR')) continue;
-    await processGroup(base, files, findNclr(groups, base, ancestorPalette), outDir);
+    await processGroup(base, files, findNclr(groups, base, ancestorPalette), outDir, paletteOverride);
   }
 
   for (const entry of readdirSync(rawDir)) {
@@ -244,11 +245,11 @@ async function processDir(
   }
 }
 
-type Target = { src: string; dst: string; paletteFallback?: string };
+type Target = { src: string; dst: string; paletteFallback?: string; paletteOverride?: string };
 
 const TARGETS: Target[] = [
   // HUD
-  { src: 'obs_btl', dst: 'hud/obs_btl' },
+  { src: 'obs_btl', dst: 'hud/obs_btl', paletteOverride: 'obs_btl/obs_btlcom.NCLR' },
   { src: 'all_map', dst: 'hud/all_map' },
   { src: 'radermap', dst: 'hud/radermap' },
   { src: 'activitylog', dst: 'hud/activitylog' },
@@ -296,7 +297,8 @@ async function main() {
   await processRootFiles(join(OUT, 'root'));
   for (const t of TARGETS) {
     const fallback = t.paletteFallback ? join(RAW, t.paletteFallback) : null;
-    await processDir(join(RAW, t.src), join(OUT, t.dst), fallback);
+    const override = t.paletteOverride ? join(RAW, t.paletteOverride) : null;
+    await processDir(join(RAW, t.src), join(OUT, t.dst), fallback, override);
   }
   console.log('\n✅ Done.');
 }
