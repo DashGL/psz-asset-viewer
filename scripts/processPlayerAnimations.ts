@@ -53,8 +53,10 @@ async function processWeaponAnimations(
       console.log(`📦 Processing ${narcFile}...`);
 
       // Parse filename to get metadata
-      // Format: ##_category_weapontype_pa##.narc
-      const match = narcFile.match(/^(\d+)_([^_]+)_([^_]+)_pa\d+\.narc$/);
+      // Format: ##_category_variant_pa##.narc where variant is m|sm|w|sw.
+      // category may itself contain an underscore (e.g. a_rifle, d_saver, l_cannon),
+      // so anchor on the known variant suffix rather than counting underscores.
+      const match = narcFile.match(/^(\d+)_(.+)_(sw|sm|w|m)_pa\d+\.narc$/);
       if (!match) {
         console.log(`  ⚠️  Couldn't parse filename, skipping`);
         stats.failCount++;
