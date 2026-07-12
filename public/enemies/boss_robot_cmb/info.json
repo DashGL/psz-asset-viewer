@@ -1,7 +1,7 @@
 {
   "name": "boss_robot_cmb",
   "modelBaseName": "z_003",
-  "animationCount": 37,
+  "animationCount": 36,
   "effectCount": 18,
-  "partsCount": 2
+  "partsCount": 7
 }
