@@ -2,5 +2,7 @@
   "name": "shrimp_rare",
   "modelBaseName": "s_140",
   "animationCount": 0,
-  "effectCount": 1
+  "mainAnimationCount": 0,
+  "effectCount": 1,
+  "partsCount": 0
 }

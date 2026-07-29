@@ -2,5 +2,7 @@
   "name": "lizard",
   "modelBaseName": "s_001",
   "animationCount": 7,
-  "effectCount": 2
+  "mainAnimationCount": 7,
+  "effectCount": 2,
+  "partsCount": 0
 }

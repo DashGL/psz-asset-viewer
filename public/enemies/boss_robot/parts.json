@@ -1,14 +1,17 @@
 [
   {
+    "name": "o0c_bsef01",
+    "file": "o0c_bsef01.nsbmd",
+    "animationCount": 1
+  },
+  {
     "name": "z_003n",
-    "file": "z_003n.nsbmd"
+    "file": "z_003n.nsbmd",
+    "animationCount": 4
   },
   {
     "name": "z_003u",
-    "file": "z_003u.nsbmd"
-  },
-  {
-    "name": "o0c_bsef01",
-    "file": "o0c_bsef01.nsbmd"
+    "file": "z_003u.nsbmd",
+    "animationCount": 4
   }
 ]

@@ -2,5 +2,7 @@
   "name": "seal",
   "modelBaseName": "m_021",
   "animationCount": 7,
-  "effectCount": 3
+  "mainAnimationCount": 7,
+  "effectCount": 3,
+  "partsCount": 0
 }

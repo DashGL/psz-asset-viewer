@@ -2,5 +2,7 @@
   "name": "lion_rare",
   "modelBaseName": "b_104",
   "animationCount": 0,
-  "effectCount": 3
+  "mainAnimationCount": 0,
+  "effectCount": 3,
+  "partsCount": 0
 }

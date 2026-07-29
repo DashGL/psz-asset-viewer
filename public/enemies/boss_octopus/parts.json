@@ -1,14 +1,17 @@
 [
   {
     "name": "o0b_kaeru",
-    "file": "o0b_kaeru.nsbmd"
+    "file": "o0b_kaeru.nsbmd",
+    "animationCount": 0
   },
   {
     "name": "z_002_st",
-    "file": "z_002_st.nsbmd"
+    "file": "z_002_st.nsbmd",
+    "animationCount": 16
   },
   {
     "name": "z_002_tt",
-    "file": "z_002_tt.nsbmd"
+    "file": "z_002_tt.nsbmd",
+    "animationCount": 21
   }
 ]

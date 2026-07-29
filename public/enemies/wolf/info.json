@@ -2,5 +2,7 @@
   "name": "wolf",
   "modelBaseName": "m_012",
   "animationCount": 8,
-  "effectCount": 3
+  "mainAnimationCount": 8,
+  "effectCount": 3,
+  "partsCount": 0
 }

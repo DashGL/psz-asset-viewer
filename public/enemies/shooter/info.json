@@ -2,5 +2,7 @@
   "name": "shooter",
   "modelBaseName": "s_050",
   "animationCount": 8,
-  "effectCount": 5
+  "mainAnimationCount": 8,
+  "effectCount": 5,
+  "partsCount": 0
 }

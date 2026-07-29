@@ -2,6 +2,7 @@
   "name": "swordman_rare_b",
   "modelBaseName": "b_362",
   "animationCount": 13,
+  "mainAnimationCount": 12,
   "effectCount": 4,
   "partsCount": 1
 }

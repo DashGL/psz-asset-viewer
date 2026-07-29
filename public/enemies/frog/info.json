@@ -2,5 +2,7 @@
   "name": "frog",
   "modelBaseName": "s_020",
   "animationCount": 8,
-  "effectCount": 4
+  "mainAnimationCount": 8,
+  "effectCount": 4,
+  "partsCount": 0
 }

@@ -2,5 +2,7 @@
   "name": "quad",
   "modelBaseName": "m_042",
   "animationCount": 10,
-  "effectCount": 7
+  "mainAnimationCount": 10,
+  "effectCount": 7,
+  "partsCount": 0
 }

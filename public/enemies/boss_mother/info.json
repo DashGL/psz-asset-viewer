@@ -2,5 +2,7 @@
   "name": "boss_mother",
   "modelBaseName": "z_004",
   "animationCount": 24,
-  "effectCount": 7
+  "mainAnimationCount": 24,
+  "effectCount": 7,
+  "partsCount": 2
 }
