@@ -2,5 +2,6 @@
   "name": "tank_rare",
   "modelBaseName": "b_152",
   "animationCount": 9,
-  "effectCount": 7
+  "effectCount": 7,
+  "partsCount": 1
 }

@@ -2,5 +2,6 @@
   "name": "gorilla",
   "modelBaseName": "b_014",
   "animationCount": 10,
-  "effectCount": 4
+  "effectCount": 4,
+  "partsCount": 0
 }

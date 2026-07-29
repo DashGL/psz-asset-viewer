@@ -2,5 +2,6 @@
   "name": "boss_darkfalz",
   "modelBaseName": "z_005",
   "animationCount": 25,
-  "effectCount": 17
+  "effectCount": 17,
+  "partsCount": 0
 }

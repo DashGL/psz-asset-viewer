@@ -2,5 +2,6 @@
   "name": "booma",
   "modelBaseName": "s_071",
   "animationCount": 9,
-  "effectCount": 2
+  "effectCount": 2,
+  "partsCount": 0
 }

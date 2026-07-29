@@ -2,5 +2,6 @@
   "name": "tiger",
   "modelBaseName": "m_034",
   "animationCount": 8,
-  "effectCount": 2
+  "effectCount": 2,
+  "partsCount": 0
 }

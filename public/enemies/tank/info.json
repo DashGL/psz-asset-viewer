@@ -2,5 +2,6 @@
   "name": "tank",
   "modelBaseName": "b_052",
   "animationCount": 9,
-  "effectCount": 7
+  "effectCount": 7,
+  "partsCount": 1
 }

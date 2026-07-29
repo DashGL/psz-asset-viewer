@@ -2,5 +2,6 @@
   "name": "vulture",
   "modelBaseName": "s_002",
   "animationCount": 6,
-  "effectCount": 2
+  "effectCount": 2,
+  "partsCount": 0
 }
