@@ -2,5 +2,7 @@
   "name": "orangutan_rare",
   "modelBaseName": "b_144",
   "animationCount": 0,
-  "effectCount": 4
+  "mainAnimationCount": 0,
+  "effectCount": 4,
+  "partsCount": 1
 }

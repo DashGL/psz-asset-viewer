@@ -2,5 +2,7 @@
   "name": "hyena_rare",
   "modelBaseName": "m_105",
   "animationCount": 8,
-  "effectCount": 2
+  "mainAnimationCount": 8,
+  "effectCount": 2,
+  "partsCount": 0
 }

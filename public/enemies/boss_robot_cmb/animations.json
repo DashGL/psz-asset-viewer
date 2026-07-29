@@ -96,6 +96,10 @@
     "file": "z003_ded_u.nsbca"
   },
   {
+    "name": "dummy",
+    "file": "z003_dummy.nsbca"
+  },
+  {
     "name": "dwn_ed",
     "file": "z003_dwn_ed.nsbca"
   },

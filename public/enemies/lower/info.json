@@ -2,5 +2,7 @@
   "name": "lower",
   "modelBaseName": "m_261",
   "animationCount": 8,
-  "effectCount": 1
+  "mainAnimationCount": 8,
+  "effectCount": 1,
+  "partsCount": 0
 }

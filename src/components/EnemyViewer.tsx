@@ -13,6 +13,11 @@ interface EffectInfo {
   file: string;
 }
 
+interface PartInfo {
+  name: string;
+  file: string;
+}
+
 interface EnemyInfo {
   name: string;
   modelBaseName: string;
@@ -24,6 +29,7 @@ interface EnemyData {
   info: EnemyInfo | null;
   animations: AnimationInfo[];
   effects: EffectInfo[];
+  parts: PartInfo[];
 }
 
 interface ModelProps {
@@ -75,7 +81,7 @@ interface EnemyViewerProps {
 }
 
 export default function EnemyViewer({ enemyName, basePath = '/enemies' }: EnemyViewerProps) {
-  const [enemyData, setEnemyData] = useState<EnemyData>({ info: null, animations: [], effects: [] });
+  const [enemyData, setEnemyData] = useState<EnemyData>({ info: null, animations: [], effects: [], parts: [] });
   const [selectedAnimation, setSelectedAnimation] = useState<string | undefined>();
   const [selectedModel, setSelectedModel] = useState<'main' | string>('main');
   const [glbAnimations, setGlbAnimations] = useState<string[]>([]);
@@ -123,7 +129,21 @@ export default function EnemyViewer({ enemyName, basePath = '/enemies' }: EnemyV
           console.log('No effects.json found');
         }
 
-        setEnemyData({ info, animations, effects });
+        // Try to load parts.json. Several enemies are built from more than one
+        // model — boss_robot ships the drill and the ship as separate models, and
+        // boss_robot_cmb ships the combined form plus its top and bottom halves.
+        // Without this they are converted and published but unreachable in the UI.
+        let parts: PartInfo[] = [];
+        try {
+          const partsResponse = await fetch(`${mainModelPath}/parts.json`);
+          if (partsResponse.ok) {
+            parts = await partsResponse.json();
+          }
+        } catch (e) {
+          console.log('No parts.json found');
+        }
+
+        setEnemyData({ info, animations, effects, parts });
         setIsLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load enemy data');
@@ -134,9 +154,15 @@ export default function EnemyViewer({ enemyName, basePath = '/enemies' }: EnemyV
     loadEnemyData();
   }, [enemyName, mainModelPath]);
 
+  const partNames = new Set(enemyData.parts.map(p => p.name));
+  const isPart = partNames.has(selectedModel);
+  const isEffect = selectedModel !== 'main' && !isPart;
+
   const currentModelUrl = selectedModel === 'main'
     ? `${mainModelPath}/${enemyData.info?.modelBaseName}/${enemyData.info?.modelBaseName}.glb`
-    : `${mainModelPath}/effects/${selectedModel}/${selectedModel}.glb`;
+    : isPart
+      ? `${mainModelPath}/parts/${selectedModel}/${selectedModel}.glb`
+      : `${mainModelPath}/effects/${selectedModel}/${selectedModel}.glb`;
 
   return (
     <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -169,7 +195,12 @@ export default function EnemyViewer({ enemyName, basePath = '/enemies' }: EnemyV
               borderRadius: '4px'
             }}
           >
-            <option value="main">Main Model</option>
+            <option value="main">{enemyData.info?.modelBaseName ?? 'Main Model'}</option>
+            {enemyData.parts.map((part) => (
+              <option key={part.name} value={part.name}>
+                Model: {part.name}
+              </option>
+            ))}
             {enemyData.effects.map((effect) => (
               <option key={effect.name} value={effect.name}>
                 Effect: {effect.name}
@@ -179,7 +210,7 @@ export default function EnemyViewer({ enemyName, basePath = '/enemies' }: EnemyV
         </div>
 
         {/* Animation Selection */}
-        {selectedModel === 'main' && glbAnimations.length > 0 && (
+        {!isEffect && glbAnimations.length > 0 && (
           <div style={{ flex: '1', minWidth: '200px' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', color: '#fff', fontWeight: 'bold' }}>
               Animation
@@ -248,8 +279,9 @@ export default function EnemyViewer({ enemyName, basePath = '/enemies' }: EnemyV
 
             {/* Model */}
             <Suspense fallback={null}>
-              {selectedModel === 'main' ? (
+              {!isEffect ? (
                 <AnimatedModel
+                  key={currentModelUrl}
                   url={currentModelUrl}
                   animationName={selectedAnimation}
                   onAnimationsLoaded={setGlbAnimations}

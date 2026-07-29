@@ -2,5 +2,7 @@
   "name": "orangutan",
   "modelBaseName": "b_044",
   "animationCount": 11,
-  "effectCount": 4
+  "mainAnimationCount": 11,
+  "effectCount": 4,
+  "partsCount": 1
 }

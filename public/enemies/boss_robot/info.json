@@ -1,7 +1,8 @@
 {
   "name": "boss_robot",
   "modelBaseName": "z_003",
-  "animationCount": 9,
+  "animationCount": 10,
+  "mainAnimationCount": 1,
   "effectCount": 10,
   "partsCount": 3
 }

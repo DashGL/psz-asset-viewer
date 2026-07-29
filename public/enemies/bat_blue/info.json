@@ -2,5 +2,7 @@
   "name": "bat_blue",
   "modelBaseName": "s_133",
   "animationCount": 0,
-  "effectCount": 2
+  "mainAnimationCount": 0,
+  "effectCount": 2,
+  "partsCount": 0
 }

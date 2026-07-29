@@ -2,5 +2,7 @@
   "name": "quad_rare",
   "modelBaseName": "m_142",
   "animationCount": 0,
-  "effectCount": 7
+  "mainAnimationCount": 0,
+  "effectCount": 7,
+  "partsCount": 0
 }
