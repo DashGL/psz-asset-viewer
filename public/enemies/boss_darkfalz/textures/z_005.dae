@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
   <asset>
-    <created>2026-07-29T17:45:14Z</created>
-    <modified>2026-07-29T17:45:14Z</modified>
+    <created>2026-07-29T18:08:32Z</created>
+    <modified>2026-07-29T18:08:32Z</modified>
   </asset>
   <library_images>
-    <image id="image-df_a">
-      <init_from>df_a.png</init_from>
-    </image>
     <image id="image-df_b">
       <init_from>df_b.png</init_from>
+    </image>
+    <image id="image-df_a">
+      <init_from>df_a.png</init_from>
     </image>
   </library_images>
   <library_materials>

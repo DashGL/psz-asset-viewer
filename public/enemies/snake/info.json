@@ -2,6 +2,7 @@
   "name": "snake",
   "modelBaseName": "m_003",
   "animationCount": 9,
+  "mainAnimationCount": 9,
   "effectCount": 2,
   "partsCount": 0
 }

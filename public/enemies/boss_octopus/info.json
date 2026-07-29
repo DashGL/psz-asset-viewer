@@ -2,6 +2,7 @@
   "name": "boss_octopus",
   "modelBaseName": "z_002",
   "animationCount": 57,
+  "mainAnimationCount": 20,
   "effectCount": 14,
   "partsCount": 3
 }

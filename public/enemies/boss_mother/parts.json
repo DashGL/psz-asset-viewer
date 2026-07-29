@@ -1,10 +1,12 @@
 [
   {
     "name": "z_004_kao_a",
-    "file": "z_004_kao_a.nsbmd"
+    "file": "z_004_kao_a.nsbmd",
+    "animationCount": 0
   },
   {
     "name": "z_004_kao_b",
-    "file": "z_004_kao_b.nsbmd"
+    "file": "z_004_kao_b.nsbmd",
+    "animationCount": 0
   }
 ]

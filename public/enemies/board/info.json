@@ -2,6 +2,7 @@
   "name": "board",
   "modelBaseName": "m_051",
   "animationCount": 11,
+  "mainAnimationCount": 11,
   "effectCount": 6,
   "partsCount": 0
 }

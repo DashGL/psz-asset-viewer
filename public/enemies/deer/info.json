@@ -2,6 +2,7 @@
   "name": "deer",
   "modelBaseName": "m_011",
   "animationCount": 8,
+  "mainAnimationCount": 8,
   "effectCount": 3,
   "partsCount": 0
 }

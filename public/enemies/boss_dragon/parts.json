@@ -1,10 +1,12 @@
 [
   {
     "name": "o0b_dradmg",
-    "file": "o0b_dradmg.nsbmd"
+    "file": "o0b_dradmg.nsbmd",
+    "animationCount": 0
   },
   {
     "name": "z_001_horn",
-    "file": "z_001_horn.nsbmd"
+    "file": "z_001_horn.nsbmd",
+    "animationCount": 0
   }
 ]

@@ -1,10 +1,12 @@
 [
   {
     "name": "z_003n",
-    "file": "z_003n.nsbmd"
+    "file": "z_003n.nsbmd",
+    "animationCount": 5
   },
   {
     "name": "z_103u",
-    "file": "z_103u.nsbmd"
+    "file": "z_103u.nsbmd",
+    "animationCount": 5
   }
 ]

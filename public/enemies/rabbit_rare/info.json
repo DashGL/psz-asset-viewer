@@ -2,6 +2,7 @@
   "name": "rabbit_rare",
   "modelBaseName": "s_110",
   "animationCount": 0,
+  "mainAnimationCount": 0,
   "effectCount": 3,
   "partsCount": 0
 }

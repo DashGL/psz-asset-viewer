@@ -2,6 +2,7 @@
   "name": "mother_sword",
   "modelBaseName": "b_172",
   "animationCount": 15,
+  "mainAnimationCount": 15,
   "effectCount": 5,
   "partsCount": 0
 }

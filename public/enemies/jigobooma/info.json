@@ -2,6 +2,7 @@
   "name": "jigobooma",
   "modelBaseName": "s_171",
   "animationCount": 9,
+  "mainAnimationCount": 9,
   "effectCount": 2,
   "partsCount": 0
 }

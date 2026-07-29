@@ -2,6 +2,7 @@
   "name": "rappy",
   "modelBaseName": "s_070",
   "animationCount": 8,
+  "mainAnimationCount": 8,
   "effectCount": 2,
   "partsCount": 0
 }

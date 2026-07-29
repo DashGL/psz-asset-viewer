@@ -2,6 +2,7 @@
   "name": "frog_bomb",
   "modelBaseName": "s_041",
   "animationCount": 0,
+  "mainAnimationCount": 0,
   "effectCount": 4,
   "partsCount": 0
 }

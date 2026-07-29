@@ -2,6 +2,7 @@
   "name": "rappy_red",
   "modelBaseName": "s_270",
   "animationCount": 0,
+  "mainAnimationCount": 0,
   "effectCount": 2,
   "partsCount": 0
 }

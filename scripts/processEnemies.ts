@@ -370,7 +370,11 @@ async function processEnemy(narcPath: string): Promise<ProcessResult> {
     if (additionalParts.length > 0) {
       const partsInfo = additionalParts.map(f => ({
         name: f.name.replace('.nsbmd', ''),
-        file: f.name
+        file: f.name,
+        // How many animations ended up on this model. The viewer defaults to
+        // whichever model has the most, which for boss_robot is the drill rather
+        // than the combined body its name happens to match.
+        animationCount: (animAssignment.get(f.name) ?? []).length
       }));
 
       writeFileSync(
@@ -399,6 +403,9 @@ async function processEnemy(narcPath: string): Promise<ProcessResult> {
       name: enemyName,
       modelBaseName: modelBaseName,
       animationCount: animationFiles.length,
+      // animationCount above is the archive total; this is how many the main
+      // model itself carries, which the viewer compares against the parts.
+      mainAnimationCount: mainAnims.length,
       effectCount: effectModels.length,
       partsCount: additionalParts.length
     };

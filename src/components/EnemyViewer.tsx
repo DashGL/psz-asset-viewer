@@ -16,12 +16,14 @@ interface EffectInfo {
 interface PartInfo {
   name: string;
   file: string;
+  animationCount?: number;
 }
 
 interface EnemyInfo {
   name: string;
   modelBaseName: string;
   animationCount: number;
+  mainAnimationCount?: number;
   effectCount: number;
 }
 
@@ -144,6 +146,23 @@ export default function EnemyViewer({ enemyName, basePath = '/enemies' }: EnemyV
         }
 
         setEnemyData({ info, animations, effects, parts });
+
+        // Default to whichever model actually has something to play. The name
+        // pattern picks the main model, and for a split boss that is the wrong
+        // one: boss_robot's z_003 is the combined form and carries 1 of its 10
+        // animations, while the drill and the ship carry the rest.
+        //
+        // A part has to clear the main model by a wide margin to take over,
+        // because a narrow win is not evidence. Octo Diablo's z_002_tt has 21
+        // animations against the body's 20, and the body is still the boss.
+        const mainCount = info?.mainAnimationCount ?? 0;
+        const best = parts.reduce<PartInfo | null>(
+          (b, p) => ((p.animationCount ?? 0) > (b?.animationCount ?? 0) ? p : b),
+          null
+        );
+        if (best && (best.animationCount ?? 0) >= Math.max(2 * mainCount, 1)) {
+          setSelectedModel(best.name);
+        }
         setIsLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load enemy data');

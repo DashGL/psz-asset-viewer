@@ -2,6 +2,7 @@
   "name": "circle_black",
   "modelBaseName": "s_160",
   "animationCount": 0,
+  "mainAnimationCount": 0,
   "effectCount": 1,
   "partsCount": 0
 }

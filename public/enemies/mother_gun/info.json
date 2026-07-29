@@ -2,6 +2,7 @@
   "name": "mother_gun",
   "modelBaseName": "b_272",
   "animationCount": 15,
+  "mainAnimationCount": 15,
   "effectCount": 5,
   "partsCount": 0
 }

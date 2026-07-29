@@ -2,6 +2,7 @@
   "name": "roc_rare",
   "modelBaseName": "b_122",
   "animationCount": 0,
+  "mainAnimationCount": 0,
   "effectCount": 3,
   "partsCount": 0
 }

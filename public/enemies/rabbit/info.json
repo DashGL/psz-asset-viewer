@@ -2,6 +2,7 @@
   "name": "rabbit",
   "modelBaseName": "s_010",
   "animationCount": 6,
+  "mainAnimationCount": 6,
   "effectCount": 3,
   "partsCount": 0
 }

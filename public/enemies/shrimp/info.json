@@ -2,6 +2,7 @@
   "name": "shrimp",
   "modelBaseName": "s_040",
   "animationCount": 8,
+  "mainAnimationCount": 8,
   "effectCount": 1,
   "partsCount": 0
 }

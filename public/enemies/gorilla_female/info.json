@@ -2,6 +2,7 @@
   "name": "gorilla_female",
   "modelBaseName": "b_214",
   "animationCount": 0,
+  "mainAnimationCount": 0,
   "effectCount": 4,
   "partsCount": 0
 }

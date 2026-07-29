@@ -2,6 +2,7 @@
   "name": "mole",
   "modelBaseName": "m_032",
   "animationCount": 11,
+  "mainAnimationCount": 11,
   "effectCount": 3,
   "partsCount": 0
 }
