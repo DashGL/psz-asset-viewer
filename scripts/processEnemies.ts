@@ -24,6 +24,80 @@ if (!existsSync(OUTPUT_DIR)) {
   mkdirSync(OUTPUT_DIR, { recursive: true });
 }
 
+/** How many more objects a model may have than the animation driving it. */
+const MAX_OBJECT_SURPLUS = 1;
+
+/** Object count apicula reports for a .nsbmd model, or -1 if it cannot be read. */
+function modelObjectCount(path: string): number {
+  try {
+    const out = execSync(`apicula info "${path}"`, { encoding: 'utf8', stdio: 'pipe' });
+    const m = out.match(/Objects \((\d+) total\)/);
+    return m ? parseInt(m[1], 10) : -1;
+  } catch {
+    return -1;
+  }
+}
+
+/** Object count a .nsbca animation drives, or -1 if it cannot be read. */
+function animObjectCount(path: string): number {
+  try {
+    const out = execSync(`apicula info "${path}"`, { encoding: 'utf8', stdio: 'pipe' });
+    const m = out.match(/Num Objects:\s*(\d+)/);
+    return m ? parseInt(m[1], 10) : -1;
+  } catch {
+    return -1;
+  }
+}
+
+/**
+ * Decide which model each animation belongs to, by object count.
+ *
+ * apicula binds an animation to a model positionally. If the animation drives
+ * more objects than the model has it panics with an index-out-of-bounds and
+ * leaves a 0-byte GLB; if it drives fewer, it binds silently and wrongly. Since
+ * every animation in an archive was being handed to every model, one mismatch
+ * cost the entire batch — boss_robot_cmb shipped 0 of its 37 animations and
+ * boss_octopus 20 of 57.
+ *
+ * Bosses are why. z_003 is a whole body, and z_003n / z_003u are its upper and
+ * lower halves, each with its own animations suffixed _n and _u. Those only
+ * belong to their own half.
+ *
+ * Matching allows a surplus of at most one, because the two counts are not
+ * measured the same way across archives: Octo Diablo's animations match their
+ * model exactly (z_002 14 <- z_002_float 14), while the robot's are one short
+ * because its model list carries an extra unanimated root (z_003 21 <-
+ * z003_atk_dl_lp 20). A wider tolerance is not safe — apicula panics on an
+ * undersized animation as readily as an oversized one, so z003_dummy with its
+ * single object crashes every real model it is offered to. An animation that
+ * fits nothing is dropped, which is the right outcome for a placeholder.
+ */
+function assignAnimationsByObjectCount(
+  models: { key: string; path: string }[],
+  animPaths: string[]
+): Map<string, string[]> {
+  const assignment = new Map<string, string[]>();
+  models.forEach(m => assignment.set(m.key, []));
+  if (animPaths.length === 0) return assignment;
+
+  const modelCounts = models.map(m => ({ ...m, count: modelObjectCount(m.path) }));
+
+  for (const anim of animPaths) {
+    const need = animObjectCount(anim);
+    if (need < 0) continue;
+    let best: { key: string; surplus: number } | null = null;
+    for (const m of modelCounts) {
+      if (m.count < 0) continue;
+      const surplus = m.count - need;
+      // Outside [0, 1] apicula panics rather than binding — in either direction.
+      if (surplus < 0 || surplus > MAX_OBJECT_SURPLUS) continue;
+      if (!best || surplus < best.surplus) best = { key: m.key, surplus };
+    }
+    if (best) assignment.get(best.key)!.push(anim);
+  }
+  return assignment;
+}
+
 async function processEnemy(narcPath: string): Promise<ProcessResult> {
   const enemyName = basename(narcPath, '.narc');
 
@@ -146,14 +220,31 @@ async function processEnemy(narcPath: string): Promise<ProcessResult> {
       console.log(`  🖼️  Including texture file: ${textureFile.name}`);
     }
     const animationPaths = animationFiles.map(f => join(tempEnemyDir, f.name));
-    const allFiles = [...filesToConvert, ...animationPaths].map(p => `"${p}"`).join(' ');
+
+    // Route each animation to the model it actually drives. Everything in the
+    // archive used to be handed to every model, which cost whole batches.
+    const animOwners = [
+      { key: mainModelFile.name, path: mainModelPath },
+      ...additionalParts.map(pt => ({ key: pt.name, path: join(tempEnemyDir, pt.name) }))
+    ];
+    const animAssignment = assignAnimationsByObjectCount(animOwners, animationPaths);
+    const mainAnims = animAssignment.get(mainModelFile.name) ?? [];
+    const placed = [...animAssignment.values()].reduce((n, a) => n + a.length, 0);
+    console.log(
+      `  ↪️  ${mainAnims.length}/${animationPaths.length} animations drive ${modelBaseName}` +
+      (placed < animationPaths.length
+        ? `; ${animationPaths.length - placed} matched no model`
+        : '')
+    );
+
+    const allFiles = [...filesToConvert, ...mainAnims].map(p => `"${p}"`).join(' ');
 
     try {
       execSync(
         `apicula convert ${allFiles} -o "${outputPath}" -f glb --overwrite --all-animations`,
         { stdio: 'inherit' }
       );
-      console.log(`  ✅ Converted ${modelBaseName}.glb with ${animationFiles.length} animations`);
+      console.log(`  ✅ Converted ${modelBaseName}.glb with ${mainAnims.length} animations`);
     } catch (error) {
       console.error(`  ❌ Failed to convert main model`);
       return {
@@ -211,12 +302,20 @@ async function processEnemy(narcPath: string): Promise<ProcessResult> {
           ? `"${partPath}" "${join(tempEnemyDir, partTextureFile.name)}"`
           : `"${partPath}"`;
 
+        // A split boss keeps a separate animation per half (z003_stt_n for
+        // z_003n, z003_stt_u for z_003u); those belong here, not on the body.
+        const partAnims = animAssignment.get(part.name) ?? [];
+        const partArgs = [partFiles, ...partAnims.map(p => `"${p}"`)].join(' ');
+
         try {
           execSync(
-            `apicula convert ${partFiles} -o "${partOutputPath}" -f glb --overwrite`,
+            `apicula convert ${partArgs} -o "${partOutputPath}" -f glb --overwrite --all-animations`,
             { stdio: 'pipe' }
           );
-          console.log(`    ✅ Converted ${partBaseName}.glb`);
+          console.log(
+            `    ✅ Converted ${partBaseName}.glb` +
+            (partAnims.length ? ` with ${partAnims.length} animations` : '')
+          );
         } catch (error) {
           console.log(`    ⚠️  Failed to convert ${partBaseName}`);
         }
@@ -325,10 +424,20 @@ async function main() {
   console.log('🚀 PSZ Enemy Processor');
   console.log('Converting Enemy NARC files to GLB format\n');
 
+  // Optional filter, so one enemy can be re-processed without a full 50-enemy run:
+  //   bun scripts/processEnemies.ts boss_robot boss_robot_cmb
+  const only = process.argv.slice(2);
+
   const enemyFiles = readdirSync(ENEMY_DIR)
     .filter(f => f.endsWith('.narc'))
+    .filter(f => only.length === 0 || only.includes(basename(f, '.narc')))
     .map(f => join(ENEMY_DIR, f))
     .sort();
+
+  if (only.length > 0 && enemyFiles.length === 0) {
+    console.error(`No enemy archive matched: ${only.join(', ')}`);
+    process.exit(1);
+  }
 
   console.log(`Found ${enemyFiles.length} enemy files\n`);
 
