@@ -1,0 +1,19 @@
+{
+  "id": "item_global",
+  "modelCount": 11,
+  "totalModels": 11,
+  "textureCount": 1,
+  "models": [
+    "ef_com_change.nsbmd",
+    "ef_com_itm_use.nsbmd",
+    "ef_com_lvup.nsbmd",
+    "ef_com_rockon.nsbmd",
+    "ef_com_rockon_s.nsbmd",
+    "ef_com_tlp.nsbmd",
+    "fuki01.nsbmd",
+    "fuki02.nsbmd",
+    "fuki03.nsbmd",
+    "shadow.nsbmd",
+    "shadow_e.nsbmd"
+  ]
+}

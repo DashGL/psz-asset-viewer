@@ -1,0 +1,11 @@
+{
+  "id": "item_middle",
+  "modelCount": 3,
+  "totalModels": 3,
+  "textureCount": 1,
+  "models": [
+    "ef_tec_c_jlr.nsbmd",
+    "ef_tec_c_sfr.nsbmd",
+    "ef_tec_l_lesta.nsbmd"
+  ]
+}

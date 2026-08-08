@@ -11,6 +11,17 @@ const objectsCollection = defineCollection({
   }),
 });
 
+const effectsCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    id: z.string(),
+    modelCount: z.number(),
+    totalModels: z.number(),
+    textureCount: z.number(),
+    models: z.array(z.string()).optional(),
+  }),
+});
+
 const playersCollection = defineCollection({
   type: 'data',
   schema: z.object({
@@ -57,6 +68,7 @@ const photonBlastsCollection = defineCollection({
 
 export const collections = {
   objects: objectsCollection,
+  effects: effectsCollection,
   players: playersCollection,
   enemies: enemiesCollection,
   weapons: weaponsCollection,
