@@ -98,7 +98,10 @@ async function processArchive(
           modelCount: converted.length,
           totalModels: nsbmd.length,
           textureCount: textureFiles.length,
-          models: converted.map(m => `${m}.nsbmd`).sort(),
+          // the viewer treats each entry as the output DIRECTORY name and derives
+          // the glb from it, so this must be the bare stem -- not the archive
+          // member filename
+          models: [...converted].sort(),
         },
         null,
         2

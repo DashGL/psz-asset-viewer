@@ -4,16 +4,16 @@
   "totalModels": 11,
   "textureCount": 1,
   "models": [
-    "ef_com_change.nsbmd",
-    "ef_com_itm_use.nsbmd",
-    "ef_com_lvup.nsbmd",
-    "ef_com_rockon.nsbmd",
-    "ef_com_rockon_s.nsbmd",
-    "ef_com_tlp.nsbmd",
-    "fuki01.nsbmd",
-    "fuki02.nsbmd",
-    "fuki03.nsbmd",
-    "shadow.nsbmd",
-    "shadow_e.nsbmd"
+    "ef_com_change",
+    "ef_com_itm_use",
+    "ef_com_lvup",
+    "ef_com_rockon",
+    "ef_com_rockon_s",
+    "ef_com_tlp",
+    "fuki01",
+    "fuki02",
+    "fuki03",
+    "shadow",
+    "shadow_e"
   ]
 }
