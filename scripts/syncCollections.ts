@@ -9,7 +9,7 @@ interface InfoJson {
   [key: string]: any;
 }
 
-function syncDirectory(category: 'enemies' | 'weapons' | 'objects' | 'players') {
+function syncDirectory(category: 'enemies' | 'weapons' | 'objects' | 'players' | 'effects') {
   const publicPath = join(publicDir, category);
   const contentPath = join(contentDir, category);
 
@@ -69,6 +69,7 @@ console.log('Syncing collections from public/ to src/content/...\n');
 syncDirectory('enemies');
 syncDirectory('weapons');
 syncDirectory('objects');
+syncDirectory('effects');
 
 // Player is singular in directory name
 const playerPublicPath = join(publicDir, 'player');
