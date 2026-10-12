@@ -1,6 +1,7 @@
 ---
 import EnemyViewer from '../../components/EnemyViewer';
 import { getCollection } from 'astro:content';
+import { enemyDisplayName, MOTHER_IDENTITIES } from '../../utils/enemyIdentity';
 
 const base = import.meta.env.BASE_URL;
 
@@ -16,7 +17,8 @@ export async function getStaticPaths() {
       props: {
         enemyData: {
           name: cleanId,
-          displayName: entry.data.name.charAt(0).toUpperCase() + entry.data.name.slice(1),
+          modelBaseName: entry.data.modelBaseName,
+          displayName: enemyDisplayName(cleanId),
           animationCount: entry.data.animationCount,
           effectCount: entry.data.effectCount
         }
@@ -118,6 +120,14 @@ const { enemyData } = Astro.props;
 
       <div class="header">
         <h1>{enemyData.displayName}</h1>
+        <p>Asset ID: <code>{enemy}</code> · Model: <code>{enemyData.modelBaseName}</code></p>
+        {enemy && MOTHER_IDENTITIES[enemy] && (
+          <nav aria-label="Mother model family">
+            {Object.entries(MOTHER_IDENTITIES).map(([id, label]) => (
+              <a href={`${base}enemies/${id}/`} style="display:inline-block;margin:0.5rem;color:#ffb8b8">{label} ({id})</a>
+            ))}
+          </nav>
+        )}
         <p>Enemy Model Viewer</p>
       </div>
 
