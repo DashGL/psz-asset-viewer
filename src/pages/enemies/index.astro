@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { enemyDisplayName } from '../../utils/enemyIdentity';
 
 const base = import.meta.env.BASE_URL;
 
@@ -12,7 +13,7 @@ const enemies = allEnemies.map(entry => {
   const cleanId = entry.id.replace('/index', '');
   return {
     name: cleanId,
-    displayName: entry.data.name.charAt(0).toUpperCase() + entry.data.name.slice(1),
+    displayName: enemyDisplayName(cleanId),
     animationCount: entry.data.animationCount,
     effectCount: entry.data.effectCount
   };
@@ -154,6 +155,7 @@ enemies.sort((a, b) => a.name.localeCompare(b.name));
           {enemies.map(enemy => (
             <a href={`${base}enemies/${enemy.name}`} class="enemy-card">
               <div class="enemy-name">{enemy.displayName}</div>
+              <code>{enemy.name}</code>
               <div class="enemy-stats">
                 {enemy.animationCount > 0 && `${enemy.animationCount} animations`}
                 {enemy.animationCount > 0 && enemy.effectCount > 0 && ' • '}
